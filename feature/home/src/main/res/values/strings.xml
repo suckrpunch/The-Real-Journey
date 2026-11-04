@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_greeting_morning">Good morning</string>
+    <string name="home_greeting_afternoon">Good afternoon</string>
+    <string name="home_greeting_evening">Good evening</string>
+    <string name="home_greeting_night">Peaceful night</string>
+
+    <string name="home_quote_label">Today\'s quote</string>
+    <string name="home_quote_save">Save</string>
+    <string name="home_quote_saved">Saved</string>
+
+    <string name="home_start_title">Start meditating</string>
+    <string name="home_begin">Begin %1$d-minute meditation</string>
+
+    <string name="home_premium_title">%1$d minutes is part of Premium</string>
+    <string name="home_premium_body">Longer sessions open with Premium, which arrives in a later update. Sessions of 5 and 10 minutes are always free.</string>
+    <string name="home_premium_ok">Okay</string>
+
+    <string name="home_explore_title">Explore</string>
+    <string name="home_explore_see_all">See all</string>
+
+    <string name="home_today_title">Today</string>
+    <string name="home_today_ring_description">No minutes meditated yet today</string>
+    <string name="home_today_empty_title">Your first session will show here</string>
+    <string name="home_today_empty_body">Minutes, sessions and your week fill in as you meditate.</string>
+
+    <string name="home_mood_title">How are you feeling?</string>
+    <string name="home_mood_subtitle">Tap one to start a journal entry.</string>
+</resources>

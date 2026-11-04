@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The name under the app icon. Change it here if the app gets a different name. -->
+    <string name="app_name">New Journey</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_explore">Explore</string>
+    <string name="tab_meditate">Meditate</string>
+    <string name="tab_journal">Journal</string>
+    <string name="tab_profile">Profile</string>
+</resources>

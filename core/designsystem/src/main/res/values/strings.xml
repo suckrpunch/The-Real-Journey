@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mood_peaceful">Peaceful</string>
+    <string name="mood_happy">Happy</string>
+    <string name="mood_motivated">Motivated</string>
+    <string name="mood_calm">Calm</string>
+    <string name="mood_tired">Tired</string>
+    <string name="mood_stressed">Stressed</string>
+    <string name="mood_anxious">Anxious</string>
+    <string name="mood_sad">Sad</string>
+
+    <string name="duration_minutes">%1$d minutes</string>
+    <string name="duration_minutes_premium">%1$d minutes, premium</string>
+    <string name="duration_min_short">min</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Profile</string>
+    <string name="profile_appearance">Appearance</string>
+
+    <string name="theme_system">Follow my phone</string>
+    <string name="theme_system_hint">Uses your phone\'s light or dark setting</string>
+    <string name="theme_day">Day</string>
+    <string name="theme_day_hint">Warm, light colours</string>
+    <string name="theme_night">Night</string>
+    <string name="theme_night_hint">Soft, dark colours for evenings</string>
+    <string name="theme_scheduled">On a schedule</string>
+    <string name="theme_scheduled_hint">Night colours at the times you choose</string>
+    <string name="theme_night_starts">Night starts</string>
+    <string name="theme_day_returns">Day returns</string>
+    <string name="theme_earlier">%1$s one hour earlier</string>
+    <string name="theme_later">%1$s one hour later</string>
+
+    <string name="profile_coming_title">Coming soon</string>
+    <string name="profile_coming_body">Your progress, The Journey Within, reminders and Premium will appear here in coming updates.</string>
+</resources>

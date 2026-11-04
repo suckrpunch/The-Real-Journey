@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="meditate_title">Meditate</string>
+    <string name="meditate_ready">%1$d minutes selected</string>
+    <string name="meditate_coming_next">The full timer, with bells, background sounds and screen-off playback, arrives in the next update. For now, follow the circle: breathe in as it grows, out as it settles.</string>
+</resources>

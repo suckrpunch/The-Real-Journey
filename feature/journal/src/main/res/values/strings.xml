@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Journal</string>
+    <string name="journal_feeling">Feeling %1$s</string>
+    <string name="journal_mood_note">Soon you\'ll be able to write a few words here and save them privately on your phone.</string>
+    <string name="journal_empty">Your journal is private and stays on this phone. Writing entries, moods before and after meditation, search and a calendar view are coming in a later update.</string>
+</resources>
