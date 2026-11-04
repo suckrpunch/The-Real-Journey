@@ -2,18 +2,25 @@
 
 A calm, accessible meditation and mindfulness app for Android, built with Kotlin and Jetpack Compose.
 
-## Status: Phase 1 foundation (version 0.1.0)
+## Status: Phase 2, meditation timer (version 0.2.0)
 
 What works in this build:
 
-- **Day and Night themes** with four choices in Profile › Appearance: Follow my phone, Day, Night, or On a schedule (pick when night starts and when day returns). The choice is saved on the phone.
-- **Five-tab navigation**: Home, Explore, Meditate, Journal, Profile, each with an icon and a text label.
-- **Home screen**: greeting by time of day, daily quote (changes every day; tap Save to keep it), quick-start durations, Begin button, categories, today's progress card, mood check-in.
-- **Free vs premium timer rule**: 5 and 10 minutes are free; 15 minutes and longer show a gold dot and a short, calm explanation.
-- **Meditate**: shows the chosen duration with a breathing circle (4 s in, 6 s out).
-- **Explore** lists the six categories; **Journal** opens with the mood tapped on Home.
+- **Meditation timer**: start, pause, resume and end, with a large countdown and the breathing circle (4 s in, 6 s out; still when the phone's "Remove animations" setting is on).
+- **Bells and background sound**: optional bell at the start and end; Silence, Rain or Forest, fading in and out gently. Choices are remembered.
+- **Screen off**: the timer, sound and end bell keep going with the phone locked. The lock screen shows the time left with Pause/Resume and End.
+- **Two taps from Home**: pick a length, tap Begin; it uses your saved bells and sound.
+- **Ending early** asks once, kindly. A minute or more is still saved.
+- **Finish screen**: "Well done", minutes meditated, Done, or Write in your journal.
+- **Saved sessions** on the phone (Room database). Home's Today card shows minutes against a 10-minute goal and which days you meditated this week.
+- **Free vs premium**: 5 and 10 minutes are free; 15 minutes and longer show a gold dot and a calm explanation.
+- **Day and Night themes** with Follow my phone, Day, Night, or On a schedule (Profile › Appearance).
 
-Not built yet (next phases): the working timer with bells and sounds, music playback, journal entries, progress tracking, reminders, accounts, premium purchases and The Journey Within.
+Not built yet: routines, the music library and player, journal entries, reminders, accounts, premium purchases and The Journey Within.
+
+### Sounds
+
+`feature/meditate/src/main/res/raw/` holds `bell.m4a`, `rain.m4a` and `forest.m4a`. Rain and Forest were made loop-ready: their last 3 seconds crossfade into the start, so the loop has no dip. To replace a sound, put a new `.m4a` file with the same name in that folder; no code changes are needed. For a looping sound, make sure its end flows into its start.
 
 ## Open and run it
 
@@ -31,11 +38,12 @@ app/                     Starts the app: MainActivity, theme choice, bottom tabs
 core/
   model/                 Plain Kotlin rules and data: quotes, categories, moods, timer limits, theme schedule
   designsystem/          Colours, fonts, shapes, the app theme and shared buttons and cards
-  datastore/             Saves small settings on the phone (theme, saved quotes)
+  datastore/             Saves small settings on the phone (theme, timer choices, saved quotes)
+  database/              On-device database of meditation sessions (schemas/ keeps each version)
 feature/
   home/                  Home screen and its ViewModel
   explore/               Music library (starter)
-  meditate/              Meditation timer (starter)
+  meditate/              Timer screens; timer/ holds the timer logic and the background service
   journal/               Journal (starter)
   profile/               Profile and Appearance settings
 gradle/libs.versions.toml  Every library version in one place

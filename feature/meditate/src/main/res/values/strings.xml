@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Setup (Meditate tab) -->
     <string name="meditate_title">Meditate</string>
-    <string name="meditate_ready">%1$d minutes selected</string>
-    <string name="meditate_coming_next">The full timer, with bells, background sounds and screen-off playback, arrives in the next update. For now, follow the circle: breathe in as it grows, out as it settles.</string>
+    <string name="setup_in_progress_title">Your session is still going</string>
+    <string name="setup_return_to_session">Return to your session</string>
+    <string name="setup_length">Length</string>
+    <string name="setup_bells">Bells</string>
+    <string name="setup_start_bell">Bell at the start</string>
+    <string name="setup_end_bell">Bell at the end</string>
+    <string name="setup_sound">Background sound</string>
+    <string name="setup_begin">Begin %1$d-minute meditation</string>
+    <string name="sound_silence">Silence</string>
+    <string name="sound_rain">Rain</string>
+    <string name="sound_forest">Forest</string>
+
+    <!-- Running session -->
+    <string name="session_status_running">Breathe gently</string>
+    <string name="session_status_paused">Paused</string>
+    <string name="timer_pause">Pause</string>
+    <string name="timer_resume">Resume</string>
+    <string name="timer_end">End</string>
+    <string name="session_end">End session</string>
+    <string name="session_screen_off_hint">You can lock your phone. The timer and sound keep going, and the bell will ring at the end.</string>
+    <string name="session_end_confirm_title">End your session now?</string>
+    <string name="session_end_confirm_body">That\'s completely fine. Any time you sat for a minute or more is still saved.</string>
+    <string name="session_end_confirm_yes">End session</string>
+    <string name="session_end_confirm_no">Keep going</string>
+    <plurals name="session_minutes_left">
+        <item quantity="one">%d minute left</item>
+        <item quantity="other">%d minutes left</item>
+    </plurals>
+
+    <!-- Finished -->
+    <string name="finished_title">Well done</string>
+    <string name="finished_title_early">Thank you for sitting</string>
+    <plurals name="finished_minutes">
+        <item quantity="one">You meditated for %d minute.</item>
+        <item quantity="other">You meditated for %d minutes.</item>
+    </plurals>
+    <string name="finished_done">Done</string>
+    <string name="finished_journal">Write in your journal</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Meditation in progress</string>
+    <string name="notification_channel_description">Shows your timer with Pause and End while you meditate.</string>
+    <string name="notification_title">Meditating</string>
+    <string name="notification_finishing">Your session is ending</string>
+    <plurals name="notification_minutes_left">
+        <item quantity="one">%d minute left</item>
+        <item quantity="other">%d minutes left</item>
+    </plurals>
+    <plurals name="notification_paused">
+        <item quantity="one">Paused · %d minute left</item>
+        <item quantity="other">Paused · %d minutes left</item>
+    </plurals>
 </resources>

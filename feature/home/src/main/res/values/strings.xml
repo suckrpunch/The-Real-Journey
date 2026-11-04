@@ -12,17 +12,22 @@
     <string name="home_start_title">Start meditating</string>
     <string name="home_begin">Begin %1$d-minute meditation</string>
 
-    <string name="home_premium_title">%1$d minutes is part of Premium</string>
-    <string name="home_premium_body">Longer sessions open with Premium, which arrives in a later update. Sessions of 5 and 10 minutes are always free.</string>
-    <string name="home_premium_ok">Okay</string>
 
     <string name="home_explore_title">Explore</string>
     <string name="home_explore_see_all">See all</string>
 
     <string name="home_today_title">Today</string>
-    <string name="home_today_ring_description">No minutes meditated yet today</string>
-    <string name="home_today_empty_title">Your first session will show here</string>
-    <string name="home_today_empty_body">Minutes, sessions and your week fill in as you meditate.</string>
+    <string name="home_today_ring_description">%1$d of %2$d minutes meditated today</string>
+    <string name="home_today_minutes">%1$d of %2$d minutes</string>
+    <string name="home_today_not_yet">A few quiet minutes, whenever suits you.</string>
+    <string name="home_today_almost">A short sit would complete today\'s goal.</string>
+    <string name="home_today_goal_reached">Today\'s goal is complete. Well done.</string>
+    <string name="home_week_day_done">%1$s, meditated</string>
+    <string name="home_week_day_open">%1$s</string>
+    <plurals name="home_week_days">
+        <item quantity="one">You meditated %d day this week</item>
+        <item quantity="other">You meditated %d days this week</item>
+    </plurals>
 
     <string name="home_mood_title">How are you feeling?</string>
     <string name="home_mood_subtitle">Tap one to start a journal entry.</string>

@@ -29,14 +29,11 @@ import androidx.compose.material.icons.outlined.Healing
 import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material.icons.outlined.Waves
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -56,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.DurationChip
+import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SectionTitle
@@ -68,6 +67,8 @@ import com.newjourney.core.model.DefaultCategories
 import com.newjourney.core.model.HomeCheckInMoods
 import com.newjourney.core.model.Mood
 import com.newjourney.core.model.PartOfDay
+import com.newjourney.core.model.WeekProgress
+import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -89,7 +90,6 @@ internal fun HomeScreenRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
     state: HomeUiState,
@@ -128,29 +128,12 @@ internal fun HomeScreen(
         }
         // "Continue listening" appears here once audio playback exists (Phase 3).
         item { ExploreRow(categories = DefaultCategories, onOpenExplore = onOpenExplore) }
-        item { TodayCard() }
+        item { TodayCard(state.week) }
         item { MoodCheckIn(onMoodSelected = onMoodSelected) }
     }
 
     premiumSheetMinutes?.let { minutes ->
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(onDismissRequest = { premiumSheetMinutes = null }, sheetState = sheetState) {
-            Column(
-                Modifier.padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Text(
-                    stringResource(R.string.home_premium_title, minutes),
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-                Text(
-                    stringResource(R.string.home_premium_body),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                PrimaryButton(text = stringResource(R.string.home_premium_ok), onClick = { premiumSheetMinutes = null })
-            }
-        }
+        PremiumDurationSheet(minutes = minutes, onDismiss = { premiumSheetMinutes = null })
     }
 }
 
@@ -271,31 +254,86 @@ internal fun categoryIcon(id: String): ImageVector = when (id) {
 }
 
 @Composable
-private fun TodayCard() {
+private fun TodayCard(week: WeekProgress) {
     val track = NewJourneyTheme.extraColors.progressTrack
-    val description = stringResource(R.string.home_today_ring_description)
+    val progressColor = MaterialTheme.colorScheme.primary
+    val ringDescription = stringResource(R.string.home_today_ring_description, week.todayMinutes, week.goalMinutes)
+    val hasAnySession = week.daysMeditated.isNotEmpty()
     SoftCard {
         SectionTitle(stringResource(R.string.home_today_title))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-            Canvas(Modifier.size(88.dp).semantics { contentDescription = description }) {
-                val stroke = 8.dp.toPx()
-                val inset = stroke / 2
-                drawArc(
-                    color = track,
-                    startAngle = 0f,
-                    sweepAngle = 360f,
-                    useCenter = false,
-                    topLeft = androidx.compose.ui.geometry.Offset(inset, inset),
-                    size = androidx.compose.ui.geometry.Size(size.width - stroke, size.height - stroke),
-                    style = Stroke(width = stroke, cap = StrokeCap.Round),
-                )
+            Box(Modifier.size(88.dp), contentAlignment = Alignment.Center) {
+                Canvas(Modifier.size(88.dp).semantics { contentDescription = ringDescription }) {
+                    val stroke = 8.dp.toPx()
+                    val inset = stroke / 2
+                    val arcSize = androidx.compose.ui.geometry.Size(size.width - stroke, size.height - stroke)
+                    val topLeft = androidx.compose.ui.geometry.Offset(inset, inset)
+                    drawArc(track, 0f, 360f, false, topLeft, arcSize, style = Stroke(width = stroke))
+                    if (week.goalFraction > 0f) {
+                        drawArc(
+                            progressColor, -90f, 360f * week.goalFraction, false, topLeft, arcSize,
+                            style = Stroke(width = stroke, cap = StrokeCap.Round),
+                        )
+                    }
+                }
+                Text("${week.todayMinutes}", style = MaterialTheme.typography.headlineSmall)
             }
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(R.string.home_today_empty_title), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    stringResource(R.string.home_today_empty_body),
+                    stringResource(R.string.home_today_minutes, week.todayMinutes, week.goalMinutes),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    stringResource(
+                        when {
+                            week.goalReached -> R.string.home_today_goal_reached
+                            week.todayMinutes > 0 -> R.string.home_today_almost
+                            else -> R.string.home_today_not_yet
+                        },
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        if (hasAnySession) {
+            Text(
+                pluralStringResource(R.plurals.home_week_days, week.daysMeditated.size, week.daysMeditated.size),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            WeekDots(week)
+        }
+    }
+}
+
+/** Monday to Sunday. Filled for days with a session; an empty ring otherwise. Never red, never a broken streak. */
+@Composable
+private fun WeekDots(week: WeekProgress) {
+    val filled = MaterialTheme.colorScheme.primary
+    val empty = MaterialTheme.colorScheme.outline
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        DayOfWeek.entries.forEach { day ->
+            val done = day in week.daysMeditated
+            val name = day.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
+            val fullName = day.getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault())
+            val spoken = stringResource(if (done) R.string.home_week_day_done else R.string.home_week_day_open, fullName)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = spoken },
+            ) {
+                Canvas(Modifier.size(30.dp)) {
+                    if (done) {
+                        drawCircle(filled)
+                    } else {
+                        drawCircle(empty, style = Stroke(width = 2.dp.toPx()))
+                    }
+                }
+                Text(
+                    name,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (day == week.today) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

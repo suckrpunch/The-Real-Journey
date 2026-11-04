@@ -2,13 +2,16 @@ package com.newjourney.core.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.ThemeMode
 import com.newjourney.core.model.ThemePreference
+import com.newjourney.core.model.TimerSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -25,6 +28,10 @@ interface UserSettingsRepository {
     /** Quotes the user saved with the heart button. Moves to the synced database in Phase 3. */
     val favoriteQuoteIds: Flow<Set<String>>
     suspend fun toggleFavoriteQuote(quoteId: String)
+
+    /** Bells and background sound, remembered so Home's Begin uses the user's last choices. */
+    val timerSettings: Flow<TimerSettings>
+    suspend fun setTimerSettings(settings: TimerSettings)
 }
 
 @Singleton
@@ -67,7 +74,31 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         }
     }
 
+    override val timerSettings: Flow<TimerSettings> = dataStore.data
+        .catch { error -> if (error is IOException) emit(emptyPreferences()) else throw error }
+        .map { prefs ->
+            val defaults = TimerSettings()
+            TimerSettings(
+                startBell = prefs[Keys.START_BELL] ?: defaults.startBell,
+                endBell = prefs[Keys.END_BELL] ?: defaults.endBell,
+                sound = prefs[Keys.BACKGROUND_SOUND]
+                    ?.let { stored -> BackgroundSound.entries.firstOrNull { it.name == stored } }
+                    ?: defaults.sound,
+            )
+        }
+
+    override suspend fun setTimerSettings(settings: TimerSettings) {
+        dataStore.edit {
+            it[Keys.START_BELL] = settings.startBell
+            it[Keys.END_BELL] = settings.endBell
+            it[Keys.BACKGROUND_SOUND] = settings.sound.name
+        }
+    }
+
     private object Keys {
+        val START_BELL = booleanPreferencesKey("timer_start_bell")
+        val END_BELL = booleanPreferencesKey("timer_end_bell")
+        val BACKGROUND_SOUND = stringPreferencesKey("timer_background_sound")
         val FAVORITE_QUOTES = stringSetPreferencesKey("favorite_quote_ids")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val NIGHT_START = intPreferencesKey("night_start_hour")

@@ -37,7 +37,9 @@ import com.newjourney.feature.home.homeScreen
 import com.newjourney.feature.journal.JournalRoute
 import com.newjourney.feature.journal.journalScreen
 import com.newjourney.feature.meditate.MeditateRoute
+import com.newjourney.feature.meditate.MeditationSessionRoute
 import com.newjourney.feature.meditate.meditateScreen
+import com.newjourney.feature.meditate.meditationSessionScreen
 import com.newjourney.feature.profile.ProfileRoute
 import com.newjourney.feature.profile.profileScreen
 import kotlin.reflect.KClass
@@ -60,10 +62,12 @@ enum class TopLevelDestination(
 fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
+    // The running timer is full screen: no tab bar, nothing else competing for attention.
+    val showTabs = currentDestination?.hasRoute(MeditationSessionRoute::class) != true
 
     Scaffold(
         bottomBar = {
-            NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
+            if (showTabs) NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
                 TopLevelDestination.entries.forEach { destination ->
                     val selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.routeClass) } == true
                     NavigationBarItem(
@@ -94,12 +98,24 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                 .consumeWindowInsets(innerPadding),
         ) {
             homeScreen(
-                onBeginMeditation = { minutes -> navController.navigateToTab(MeditateRoute(minutes), restore = false) },
+                onBeginMeditation = { minutes -> navController.navigate(MeditationSessionRoute(minutes)) },
                 onOpenExplore = { navController.navigateToTab(ExploreRoute) },
                 onMoodSelected = { mood -> navController.navigateToTab(JournalRoute(mood.name), restore = false) },
             )
             exploreScreen()
-            meditateScreen()
+            meditateScreen(
+                onStartSession = { minutes -> navController.navigate(MeditationSessionRoute(minutes)) },
+                onReturnToSession = { navController.navigate(MeditationSessionRoute(autoStart = false)) },
+            )
+            meditationSessionScreen(
+                onClose = {
+                    // Only pop if the timer is still on top, so a second call does nothing.
+                    if (navController.currentDestination?.hasRoute(MeditationSessionRoute::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onOpenJournal = { navController.navigateToTab(JournalRoute(), restore = false) },
+            )
             journalScreen()
             profileScreen()
         }

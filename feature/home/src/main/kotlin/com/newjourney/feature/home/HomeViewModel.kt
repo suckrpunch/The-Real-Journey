@@ -3,6 +3,7 @@ package com.newjourney.feature.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.model.DailyQuote
 import com.newjourney.core.model.Entitlement
@@ -10,6 +11,7 @@ import com.newjourney.core.model.PartOfDay
 import com.newjourney.core.model.Quote
 import com.newjourney.core.model.SampleQuotes
 import com.newjourney.core.model.TimerLimits
+import com.newjourney.core.model.WeekProgress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -28,6 +31,7 @@ data class HomeUiState(
     val durations: List<Int>,
     val selectedMinutes: Int,
     val entitlement: Entitlement,
+    val week: WeekProgress,
 ) {
     fun isLocked(minutes: Int): Boolean = !entitlement.isPremium && TimerLimits.isPremiumDuration(minutes)
 }
@@ -36,7 +40,10 @@ data class HomeUiState(
 class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val settings: UserSettingsRepository,
+    sessions: SessionRepository,
 ) : ViewModel() {
+
+    private val zone: ZoneId = ZoneId.systemDefault()
 
     // Phase 4 replaces this with the verified entitlement from Google Play.
     private val entitlement = Entitlement(isPremium = false)
@@ -44,7 +51,13 @@ class HomeViewModel @Inject constructor(
     private val selectedMinutes: StateFlow<Int> =
         savedStateHandle.getStateFlow(KEY_MINUTES, TimerLimits.DEFAULT_MINUTES)
 
-    val uiState: StateFlow<HomeUiState> = combine(selectedMinutes, settings.favoriteQuoteIds) { minutes, saved ->
+    private val weekSessions = sessions.sessionsSince(WeekProgress.weekStart(LocalDate.now(), zone))
+
+    val uiState: StateFlow<HomeUiState> = combine(
+        selectedMinutes,
+        settings.favoriteQuoteIds,
+        weekSessions,
+    ) { minutes, saved, sessionList ->
         val today = LocalDate.now()
         val quote = DailyQuote.pick(SampleQuotes, today)
         HomeUiState(
@@ -55,6 +68,7 @@ class HomeViewModel @Inject constructor(
             durations = TimerLimits.quickStartMinutes,
             selectedMinutes = minutes,
             entitlement = entitlement,
+            week = WeekProgress.from(sessionList, today, zone),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
 
@@ -78,6 +92,7 @@ class HomeViewModel @Inject constructor(
             durations = TimerLimits.quickStartMinutes,
             selectedMinutes = TimerLimits.DEFAULT_MINUTES,
             entitlement = entitlement,
+            week = WeekProgress.from(emptyList(), today, zone),
         )
     }
 

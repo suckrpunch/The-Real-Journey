@@ -12,4 +12,8 @@
     <string name="duration_minutes">%1$d minutes</string>
     <string name="duration_minutes_premium">%1$d minutes, premium</string>
     <string name="duration_min_short">min</string>
+
+    <string name="premium_duration_title">%1$d minutes is part of Premium</string>
+    <string name="premium_duration_body">Longer sessions open with Premium, which arrives in a later update. Sessions of 5 and 10 minutes are always free.</string>
+    <string name="premium_duration_ok">Okay</string>
 </resources>
