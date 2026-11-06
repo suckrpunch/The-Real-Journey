@@ -45,7 +45,9 @@ import com.newjourney.feature.meditate.MeditationSessionRoute
 import com.newjourney.feature.meditate.meditateScreen
 import com.newjourney.feature.meditate.meditationSessionScreen
 import com.newjourney.feature.profile.ProfileRoute
-import com.newjourney.feature.profile.profileScreen
+import com.newjourney.feature.profile.ProgressRoute
+import com.newjourney.feature.profile.RemindersRoute
+import com.newjourney.feature.profile.profileScreens
 import kotlin.reflect.KClass
 
 /** The five tabs, in order. Every tab has an icon and a text label. */
@@ -71,6 +73,8 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
         currentDestination?.hasRoute(JournalEditorRoute::class) != true
     val inLibrary = currentDestination?.hasRoute(CategoryRoute::class) == true ||
         currentDestination?.hasRoute(TrackRoute::class) == true
+    val inProfile = currentDestination?.hasRoute(ProgressRoute::class) == true ||
+        currentDestination?.hasRoute(RemindersRoute::class) == true
     val onTrackScreen = currentDestination?.hasRoute(TrackRoute::class) == true
     val openTrack: (String) -> Unit = { id -> navController.navigate(TrackRoute(id)) { launchSingleTop = true } }
 
@@ -83,7 +87,8 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                     NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
                         TopLevelDestination.entries.forEach { destination ->
                             val selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.routeClass) } == true ||
-                                (destination == TopLevelDestination.EXPLORE && inLibrary)
+                                (destination == TopLevelDestination.EXPLORE && inLibrary) ||
+                                (destination == TopLevelDestination.PROFILE && inProfile)
                             NavigationBarItem(
                                 selected = selected,
                                 onClick = { navController.navigateToTab(destination.route) },
@@ -155,7 +160,11 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                     }
                 },
             )
-            profileScreen()
+            profileScreens(
+                onOpenProgress = { navController.navigate(ProgressRoute) },
+                onOpenReminders = { navController.navigate(RemindersRoute) },
+                onBack = { navController.popBackStack() },
+            )
         }
     }
 }

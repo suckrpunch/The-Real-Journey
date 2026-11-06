@@ -2,7 +2,7 @@
 
 A calm, accessible meditation and mindfulness app for Android, built with Kotlin and Jetpack Compose.
 
-## Status: Phase 4a, journal (version 0.4.0)
+## Status: Phase 4b, progress and reminders (version 0.5.0)
 
 What works in this build:
 
@@ -15,7 +15,12 @@ What works in this build:
 - **Journal privacy**: entries are kept in their own database, encrypted as a whole with SQLCipher (AES-256). Its key is sealed by Android Keystore, so the file is unreadable off this phone. Nothing is sent anywhere, and the app does not take part in Android backups.
 - Everything from before: timer with bells and Rain/Forest, lock-screen controls, Today card, day and night themes.
 
-Not built yet: routines, progress calendar and milestones, reminders, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
+- **Progress** (Profile › See your progress): total time, sessions, days meditated, longest run, the last seven days as bars with the daily goal, a month calendar of practice days, and 15 milestones. Everything counts up; a missed day never takes anything away, and runs are only mentioned when there is one to celebrate.
+- **Daily goal** (Profile): 5, 10, 15, 20 or 30 minutes; Home's Today card follows it.
+- **Milestones** reached by a session are shown on its finish screen.
+- **Reminders** (Profile › Set reminders), all off until turned on: daily reminder (can skip days you already meditated), evening wind-down, Sunday summary (skipped in a week without sessions), and one kind note after three quiet days. Times move in 15-minute steps. Planned with AlarmManager windows (no exact-alarm permission, battery-friendly) and restored after a restart, update or time-zone change.
+
+Not built yet: routines, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
 
 ### Music: how tracks and loops work
 
@@ -42,19 +47,20 @@ If Android Studio offers to upgrade the Android Gradle Plugin or libraries, it's
 ```
 app/                     Starts the app: MainActivity, theme choice, bottom tabs, navigation
 core/
-  model/                 Plain Kotlin rules and data: quotes, categories, moods, timer limits, theme schedule
+  model/                 Plain Kotlin rules and data: quotes, catalog, moods, timer limits, theme schedule, progress and milestones (unit-tested)
   designsystem/          Colours, fonts, shapes, the app theme and shared buttons and cards
   datastore/             Saves small settings on the phone (theme, timer choices, saved quotes)
   database/              On-device database: sessions, favourites, listening history (schemas/ keeps each version)
   catalog/               catalog.json and the music files; CatalogRepository reads them
   playback/              PlaybackService (library player + lock-screen controls), MusicPlayer, LoopingTrackPlayer
   journal/               Encrypted journal database (SQLCipher) and its Keystore-protected key
+  notifications/         Reminder planning (ReminderScheduler) and the receivers that show them
 feature/
   home/                  Home screen and its ViewModel
   explore/               Library, category and player screens
   meditate/              Timer screens; timer/ holds the timer logic and the background service
   journal/               Journal list, search, calendar and the writing screen
-  profile/               Profile and Appearance settings
+  profile/               Profile, progress, daily goal, reminders and appearance
 gradle/libs.versions.toml  Every library version in one place
 licenses/                Font licences (SIL Open Font License)
 ```

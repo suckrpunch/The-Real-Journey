@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.model.Entitlement
+import com.newjourney.core.model.Milestone
+import com.newjourney.core.model.ProgressStats
 import com.newjourney.core.model.TimerLimits
 import com.newjourney.feature.meditate.timer.MeditationTimer
 import com.newjourney.feature.meditate.timer.TimerState
@@ -17,6 +20,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +31,7 @@ class MeditationSessionViewModel @Inject constructor(
     private val timer: MeditationTimer,
     settings: UserSettingsRepository,
     catalog: CatalogRepository,
+    sessions: SessionRepository,
 ) : ViewModel() {
 
     val state: StateFlow<TimerState> = timer.state
@@ -39,6 +46,13 @@ class MeditationSessionViewModel @Inject constructor(
         }
         id?.let { cat?.track(it)?.title }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** Milestones reached by the session that just finished, shown on the finish screen. */
+    val newMilestones: StateFlow<List<Milestone>> = combine(timer.state, sessions.sessionsSince(Instant.EPOCH)) { timerState, all ->
+        val finished = timerState as? TimerState.Finished ?: return@combine emptyList()
+        val zone = ZoneId.systemDefault()
+        ProgressStats.from(all, LocalDate.now(zone), zone).reachedBy(Instant.ofEpochMilli(finished.session.id))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** True once this screen has had a session, so it can close itself when the session is over. */
     val hadSession: StateFlow<Boolean> = savedStateHandle.getStateFlow(KEY_HAD_SESSION, false)

@@ -1,8 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="profile_title">Profile</string>
-    <string name="profile_appearance">Appearance</string>
+    <string name="back">Back</string>
 
+    <!-- Progress summary -->
+    <string name="profile_progress_title">Your progress</string>
+    <string name="profile_progress_empty">Your minutes, sessions and milestones will gather here as you meditate.</string>
+    <string name="profile_next_milestone">Next milestone: %1$s</string>
+    <string name="profile_see_progress">See your progress</string>
+    <string name="stat_total_time">Total time</string>
+    <string name="stat_sessions">Sessions</string>
+    <string name="stat_days">Days meditated</string>
+    <string name="stat_longest_run">Longest run</string>
+    <string name="unit_hour_short">h</string>
+    <string name="unit_minute_short">min</string>
+    <plurals name="run_current">
+        <item quantity="one">%d day in a row. Lovely.</item>
+        <item quantity="other">%d days in a row. Lovely.</item>
+    </plurals>
+    <plurals name="days_short">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+
+    <!-- Daily goal -->
+    <string name="goal_title">Daily goal</string>
+    <string name="goal_body">A gentle aim for each day, shown on Home. Every minute counts, whatever you choose.</string>
+
+    <!-- Progress screen -->
+    <string name="progress_title">Your progress</string>
+    <string name="progress_week">The last seven days</string>
+    <string name="progress_week_goal">The dashed line is your daily goal of %1$d minutes.</string>
+    <string name="progress_day_spoken">%1$s: %2$d minutes</string>
+    <string name="progress_week_total">%1$d %2$s this week in total.</string>
+    <string name="progress_calendar_day_done">%1$s, meditated %2$d minutes</string>
+    <plurals name="progress_month_days">
+        <item quantity="one">%d day of practice this month.</item>
+        <item quantity="other">%d days of practice this month.</item>
+    </plurals>
+    <string name="month_previous">Earlier</string>
+    <string name="month_next">Later</string>
+    <string name="milestones_title">Milestones</string>
+    <string name="milestones_none">Your first milestone arrives with your first meditation.</string>
+    <string name="milestones_ahead">Still ahead</string>
+
+    <!-- Reminders -->
+    <string name="reminders_title">Reminders</string>
+    <string name="reminders_open">Set reminders</string>
+    <string name="reminders_intro">Gentle and optional. Turn on what helps, and leave off what doesn\'t.</string>
+    <string name="reminders_summary_off">No reminders. Everything is quiet.</string>
+    <string name="reminders_summary_daily">Daily at %1$s</string>
+    <string name="reminders_summary_evening">Evening at %1$s</string>
+    <string name="reminders_summary_weekly">Weekly summary on Sunday</string>
+    <string name="reminders_summary_return">A kind note after a few quiet days</string>
+    <string name="reminders_daily">Daily reminder</string>
+    <string name="reminders_at">Time</string>
+    <string name="reminders_daily_skip">Skip on days I\'ve already meditated</string>
+    <string name="reminders_evening">Evening wind-down</string>
+    <string name="reminders_weekly">Weekly summary</string>
+    <string name="reminders_weekly_hint">On Sunday evening: how many days and minutes you meditated that week. Skipped in a week without sessions.</string>
+    <string name="reminders_return">A kind note after a few quiet days</string>
+    <string name="reminders_return_hint">Sent once if you haven\'t meditated for three days, and not again until your next session.</string>
+    <string name="reminders_blocked_title">Notifications are off</string>
+    <string name="reminders_blocked_body">Your phone is not allowing this app to show notifications, so reminders cannot appear yet.</string>
+    <string name="reminders_allow">Allow notifications</string>
+    <string name="stepper_earlier">%1$s, earlier</string>
+    <string name="stepper_later">%1$s, later</string>
+
+    <!-- Appearance -->
+    <string name="profile_appearance">Appearance</string>
     <string name="theme_system">Follow my phone</string>
     <string name="theme_system_hint">Uses your phone\'s light or dark setting</string>
     <string name="theme_day">Day</string>
@@ -13,9 +79,7 @@
     <string name="theme_scheduled_hint">Night colours at the times you choose</string>
     <string name="theme_night_starts">Night starts</string>
     <string name="theme_day_returns">Day returns</string>
-    <string name="theme_earlier">%1$s one hour earlier</string>
-    <string name="theme_later">%1$s one hour later</string>
 
     <string name="profile_coming_title">Coming soon</string>
-    <string name="profile_coming_body">Your progress, The Journey Within, reminders and Premium will appear here in coming updates.</string>
+    <string name="profile_coming_body">The Journey Within and Premium will appear here in coming updates.</string>
 </resources>

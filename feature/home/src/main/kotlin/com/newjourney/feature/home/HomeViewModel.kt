@@ -77,10 +77,10 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = combine(
         selectedMinutes,
         settings.favoriteQuoteIds,
-        weekSessions,
+        combine(weekSessions, settings.dailyGoalMinutes) { list, goal -> list to goal },
         catalogRepository.catalog,
         library.recent(limit = 1),
-    ) { minutes, saved, sessionList, catalog, recent ->
+    ) { minutes, saved, (sessionList, goal), catalog, recent ->
         val today = LocalDate.now()
         val quote = DailyQuote.pick(SampleQuotes, today)
         HomeUiState(
@@ -91,7 +91,7 @@ class HomeViewModel @Inject constructor(
             durations = TimerLimits.quickStartMinutes,
             selectedMinutes = minutes,
             entitlement = entitlement,
-            week = WeekProgress.from(sessionList, today, zone),
+            week = WeekProgress.from(sessionList, today, zone, goalMinutes = goal),
             categories = catalog?.categories.orEmpty(),
             continueListening = catalog?.let { continueListeningFrom(it, recent.firstOrNull()) },
         )

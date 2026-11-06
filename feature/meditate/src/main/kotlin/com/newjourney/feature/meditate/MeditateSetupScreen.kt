@@ -13,13 +13,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +37,7 @@ import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
+import com.newjourney.core.designsystem.component.SwitchRow
 import com.newjourney.core.model.BackgroundSound
 
 @Composable
@@ -149,21 +148,6 @@ internal fun MeditateSetupScreen(
 
     premiumSheetMinutes?.let { minutes ->
         PremiumDurationSheet(minutes = minutes, onDismiss = { premiumSheetMinutes = null })
-    }
-}
-
-/** A full-width row the user can tap anywhere to switch on or off. */
-@Composable
-private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = MinTouchTarget)
-            .toggleable(value = checked, onValueChange = onChange, role = Role.Switch),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = null)
     }
 }
 

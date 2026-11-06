@@ -16,8 +16,8 @@ android {
         applicationId = "com.newjourney.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.4.0"
+        versionCode = 5
+        versionName = "0.5.0"
     }
 
     buildTypes {
@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":core:catalog"))
     implementation(project(":core:playback"))
     implementation(project(":core:journal"))
+    implementation(project(":core:notifications"))
     implementation(project(":feature:home"))
     implementation(project(":feature:explore"))
     implementation(project(":feature:meditate"))

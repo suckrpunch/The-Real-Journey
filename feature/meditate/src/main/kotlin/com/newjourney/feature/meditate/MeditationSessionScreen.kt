@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +49,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
+import com.newjourney.core.designsystem.component.SoftCard
+import com.newjourney.core.designsystem.component.milestoneTitle
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
+import com.newjourney.core.model.Milestone
 import com.newjourney.feature.meditate.timer.TimerState
 import com.newjourney.feature.meditate.timer.remainingMs
 import kotlinx.coroutines.delay
@@ -60,6 +66,7 @@ internal fun MeditationSessionRouteContent(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val hadSession by viewModel.hadSession.collectAsStateWithLifecycle()
     val trackTitle by viewModel.trackTitle.collectAsStateWithLifecycle()
+    val newMilestones by viewModel.newMilestones.collectAsStateWithLifecycle()
 
     RequestNotificationPermissionOnce()
 
@@ -76,6 +83,7 @@ internal fun MeditationSessionRouteContent(
     MeditationSessionScreen(
         state = state,
         trackTitle = trackTitle,
+        newMilestones = newMilestones,
         onPause = viewModel::pause,
         onResume = viewModel::resume,
         onEnd = viewModel::endEarly,
@@ -92,6 +100,7 @@ internal fun MeditationSessionRouteContent(
 internal fun MeditationSessionScreen(
     state: TimerState,
     trackTitle: String?,
+    newMilestones: List<Milestone>,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
@@ -109,7 +118,7 @@ internal fun MeditationSessionScreen(
     ) {
         when (state) {
             is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onPause, onResume, onEnd)
-            is TimerState.Finished -> Finished(state, onDone, onOpenJournal)
+            is TimerState.Finished -> Finished(state, newMilestones, onDone, onOpenJournal)
             TimerState.Idle -> Spacer(Modifier.height(1.dp))
         }
     }
@@ -119,6 +128,7 @@ internal fun MeditationSessionScreen(
 private fun Countdown(
     state: TimerState,
     trackTitle: String?,
+    newMilestones: List<Milestone>,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
@@ -206,7 +216,12 @@ private fun Countdown(
 }
 
 @Composable
-private fun Finished(state: TimerState.Finished, onDone: () -> Unit, onOpenJournal: () -> Unit) {
+private fun Finished(
+    state: TimerState.Finished,
+    newMilestones: List<Milestone>,
+    onDone: () -> Unit,
+    onOpenJournal: () -> Unit,
+) {
     val minutes = state.completedSeconds / 60
     Spacer(Modifier.height(24.dp))
     BreathingCircle(moving = false, size = 160.dp)
@@ -221,6 +236,17 @@ private fun Finished(state: TimerState.Finished, onDone: () -> Unit, onOpenJourn
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
     )
+    if (newMilestones.isNotEmpty()) {
+        SoftCard(raised = true) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Icon(Icons.Outlined.EmojiEvents, contentDescription = null, tint = NewJourneyTheme.extraColors.premium)
+                Text(stringResource(R.string.finished_milestone), style = MaterialTheme.typography.titleMedium)
+            }
+            newMilestones.forEach { milestone ->
+                Text(stringResource(milestoneTitle(milestone)), style = MaterialTheme.typography.headlineSmall)
+            }
+        }
+    }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         PrimaryButton(text = stringResource(R.string.finished_done), onClick = onDone)
         SecondaryButton(

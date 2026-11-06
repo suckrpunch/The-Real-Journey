@@ -19,4 +19,20 @@
     <string name="premium_track_title">This track is part of Premium</string>
     <string name="premium_track_body">Premium opens the full music library, which arrives in a later update. Every free track stays free.</string>
     <string name="premium_label">Premium</string>
+
+    <string name="milestone_first_session">Your first meditation</string>
+    <string name="milestone_days_3">3 days of practice</string>
+    <string name="milestone_first_hour">Your first hour of stillness</string>
+    <string name="milestone_days_7">7 days of practice</string>
+    <string name="milestone_sessions_10">10 meditations</string>
+    <string name="milestone_hours_5">5 hours of stillness</string>
+    <string name="milestone_sessions_25">25 meditations</string>
+    <string name="milestone_days_30">30 days of practice</string>
+    <string name="milestone_hours_10">10 hours of stillness</string>
+    <string name="milestone_sessions_50">50 meditations</string>
+    <string name="milestone_hours_25">25 hours of stillness</string>
+    <string name="milestone_days_100">100 days of practice</string>
+    <string name="milestone_sessions_100">100 meditations</string>
+    <string name="milestone_hours_50">50 hours of stillness</string>
+    <string name="milestone_days_365">365 days of practice</string>
 </resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminder_channel_name">Gentle reminders</string>
+    <string name="reminder_channel_description">Your daily and evening reminders, the weekly summary and an occasional kind note.</string>
+
+    <string name="reminder_daily_title">A quiet moment for you</string>
+    <string name="reminder_daily_body">A few minutes of stillness are here whenever you are ready.</string>
+
+    <string name="reminder_evening_title">Time to unwind</string>
+    <string name="reminder_evening_body">Let the day settle with a calm track or a short meditation before sleep.</string>
+
+    <string name="reminder_weekly_title">Your week</string>
+    <plurals name="reminder_weekly_days">
+        <item quantity="one">You meditated on %d day this week,</item>
+        <item quantity="other">You meditated on %d days this week,</item>
+    </plurals>
+    <plurals name="reminder_weekly_minutes">
+        <item quantity="one">%d minute in total. Well done.</item>
+        <item quantity="other">%d minutes in total. Well done.</item>
+    </plurals>
+
+    <string name="reminder_return_title">We\'re here when you\'re ready</string>
+    <string name="reminder_return_body">Even one quiet minute is a good place to begin again.</string>
+</resources>
