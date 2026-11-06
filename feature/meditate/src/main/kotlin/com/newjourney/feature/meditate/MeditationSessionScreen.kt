@@ -128,7 +128,6 @@ internal fun MeditationSessionScreen(
 private fun Countdown(
     state: TimerState,
     trackTitle: String?,
-    newMilestones: List<Milestone>,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
