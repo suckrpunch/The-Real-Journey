@@ -1,55 +1,155 @@
 package com.newjourney.feature.explore
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
+import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.database.LibraryRepository
 import com.newjourney.core.designsystem.component.SectionTitle
-import com.newjourney.core.designsystem.component.SoftCard
+import com.newjourney.core.designsystem.component.categoryIcon
 import com.newjourney.core.model.Category
-import com.newjourney.core.model.DefaultCategories
-import kotlinx.serialization.Serializable
+import com.newjourney.core.model.Track
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-@Serializable
-data object ExploreRoute
+internal data class CategorySummary(val category: Category, val trackCount: Int)
 
-fun NavGraphBuilder.exploreScreen() {
-    composable<ExploreRoute> { ExploreScreen(DefaultCategories) }
+/** A track plus the colour of its sub-category, for artwork. */
+internal data class TrackItem(val track: Track, val colorHex: String?)
+
+internal data class ExploreUiState(
+    val loading: Boolean = true,
+    val favorites: List<TrackItem> = emptyList(),
+    val recent: List<TrackItem> = emptyList(),
+    val categories: List<CategorySummary> = emptyList(),
+)
+
+@HiltViewModel
+internal class ExploreViewModel @Inject constructor(
+    catalogRepository: CatalogRepository,
+    library: LibraryRepository,
+) : ViewModel() {
+
+    val uiState: StateFlow<ExploreUiState> = combine(
+        catalogRepository.catalog.filterNotNull(),
+        library.favoriteIds,
+        library.recent(limit = 5),
+    ) { catalog, favoriteIds, recent ->
+        val colors = catalog.categories.flatMap { it.subcategories }.associate { it.id to it.color }
+        fun item(id: String) = catalog.track(id)?.let { TrackItem(it, colors[it.subcategoryId]) }
+        ExploreUiState(
+            loading = false,
+            favorites = favoriteIds.mapNotNull(::item),
+            recent = recent.mapNotNull { item(it.trackId) },
+            categories = catalog.categories.map { CategorySummary(it, catalog.tracksInCategory(it.id).size) },
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ExploreUiState())
 }
 
-/**
- * Phase 1 starter: lists the categories and their sub-categories.
- * Tracks, artwork and the player arrive with the music catalog in Phase 3.
- */
 @Composable
-internal fun ExploreScreen(categories: List<Category>) {
+internal fun ExploreRouteContent(
+    onOpenCategory: (String) -> Unit,
+    onOpenTrack: (String) -> Unit,
+    viewModel: ExploreViewModel = hiltViewModel(),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    ExploreScreen(state, onOpenCategory, onOpenTrack)
+}
+
+@Composable
+internal fun ExploreScreen(
+    state: ExploreUiState,
+    onOpenCategory: (String) -> Unit,
+    onOpenTrack: (String) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item { SectionTitle(stringResource(R.string.explore_title)) }
-        item {
-            Text(
-                stringResource(R.string.explore_intro),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+
+        if (state.favorites.isNotEmpty()) {
+            item { SubTitle(stringResource(R.string.explore_favorites)) }
+            items(state.favorites, key = { "fav-" + it.track.id }) { item ->
+                TrackRow(item.track, item.colorHex, locked = false, onClick = { onOpenTrack(item.track.id) })
+            }
         }
-        items(categories, key = { it.id }) { category ->
-            SoftCard {
-                Text(category.name, style = MaterialTheme.typography.titleLarge)
+
+        if (state.recent.isNotEmpty()) {
+            item { SubTitle(stringResource(R.string.explore_recent)) }
+            items(state.recent, key = { "recent-" + it.track.id }) { item ->
+                TrackRow(item.track, item.colorHex, locked = false, onClick = { onOpenTrack(item.track.id) })
+            }
+        }
+
+        item { SubTitle(stringResource(R.string.explore_categories)) }
+        items(state.categories, key = { it.category.id }) { summary ->
+            CategoryCard(summary, onClick = { onOpenCategory(summary.category.id) })
+        }
+    }
+}
+
+@Composable
+private fun SubTitle(text: String) {
+    Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 12.dp))
+}
+
+@Composable
+private fun CategoryCard(summary: CategorySummary, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+    ) {
+        Row(
+            Modifier
+                .heightIn(min = 88.dp)
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            Icon(
+                categoryIcon(summary.category.icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(40.dp),
+            )
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(summary.category.name, style = MaterialTheme.typography.titleLarge)
                 Text(
-                    category.subcategories.joinToString(" · ") { it.name },
+                    if (summary.trackCount > 0) {
+                        pluralStringResource(R.plurals.explore_track_count, summary.trackCount, summary.trackCount)
+                    } else {
+                        stringResource(R.string.explore_coming_soon)
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

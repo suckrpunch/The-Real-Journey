@@ -29,6 +29,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:datastore"))
     implementation(project(":core:database"))
+    implementation(project(":core:catalog"))
+    implementation(project(":core:playback"))
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

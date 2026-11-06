@@ -22,14 +22,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.Bedtime
-import androidx.compose.material.icons.outlined.CenterFocusStrong
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Healing
-import androidx.compose.material.icons.outlined.SelfImprovement
-import androidx.compose.material.icons.outlined.Spa
-import androidx.compose.material.icons.outlined.Waves
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,9 +37,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -61,9 +56,10 @@ import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.moodColor
 import com.newjourney.core.designsystem.component.moodLabel
+import com.newjourney.core.designsystem.component.TrackArtwork
+import com.newjourney.core.designsystem.component.categoryIcon
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.Category
-import com.newjourney.core.model.DefaultCategories
 import com.newjourney.core.model.HomeCheckInMoods
 import com.newjourney.core.model.Mood
 import com.newjourney.core.model.PartOfDay
@@ -76,6 +72,8 @@ import java.util.Locale
 internal fun HomeScreenRoute(
     onBeginMeditation: (Int) -> Unit,
     onOpenExplore: () -> Unit,
+    onOpenCategory: (String) -> Unit,
+    onOpenTrack: (String) -> Unit,
     onMoodSelected: (Mood) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -86,6 +84,11 @@ internal fun HomeScreenRoute(
         onToggleQuoteSaved = viewModel::toggleQuoteSaved,
         onBeginMeditation = { onBeginMeditation(state.selectedMinutes) },
         onOpenExplore = onOpenExplore,
+        onOpenCategory = onOpenCategory,
+        onContinueListening = {
+            viewModel.continueListening()
+            state.continueListening?.let { onOpenTrack(it.track.id) }
+        },
         onMoodSelected = onMoodSelected,
     )
 }
@@ -97,6 +100,8 @@ internal fun HomeScreen(
     onToggleQuoteSaved: () -> Unit,
     onBeginMeditation: () -> Unit,
     onOpenExplore: () -> Unit,
+    onOpenCategory: (String) -> Unit,
+    onContinueListening: () -> Unit,
     onMoodSelected: (Mood) -> Unit,
 ) {
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -126,8 +131,18 @@ internal fun HomeScreen(
                 onBegin = onBeginMeditation,
             )
         }
-        // "Continue listening" appears here once audio playback exists (Phase 3).
-        item { ExploreRow(categories = DefaultCategories, onOpenExplore = onOpenExplore) }
+        state.continueListening?.let { listening ->
+            item { ContinueListeningCard(listening, onContinue = onContinueListening) }
+        }
+        if (state.categories.isNotEmpty()) {
+            item {
+                ExploreRow(
+                    categories = state.categories,
+                    onOpenExplore = onOpenExplore,
+                    onOpenCategory = onOpenCategory,
+                )
+            }
+        }
         item { TodayCard(state.week) }
         item { MoodCheckIn(onMoodSelected = onMoodSelected) }
     }
@@ -213,7 +228,7 @@ private fun QuickStart(state: HomeUiState, onChipTapped: (Int) -> Unit, onBegin:
 }
 
 @Composable
-private fun ExploreRow(categories: List<Category>, onOpenExplore: () -> Unit) {
+private fun ExploreRow(categories: List<Category>, onOpenExplore: () -> Unit, onOpenCategory: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             SectionTitle(stringResource(R.string.home_explore_title), Modifier.weight(1f))
@@ -224,14 +239,14 @@ private fun ExploreRow(categories: List<Category>, onOpenExplore: () -> Unit) {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             items(categories, key = { it.id }) { category ->
                 Surface(
-                    onClick = onOpenExplore,
+                    onClick = { onOpenCategory(category.id) },
                     shape = MaterialTheme.shapes.large,
                     color = MaterialTheme.colorScheme.surfaceContainer,
                     modifier = Modifier.width(150.dp),
                 ) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(28.dp)) {
                         Icon(
-                            categoryIcon(category.id),
+                            categoryIcon(category.icon),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(40.dp),
@@ -244,13 +259,46 @@ private fun ExploreRow(categories: List<Category>, onOpenExplore: () -> Unit) {
     }
 }
 
-internal fun categoryIcon(id: String): ImageVector = when (id) {
-    "chakras" -> Icons.Outlined.SelfImprovement
-    "sleep" -> Icons.Outlined.Bedtime
-    "relaxation" -> Icons.Outlined.Spa
-    "focus" -> Icons.Outlined.CenterFocusStrong
-    "deep" -> Icons.Outlined.Waves
-    else -> Icons.Outlined.Healing
+@Composable
+private fun ContinueListeningCard(item: ContinueListening, onContinue: () -> Unit) {
+    val left = ((item.track.durationMs - item.positionMs).coerceAtLeast(0) + 59_999) / 60_000
+    val subtitle = listOfNotNull(
+        item.place.ifEmpty { null },
+        pluralStringResource(R.plurals.home_continue_minutes_left, left.toInt(), left.toInt()),
+    ).joinToString(" · ")
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        SectionTitle(stringResource(R.string.home_continue_title))
+        Surface(
+            onClick = onContinue,
+            shape = MaterialTheme.shapes.large,
+            color = MaterialTheme.colorScheme.surfaceContainerLowest,
+            modifier = Modifier.semantics(mergeDescendants = true) {
+                contentDescription = item.track.title + ", " + subtitle
+            },
+        ) {
+            Row(
+                Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                TrackArtwork(item.colorHex, Modifier.size(72.dp).clip(MaterialTheme.shapes.medium))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(item.track.title, style = MaterialTheme.typography.titleMedium)
+                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    LinearProgressIndicator(
+                        progress = { (item.positionMs.toFloat() / item.track.durationMs).coerceIn(0f, 1f) },
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                        trackColor = NewJourneyTheme.extraColors.progressTrack,
+                    )
+                }
+                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primary, modifier = Modifier.size(56.dp)) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

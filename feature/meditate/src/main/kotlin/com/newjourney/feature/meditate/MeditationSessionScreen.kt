@@ -59,6 +59,7 @@ internal fun MeditationSessionRouteContent(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val hadSession by viewModel.hadSession.collectAsStateWithLifecycle()
+    val trackTitle by viewModel.trackTitle.collectAsStateWithLifecycle()
 
     RequestNotificationPermissionOnce()
 
@@ -74,6 +75,7 @@ internal fun MeditationSessionRouteContent(
 
     MeditationSessionScreen(
         state = state,
+        trackTitle = trackTitle,
         onPause = viewModel::pause,
         onResume = viewModel::resume,
         onEnd = viewModel::endEarly,
@@ -88,6 +90,7 @@ internal fun MeditationSessionRouteContent(
 @Composable
 internal fun MeditationSessionScreen(
     state: TimerState,
+    trackTitle: String?,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
@@ -104,7 +107,7 @@ internal fun MeditationSessionScreen(
         verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
         when (state) {
-            is TimerState.Running, is TimerState.Paused -> Countdown(state, onPause, onResume, onEnd)
+            is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onPause, onResume, onEnd)
             is TimerState.Finished -> Finished(state, onDone, onOpenJournal)
             TimerState.Idle -> Spacer(Modifier.height(1.dp))
         }
@@ -112,7 +115,13 @@ internal fun MeditationSessionScreen(
 }
 
 @Composable
-private fun Countdown(state: TimerState, onPause: () -> Unit, onResume: () -> Unit, onEnd: () -> Unit) {
+private fun Countdown(
+    state: TimerState,
+    trackTitle: String?,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+    onEnd: () -> Unit,
+) {
     val running = state is TimerState.Running
     var confirmEnd by rememberSaveable { mutableStateOf(false) }
 
@@ -134,6 +143,14 @@ private fun Countdown(state: TimerState, onPause: () -> Unit, onResume: () -> Un
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
+    if (trackTitle != null) {
+        Text(
+            stringResource(R.string.session_with_track, trackTitle),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
     BreathingCircle(moving = running)
     Text(
         timeText,

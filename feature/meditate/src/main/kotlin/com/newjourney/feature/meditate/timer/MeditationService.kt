@@ -20,8 +20,10 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.TimerSettings
+import com.newjourney.core.playback.LoopingTrackPlayer
 import com.newjourney.feature.meditate.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +44,7 @@ import javax.inject.Inject
 class MeditationService : Service() {
 
     @Inject lateinit var timer: MeditationTimer
+    @Inject lateinit var catalog: CatalogRepository
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var stateJob: Job? = null
@@ -49,6 +52,8 @@ class MeditationService : Service() {
     private var fadeJob: Job? = null
 
     private var backgroundPlayer: ExoPlayer? = null
+    private var musicPlayer: LoopingTrackPlayer? = null
+    private var musicJob: Job? = null
     private var bellPlayer: ExoPlayer? = null
     private var wakeLock: PowerManager.WakeLock? = null
 
@@ -91,7 +96,7 @@ class MeditationService : Service() {
                 finishing = false
                 if (currentSessionId != state.session.id) {
                     currentSessionId = state.session.id
-                    beginAudio(state.session.settings)
+                    beginAudio(state.session.settings, state.session.trackId)
                 } else {
                     resumeAudio()
                 }
@@ -136,8 +141,12 @@ class MeditationService : Service() {
 
     // ---- Sound ----
 
-    private fun beginAudio(settings: TimerSettings) {
+    private fun beginAudio(settings: TimerSettings, trackId: String?) {
         if (settings.startBell) playBell()
+        if (trackId != null) {
+            beginMusic(trackId)
+            return
+        }
         val sound = soundResource(settings.sound) ?: return
         val player = backgroundPlayer ?: createBackgroundPlayer().also { backgroundPlayer = it }
         player.setMediaItem(MediaItem.fromUri(rawUri(sound)))
@@ -148,18 +157,38 @@ class MeditationService : Service() {
         fadeTo(player, 1f, FADE_IN_MS)
     }
 
+    /** The track loops seamlessly for the whole session (see LoopingTrackPlayer). */
+    private fun beginMusic(trackId: String) {
+        musicJob?.cancel()
+        musicJob = scope.launch {
+            val track = catalog.get().track(trackId) ?: return@launch
+            val player = musicPlayer ?: LoopingTrackPlayer(this@MeditationService, scope).also { musicPlayer = it }
+            player.start(track)
+            // The session may have been paused while the catalog loaded.
+            if (timer.state.value is TimerState.Paused) player.pause()
+        }
+    }
+
     private fun pauseAudio() {
         fadeJob?.cancel()
         backgroundPlayer?.pause()
+        musicPlayer?.pause()
     }
 
     private fun resumeAudio() {
+        musicPlayer?.resume()
         val player = backgroundPlayer ?: return
         player.play()
         fadeTo(player, 1f, RESUME_FADE_MS)
     }
 
     private suspend fun finishAudio(ringEndBell: Boolean) {
+        musicJob?.cancel()
+        musicPlayer?.let { player ->
+            player.fadeOut(MUSIC_FADE_OUT_MS).join()
+            player.release()
+            musicPlayer = null
+        }
         backgroundPlayer?.let { player ->
             fadeTo(player, 0f, FADE_OUT_MS).join()
             player.stop()
@@ -305,6 +334,9 @@ class MeditationService : Service() {
     private fun shutDown() {
         endJob?.cancel()
         fadeJob?.cancel()
+        musicJob?.cancel()
+        musicPlayer?.release()
+        musicPlayer = null
         backgroundPlayer?.release()
         backgroundPlayer = null
         bellPlayer?.release()
@@ -319,6 +351,7 @@ class MeditationService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
+        musicPlayer?.release()
         backgroundPlayer?.release()
         bellPlayer?.release()
         releaseWakeLock()
@@ -336,6 +369,8 @@ class MeditationService : Service() {
         private const val FADE_IN_MS = 4_000L
         private const val RESUME_FADE_MS = 1_500L
         private const val FADE_OUT_MS = 3_000L
+        /** Music gets a longer, gentler fade at the end of a session. */
+        private const val MUSIC_FADE_OUT_MS = 6_000L
         private const val FADE_STEP_MS = 50L
         /** The bell recording is about 7.3 seconds; this lets it ring out fully. */
         private const val BELL_RING_OUT_MS = 8_000L

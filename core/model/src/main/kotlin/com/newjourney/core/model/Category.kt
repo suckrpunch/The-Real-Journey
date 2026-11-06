@@ -1,73 +1,69 @@
 package com.newjourney.core.model
 
+/**
+ * The music library, built from catalog.json (core/catalog/src/main/assets/catalog/).
+ * Nothing about categories or tracks is hard-coded in the screens.
+ */
+data class Catalog(
+    val categories: List<Category>,
+    val tracks: List<Track>,
+) {
+    private val byId: Map<String, Track> = tracks.associateBy { it.id }
+
+    fun track(id: String): Track? = byId[id]
+
+    fun tracksIn(subcategoryId: String): List<Track> = tracks.filter { it.subcategoryId == subcategoryId }
+
+    fun tracksInCategory(categoryId: String): List<Track> = tracks.filter { it.categoryId == categoryId }
+
+    fun category(id: String): Category? = categories.firstOrNull { it.id == id }
+
+    companion object {
+        val Empty = Catalog(emptyList(), emptyList())
+    }
+}
+
 data class Category(
     val id: String,
     val name: String,
+    val description: String?,
+    /** Name of the icon shown on the category card, for example "chakras" or "sleep". */
+    val icon: String,
     val subcategories: List<Subcategory>,
 )
 
-data class Subcategory(val id: String, val name: String)
+data class Subcategory(
+    val id: String,
+    val name: String,
+    /** Accent colour for artwork, as "#RRGGBB". */
+    val color: String?,
+)
+
+enum class TrackTier { FREE, PREMIUM }
+
+data class Track(
+    val id: String,
+    val title: String,
+    /** A short line under the title, for example "396 Hz". */
+    val subtitle: String?,
+    val description: String?,
+    val categoryId: String,
+    val subcategoryId: String,
+    val durationMs: Long,
+    /** Where the audio lives: "asset:///…" for files inside the app, later "https://…" for online files. */
+    val audioUri: String,
+    val tier: TrackTier,
+    /** How the track repeats seamlessly in longer sessions; null if it should not be looped. */
+    val loop: LoopPoints?,
+)
 
 /**
- * The six launch categories. This list is a stand-in: in Phase 3 categories come from the
- * online catalog, so you can add, rename or reorder them without an app update.
+ * A seamless repeat: shortly before [outMs] a second copy starts at [inMs], and the two
+ * crossfade over [crossfadeMs]. Both points sit inside the music, past the fade-in and
+ * before the fade-out, chosen so the sound on either side matches.
  */
-val DefaultCategories: List<Category> = listOf(
-    Category(
-        "chakras", "Seven Chakras",
-        listOf(
-            Subcategory("root", "Root Chakra"),
-            Subcategory("sacral", "Sacral Chakra"),
-            Subcategory("solar-plexus", "Solar Plexus Chakra"),
-            Subcategory("heart", "Heart Chakra"),
-            Subcategory("throat", "Throat Chakra"),
-            Subcategory("third-eye", "Third Eye Chakra"),
-            Subcategory("crown", "Crown Chakra"),
-        ),
-    ),
-    Category(
-        "sleep", "Sleep",
-        listOf(
-            Subcategory("deep-sleep", "Deep sleep"),
-            Subcategory("before-bed", "Relaxing before bedtime"),
-            Subcategory("sleep-sounds", "Sleep sounds"),
-            Subcategory("night-meditation", "Night meditation"),
-        ),
-    ),
-    Category(
-        "relaxation", "Relaxation",
-        listOf(
-            Subcategory("stress", "Stress relief"),
-            Subcategory("anxiety", "Anxiety relaxation"),
-            Subcategory("emotional-release", "Emotional release"),
-            Subcategory("inner-peace", "Inner peace"),
-        ),
-    ),
-    Category(
-        "focus", "Focus & Productivity",
-        listOf(
-            Subcategory("deep-focus", "Deep focus"),
-            Subcategory("concentration", "Concentration"),
-            Subcategory("clarity", "Mental clarity"),
-            Subcategory("creative", "Creative thinking"),
-        ),
-    ),
-    Category(
-        "deep", "Deep Meditation",
-        listOf(
-            Subcategory("consciousness", "Deep consciousness"),
-            Subcategory("exploration", "Inner exploration"),
-            Subcategory("mindfulness", "Mindfulness"),
-            Subcategory("spiritual", "Spiritual meditation"),
-        ),
-    ),
-    Category(
-        "healing", "Healing & Energy",
-        listOf(
-            Subcategory("balance", "Emotional balance"),
-            Subcategory("self-love", "Self-love"),
-            Subcategory("positive-energy", "Positive energy"),
-            Subcategory("inner-healing", "Inner healing"),
-        ),
-    ),
+data class LoopPoints(
+    val inMs: Long,
+    val outMs: Long,
+    val crossfadeMs: Long,
 )

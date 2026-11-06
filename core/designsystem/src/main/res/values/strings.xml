@@ -16,4 +16,7 @@
     <string name="premium_duration_title">%1$d minutes is part of Premium</string>
     <string name="premium_duration_body">Longer sessions open with Premium, which arrives in a later update. Sessions of 5 and 10 minutes are always free.</string>
     <string name="premium_duration_ok">Okay</string>
+    <string name="premium_track_title">This track is part of Premium</string>
+    <string name="premium_track_body">Premium opens the full music library, which arrives in a later update. Every free track stays free.</string>
+    <string name="premium_label">Premium</string>
 </resources>

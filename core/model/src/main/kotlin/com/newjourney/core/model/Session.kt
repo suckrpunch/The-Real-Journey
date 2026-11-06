@@ -15,13 +15,30 @@ data class TimerSettings(
     val sound: BackgroundSound = BackgroundSound.SILENCE,
 )
 
+enum class SessionKind(val storedName: String) {
+    /** The timer with silence or a background sound. */
+    TIMER("timer"),
+
+    /** The timer with a music track looping underneath. */
+    MUSIC("music"),
+
+    /** A track listened to from start to end in the player. */
+    LISTEN("listen");
+
+    companion object {
+        fun fromStored(name: String): SessionKind = entries.firstOrNull { it.storedName == name } ?: TIMER
+    }
+}
+
 /** One meditation, saved when it ends. */
 data class MeditationSession(
     val startedAt: Instant,
     val plannedSeconds: Int,
     val completedSeconds: Int,
-    /** True when the timer ran to the end; false when the user ended early. */
+    /** True when the session ran to the end; false when the user ended early. */
     val completed: Boolean,
+    val kind: SessionKind = SessionKind.TIMER,
+    val trackId: String? = null,
 )
 
 object DailyGoal {

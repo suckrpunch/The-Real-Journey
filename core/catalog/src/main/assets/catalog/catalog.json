@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "chakras",
+      "name": "Seven Chakras",
+      "icon": "chakras",
+      "subcategories": [
+        { "id": "root", "name": "Root Chakra", "color": "#B4675C" },
+        { "id": "sacral", "name": "Sacral Chakra", "color": "#C88A55" },
+        { "id": "solar-plexus", "name": "Solar Plexus Chakra", "color": "#C4A24A" },
+        { "id": "heart", "name": "Heart Chakra", "color": "#6E9A6B" },
+        { "id": "throat", "name": "Throat Chakra", "color": "#5F8DB0" },
+        { "id": "third-eye", "name": "Third Eye Chakra", "color": "#6C6AA8" },
+        { "id": "crown", "name": "Crown Chakra", "color": "#9478B2" }
+      ]
+    },
+    {
+      "id": "sleep",
+      "name": "Sleep",
+      "icon": "sleep",
+      "subcategories": [
+        { "id": "deep-sleep", "name": "Deep sleep" },
+        { "id": "before-bed", "name": "Relaxing before bedtime" },
+        { "id": "sleep-sounds", "name": "Sleep sounds" },
+        { "id": "night-meditation", "name": "Night meditation" }
+      ]
+    },
+    {
+      "id": "relaxation",
+      "name": "Relaxation",
+      "icon": "relaxation",
+      "subcategories": [
+        { "id": "stress", "name": "Stress relief" },
+        { "id": "anxiety", "name": "Anxiety relaxation" },
+        { "id": "emotional-release", "name": "Emotional release" },
+        { "id": "inner-peace", "name": "Inner peace" }
+      ]
+    },
+    {
+      "id": "focus",
+      "name": "Focus & Productivity",
+      "icon": "focus",
+      "subcategories": [
+        { "id": "deep-focus", "name": "Deep focus" },
+        { "id": "concentration", "name": "Concentration" },
+        { "id": "clarity", "name": "Mental clarity" },
+        { "id": "creative", "name": "Creative thinking" }
+      ]
+    },
+    {
+      "id": "deep",
+      "name": "Deep Meditation",
+      "icon": "deep",
+      "subcategories": [
+        { "id": "consciousness", "name": "Deep consciousness" },
+        { "id": "exploration", "name": "Inner exploration" },
+        { "id": "mindfulness", "name": "Mindfulness" },
+        { "id": "spiritual", "name": "Spiritual meditation" }
+      ]
+    },
+    {
+      "id": "healing",
+      "name": "Healing & Energy",
+      "icon": "healing",
+      "subcategories": [
+        { "id": "balance", "name": "Emotional balance" },
+        { "id": "self-love", "name": "Self-love" },
+        { "id": "positive-energy", "name": "Positive energy" },
+        { "id": "inner-healing", "name": "Inner healing" }
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "id": "chakra-root-grounding",
+      "title": "Root Chakra Grounding",
+      "subtitle": "396 Hz",
+      "category": "chakras",
+      "subcategory": "root",
+      "durationMs": 332146,
+      "audio": "audio/chakra_root.m4a",
+      "tier": "free",
+      "loop": { "inMs": 7000, "outMs": 310510, "crossfadeMs": 8000 }
+    },
+    {
+      "id": "chakra-sacral-stillness",
+      "title": "Sacral Chakra Stillness",
+      "subtitle": "417 Hz",
+      "category": "chakras",
+      "subcategory": "sacral",
+      "durationMs": 316660,
+      "audio": "audio/chakra_sacral.m4a",
+      "tier": "free",
+      "loop": { "inMs": 6500, "outMs": 306017, "crossfadeMs": 6000 }
+    },
+    {
+      "id": "chakra-solar-plexus-activation",
+      "title": "Solar Plexus Activation",
+      "subtitle": "528 Hz",
+      "category": "chakras",
+      "subcategory": "solar-plexus",
+      "durationMs": 248785,
+      "audio": "audio/chakra_solar_plexus.m4a",
+      "tier": "free",
+      "loop": { "inMs": 4000, "outMs": 221029, "crossfadeMs": 10000 }
+    },
+    {
+      "id": "chakra-heart-cleansing",
+      "title": "Heart Chakra Cleansing",
+      "subtitle": "639 Hz",
+      "category": "chakras",
+      "subcategory": "heart",
+      "durationMs": 242319,
+      "audio": "audio/chakra_heart.m4a",
+      "tier": "free",
+      "loop": { "inMs": 15000, "outMs": 219025, "crossfadeMs": 6000 }
+    },
+    {
+      "id": "chakra-throat-circle",
+      "title": "Throat Chakra Circle",
+      "subtitle": "741 Hz",
+      "category": "chakras",
+      "subcategory": "throat",
+      "durationMs": 239090,
+      "audio": "audio/chakra_throat.m4a",
+      "tier": "free",
+      "loop": { "inMs": 8000, "outMs": 231505, "crossfadeMs": 8000 }
+    },
+    {
+      "id": "chakra-third-eye-focus",
+      "title": "Third Eye Focus",
+      "subtitle": "852 Hz",
+      "category": "chakras",
+      "subcategory": "third-eye",
+      "durationMs": 297146,
+      "audio": "audio/chakra_third_eye.m4a",
+      "tier": "free",
+      "loop": { "inMs": 13500, "outMs": 283028, "crossfadeMs": 10000 }
+    },
+    {
+      "id": "chakra-crown-bliss",
+      "title": "Crown Chakra Bliss",
+      "subtitle": "963 Hz",
+      "category": "chakras",
+      "subcategory": "crown",
+      "durationMs": 244095,
+      "audio": "audio/chakra_crown.m4a",
+      "tier": "free",
+      "loop": { "inMs": 8000, "outMs": 233016, "crossfadeMs": 6000 }
+    }
+  ]
+}

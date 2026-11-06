@@ -13,6 +13,11 @@
     <string name="home_begin">Begin %1$d-minute meditation</string>
 
 
+    <string name="home_continue_title">Continue listening</string>
+    <plurals name="home_continue_minutes_left">
+        <item quantity="one">%d minute left</item>
+        <item quantity="other">%d minutes left</item>
+    </plurals>
     <string name="home_explore_title">Explore</string>
     <string name="home_explore_see_all">See all</string>
 

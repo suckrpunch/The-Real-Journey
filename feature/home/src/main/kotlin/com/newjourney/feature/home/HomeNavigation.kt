@@ -11,12 +11,16 @@ data object HomeRoute
 fun NavGraphBuilder.homeScreen(
     onBeginMeditation: (minutes: Int) -> Unit,
     onOpenExplore: () -> Unit,
+    onOpenCategory: (categoryId: String) -> Unit,
+    onOpenTrack: (trackId: String) -> Unit,
     onMoodSelected: (Mood) -> Unit,
 ) {
     composable<HomeRoute> {
         HomeScreenRoute(
             onBeginMeditation = onBeginMeditation,
             onOpenExplore = onOpenExplore,
+            onOpenCategory = onOpenCategory,
+            onOpenTrack = onOpenTrack,
             onMoodSelected = onMoodSelected,
         )
     }

@@ -8,4 +8,8 @@
     <string name="tab_meditate">Meditate</string>
     <string name="tab_journal">Journal</string>
     <string name="tab_profile">Profile</string>
+
+    <string name="mini_player_open">Now playing: %1$s. Open the player</string>
+    <string name="mini_player_play">Play</string>
+    <string name="mini_player_pause">Pause</string>
 </resources>

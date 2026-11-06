@@ -3,15 +3,23 @@ package com.newjourney.feature.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.database.LibraryRepository
+import com.newjourney.core.database.RecentTrack
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
+import com.newjourney.core.model.Catalog
+import com.newjourney.core.model.Category
 import com.newjourney.core.model.DailyQuote
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.PartOfDay
 import com.newjourney.core.model.Quote
 import com.newjourney.core.model.SampleQuotes
 import com.newjourney.core.model.TimerLimits
+import com.newjourney.core.model.Track
+import com.newjourney.core.model.TrackTier
 import com.newjourney.core.model.WeekProgress
+import com.newjourney.core.playback.MusicPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,15 +40,28 @@ data class HomeUiState(
     val selectedMinutes: Int,
     val entitlement: Entitlement,
     val week: WeekProgress,
+    val categories: List<Category> = emptyList(),
+    val continueListening: ContinueListening? = null,
 ) {
     fun isLocked(minutes: Int): Boolean = !entitlement.isPremium && TimerLimits.isPremiumDuration(minutes)
 }
+
+/** The track the listener stopped part-way through, shown as "Continue listening". */
+data class ContinueListening(
+    val track: Track,
+    val colorHex: String?,
+    val place: String,
+    val positionMs: Long,
+)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val settings: UserSettingsRepository,
     sessions: SessionRepository,
+    private val catalogRepository: CatalogRepository,
+    library: LibraryRepository,
+    private val player: MusicPlayer,
 ) : ViewModel() {
 
     private val zone: ZoneId = ZoneId.systemDefault()
@@ -57,7 +78,9 @@ class HomeViewModel @Inject constructor(
         selectedMinutes,
         settings.favoriteQuoteIds,
         weekSessions,
-    ) { minutes, saved, sessionList ->
+        catalogRepository.catalog,
+        library.recent(limit = 1),
+    ) { minutes, saved, sessionList, catalog, recent ->
         val today = LocalDate.now()
         val quote = DailyQuote.pick(SampleQuotes, today)
         HomeUiState(
@@ -69,12 +92,40 @@ class HomeViewModel @Inject constructor(
             selectedMinutes = minutes,
             entitlement = entitlement,
             week = WeekProgress.from(sessionList, today, zone),
+            categories = catalog?.categories.orEmpty(),
+            continueListening = catalog?.let { continueListeningFrom(it, recent.firstOrNull()) },
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
 
     /** Selects a free duration. Premium durations are handled by the screen, which explains premium. */
     fun selectDuration(minutes: Int) {
         if (!uiState.value.isLocked(minutes)) savedStateHandle[KEY_MINUTES] = minutes
+    }
+
+    /** Resumes the last track where it stopped, with the rest of its category after it. */
+    fun continueListening() {
+        val item = uiState.value.continueListening ?: return
+        viewModelScope.launch {
+            val catalog = catalogRepository.get()
+            val queue = catalog.tracksInCategory(item.track.categoryId).filter { it.tier == TrackTier.FREE || entitlement.isPremium }
+            val index = queue.indexOfFirst { it.id == item.track.id }
+            if (index >= 0) player.play(queue, index, item.positionMs) else player.play(listOf(item.track), 0, item.positionMs)
+        }
+    }
+
+    private fun continueListeningFrom(catalog: Catalog, recent: RecentTrack?): ContinueListening? {
+        recent ?: return null
+        val track = catalog.track(recent.trackId) ?: return null
+        // Only worth offering when the listener is part-way through.
+        if (recent.positionMs < 15_000 || recent.positionMs > track.durationMs - 15_000) return null
+        val category = catalog.category(track.categoryId)
+        val sub = category?.subcategories?.firstOrNull { it.id == track.subcategoryId }
+        return ContinueListening(
+            track = track,
+            colorHex = sub?.color,
+            place = listOfNotNull(category?.name, sub?.name).joinToString(" · "),
+            positionMs = recent.positionMs,
+        )
     }
 
     fun toggleQuoteSaved() {

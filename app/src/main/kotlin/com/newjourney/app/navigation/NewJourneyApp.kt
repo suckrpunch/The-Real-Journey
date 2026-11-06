@@ -1,6 +1,7 @@
 package com.newjourney.app.navigation
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,8 +31,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.newjourney.app.R
+import com.newjourney.feature.explore.CategoryRoute
 import com.newjourney.feature.explore.ExploreRoute
-import com.newjourney.feature.explore.exploreScreen
+import com.newjourney.feature.explore.TrackRoute
+import com.newjourney.feature.explore.exploreScreens
 import com.newjourney.feature.home.HomeRoute
 import com.newjourney.feature.home.homeScreen
 import com.newjourney.feature.journal.JournalRoute
@@ -64,26 +67,37 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
     val currentDestination = backStackEntry?.destination
     // The running timer is full screen: no tab bar, nothing else competing for attention.
     val showTabs = currentDestination?.hasRoute(MeditationSessionRoute::class) != true
+    val inLibrary = currentDestination?.hasRoute(CategoryRoute::class) == true ||
+        currentDestination?.hasRoute(TrackRoute::class) == true
+    val onTrackScreen = currentDestination?.hasRoute(TrackRoute::class) == true
+    val openTrack: (String) -> Unit = { id -> navController.navigate(TrackRoute(id)) { launchSingleTop = true } }
 
     Scaffold(
         bottomBar = {
-            if (showTabs) NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
-                TopLevelDestination.entries.forEach { destination ->
-                    val selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.routeClass) } == true
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = { navController.navigateToTab(destination.route) },
-                        icon = { Icon(destination.icon, contentDescription = null) },
-                        label = { Text(stringResource(destination.label), style = MaterialTheme.typography.labelMedium) },
-                        alwaysShowLabel = true,
-                        colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
-                    )
+            if (showTabs) {
+                Column {
+                    // The player screen has its own controls, so the mini player steps aside there.
+                    if (!onTrackScreen) MiniPlayer(onOpen = openTrack)
+                    NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
+                        TopLevelDestination.entries.forEach { destination ->
+                            val selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.routeClass) } == true ||
+                                (destination == TopLevelDestination.EXPLORE && inLibrary)
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = { navController.navigateToTab(destination.route) },
+                                icon = { Icon(destination.icon, contentDescription = null) },
+                                label = { Text(stringResource(destination.label), style = MaterialTheme.typography.labelMedium) },
+                                alwaysShowLabel = true,
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -100,9 +114,18 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
             homeScreen(
                 onBeginMeditation = { minutes -> navController.navigate(MeditationSessionRoute(minutes)) },
                 onOpenExplore = { navController.navigateToTab(ExploreRoute) },
+                onOpenCategory = { id -> navController.navigate(CategoryRoute(id)) },
+                onOpenTrack = openTrack,
                 onMoodSelected = { mood -> navController.navigateToTab(JournalRoute(mood.name), restore = false) },
             )
-            exploreScreen()
+            exploreScreens(
+                onOpenCategory = { id -> navController.navigate(CategoryRoute(id)) },
+                onOpenTrack = openTrack,
+                onMeditateWithTrack = { trackId, minutes ->
+                    navController.navigate(MeditationSessionRoute(minutes = minutes, trackId = trackId))
+                },
+                onBack = { navController.popBackStack() },
+            )
             meditateScreen(
                 onStartSession = { minutes -> navController.navigate(MeditationSessionRoute(minutes)) },
                 onReturnToSession = { navController.navigate(MeditationSessionRoute(autoStart = false)) },

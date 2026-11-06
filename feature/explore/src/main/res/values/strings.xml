@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore_title">Explore</string>
-    <string name="explore_intro">Your music library will live here. Tracks and the player arrive in a coming update.</string>
+    <string name="explore_favorites">Your favourites</string>
+    <string name="explore_recent">Recently played</string>
+    <string name="explore_categories">Categories</string>
+    <string name="explore_coming_soon">Music coming soon</string>
+    <plurals name="explore_track_count">
+        <item quantity="one">%d track</item>
+        <item quantity="other">%d tracks</item>
+    </plurals>
+
+    <string name="category_coming_soon">Music coming soon</string>
+    <string name="back">Back</string>
+
+    <string name="track_minutes_spoken">%1$d minutes</string>
+    <string name="track_favorite_save">Add to favourites</string>
+    <string name="track_favorite_saved">In your favourites</string>
+    <string name="track_play">Play</string>
+    <string name="track_pause">Pause</string>
+    <string name="track_next">Next track</string>
+    <string name="track_previous">Previous track, or back to the start</string>
+    <string name="track_progress_spoken">%1$s of %2$s</string>
+    <string name="track_meditate_title">Meditate with this track</string>
+    <string name="track_meditate_body">The music flows on seamlessly for as long as you choose, then fades out and the bell rings.</string>
+    <string name="track_meditate_begin">Meditate for %1$d minutes</string>
 </resources>

@@ -2,21 +2,25 @@
 
 A calm, accessible meditation and mindfulness app for Android, built with Kotlin and Jetpack Compose.
 
-## Status: Phase 2, meditation timer (version 0.2.0)
+## Status: Phase 3, music library (version 0.3.0)
 
 What works in this build:
 
-- **Meditation timer**: start, pause, resume and end, with a large countdown and the breathing circle (4 s in, 6 s out; still when the phone's "Remove animations" setting is on).
-- **Bells and background sound**: optional bell at the start and end; Silence, Rain or Forest, fading in and out gently. Choices are remembered.
-- **Screen off**: the timer, sound and end bell keep going with the phone locked. The lock screen shows the time left with Pause/Resume and End.
-- **Two taps from Home**: pick a length, tap Begin; it uses your saved bells and sound.
-- **Ending early** asks once, kindly. A minute or more is still saved.
-- **Finish screen**: "Well done", minutes meditated, Done, or Write in your journal.
-- **Saved sessions** on the phone (Room database). Home's Today card shows minutes against a 10-minute goal and which days you meditated this week.
-- **Free vs premium**: 5 and 10 minutes are free; 15 minutes and longer show a gold dot and a calm explanation.
-- **Day and Night themes** with Follow my phone, Day, Night, or On a schedule (Profile › Appearance).
+- **Music library** (Explore): six categories from `catalog.json`; the Seven Chakras collection with all seven tracks. Favourites and recently played appear at the top.
+- **Player**: play, pause, next, previous, seek. Keeps playing with the screen off, with the standard Android controls on the lock screen, in the notification shade and on headphones. Pauses for phone calls and when headphones are unplugged.
+- **Meditate with a track**: choose a length (5 and 10 minutes free, longer is Premium). The track starts with its own fade-in and then repeats seamlessly; at the end it fades out and the bell rings. Counts as a session.
+- **Continue listening** on Home picks up a track where you stopped. A **mini player** sits above the tabs while music is loaded.
+- A track listened to all the way through also counts as a session.
+- Everything from before: timer with bells and Rain/Forest, lock-screen controls, Today card, day and night themes.
 
-Not built yet: routines, the music library and player, journal entries, reminders, accounts, premium purchases and The Journey Within.
+Not built yet: routines, journal entries, reminders, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
+
+### Music: how tracks and loops work
+
+- Tracks live in `core/catalog/src/main/assets/audio/` (AAC, 160 kbps). Each is the owner's master with one volume adjustment, so all tracks play at the same loudness (−19 LUFS). No compression or other processing.
+- `core/catalog/src/main/assets/catalog/catalog.json` describes every category, sub-category and track. **Adding a track** = put the `.m4a` in `audio/` and add one entry under `"tracks"`. A unit test (`CatalogParserTest`) checks every entry points to a real file.
+- `"loop"` gives the seamless-repeat points in milliseconds: `inMs` (after the fade-in), `outMs` (before the fade-out) and `crossfadeMs`. During a long session `LoopingTrackPlayer` starts a second copy at `inMs` shortly before `outMs` and crossfades the two, so playback never reaches a file edge. The points for the chakra tracks were chosen by measuring where loudness and sound colour match best. Leave `"loop"` out and a track simply repeats from the start.
+- Later the same catalog moves online, so tracks can be added without an app update.
 
 ### Sounds
 
@@ -39,10 +43,12 @@ core/
   model/                 Plain Kotlin rules and data: quotes, categories, moods, timer limits, theme schedule
   designsystem/          Colours, fonts, shapes, the app theme and shared buttons and cards
   datastore/             Saves small settings on the phone (theme, timer choices, saved quotes)
-  database/              On-device database of meditation sessions (schemas/ keeps each version)
+  database/              On-device database: sessions, favourites, listening history (schemas/ keeps each version)
+  catalog/               catalog.json and the music files; CatalogRepository reads them
+  playback/              PlaybackService (library player + lock-screen controls), MusicPlayer, LoopingTrackPlayer
 feature/
   home/                  Home screen and its ViewModel
-  explore/               Music library (starter)
+  explore/               Library, category and player screens
   meditate/              Timer screens; timer/ holds the timer logic and the background service
   journal/               Journal (starter)
   profile/               Profile and Appearance settings

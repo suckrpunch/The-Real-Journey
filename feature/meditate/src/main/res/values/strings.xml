@@ -17,6 +17,7 @@
     <!-- Running session -->
     <string name="session_status_running">Breathe gently</string>
     <string name="session_status_paused">Paused</string>
+    <string name="session_with_track">With %1$s</string>
     <string name="timer_pause">Pause</string>
     <string name="timer_resume">Resume</string>
     <string name="timer_end">End</string>

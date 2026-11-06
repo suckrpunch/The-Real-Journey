@@ -12,11 +12,13 @@ data class MeditateRoute(val minutes: Int = TimerLimits.DEFAULT_MINUTES)
 /**
  * The full-screen timer. With [autoStart] it starts a [minutes] session using the saved
  * bells and sound; without it, it shows the session that is already running.
+ * With [trackId], that track loops seamlessly for the whole session instead of the background sound.
  */
 @Serializable
 data class MeditationSessionRoute(
     val minutes: Int = TimerLimits.DEFAULT_MINUTES,
     val autoStart: Boolean = true,
+    val trackId: String? = null,
 )
 
 fun NavGraphBuilder.meditateScreen(

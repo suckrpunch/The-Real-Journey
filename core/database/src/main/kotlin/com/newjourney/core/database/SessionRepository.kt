@@ -1,6 +1,7 @@
 package com.newjourney.core.database
 
 import com.newjourney.core.model.MeditationSession
+import com.newjourney.core.model.SessionKind
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
@@ -26,6 +27,8 @@ internal class RoomSessionRepository @Inject constructor(
                 plannedSeconds = session.plannedSeconds,
                 completedSeconds = session.completedSeconds,
                 completed = session.completed,
+                type = session.kind.storedName,
+                trackId = session.trackId,
             ),
         )
     }
@@ -38,6 +41,8 @@ internal class RoomSessionRepository @Inject constructor(
                     plannedSeconds = it.plannedSeconds,
                     completedSeconds = it.completedSeconds,
                     completed = it.completed,
+                    kind = SessionKind.fromStored(it.type),
+                    trackId = it.trackId,
                 )
             }
         }

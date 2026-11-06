@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.model.MIN_SAVED_SESSION_SECONDS
 import com.newjourney.core.model.MeditationSession
+import com.newjourney.core.model.SessionKind
 import com.newjourney.core.model.TimerSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -24,6 +25,8 @@ data class ActiveSession(
     val id: Long,
     val minutes: Int,
     val settings: TimerSettings,
+    /** A music track that loops for the whole session instead of the background sound. */
+    val trackId: String? = null,
 ) {
     val totalMs: Long get() = minutes * 60_000L
     val totalSeconds: Int get() = minutes * 60
@@ -72,10 +75,15 @@ class MeditationTimer @Inject constructor(
     private fun now() = SystemClock.elapsedRealtime()
 
     /** Starts a new session unless one is already running or paused. */
-    fun start(minutes: Int, settings: TimerSettings) {
+    fun start(minutes: Int, settings: TimerSettings, trackId: String? = null) {
         val current = _state.value
         if (current is TimerState.Running || current is TimerState.Paused) return
-        val session = ActiveSession(id = System.currentTimeMillis(), minutes = minutes, settings = settings)
+        val session = ActiveSession(
+            id = System.currentTimeMillis(),
+            minutes = minutes,
+            settings = settings,
+            trackId = trackId,
+        )
         _state.value = TimerState.Running(session, endAtElapsedMs = now() + session.totalMs)
         ContextCompat.startForegroundService(context, MeditationService.startIntent(context))
     }
@@ -131,6 +139,8 @@ class MeditationTimer @Inject constructor(
                     plannedSeconds = session.totalSeconds,
                     completedSeconds = completedSeconds,
                     completed = !endedEarly,
+                    kind = if (session.trackId != null) SessionKind.MUSIC else SessionKind.TIMER,
+                    trackId = session.trackId,
                 ),
             )
         }
