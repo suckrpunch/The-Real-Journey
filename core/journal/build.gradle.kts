@@ -32,7 +32,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     // Encrypts the whole journal database file (AES-256).
     implementation(libs.sqlcipher.android) { artifact { type = "aar" } }
-    implementation(libs.androidx.sqlite)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

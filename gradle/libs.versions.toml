@@ -1,8 +1,8 @@
 [versions]
-androidGradlePlugin = "8.7.3"
-kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
-hilt = "2.54"
+androidGradlePlugin = "9.5.1"
+kotlin = "2.2.10"
+ksp = "2.3.6"
+hilt = "2.59.2"
 androidxHiltNavigationCompose = "1.2.0"
 androidxCoreKtx = "1.15.0"
 androidxActivityCompose = "1.9.3"
@@ -11,9 +11,8 @@ androidxNavigation = "2.8.5"
 androidxDataStore = "1.1.1"
 androidxComposeBom = "2024.12.01"
 androidxMedia3 = "1.5.1"
-androidxRoom = "2.6.1"
+androidxRoom = "2.8.5"
 sqlcipher = "4.6.1"
-androidxSqlite = "2.4.0"
 kotlinxCoroutines = "1.9.0"
 kotlinxSerializationJson = "1.7.3"
 junit = "4.13.2"
@@ -31,7 +30,6 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
 sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
-androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidxSqlite" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
