@@ -37,8 +37,9 @@ import com.newjourney.feature.explore.TrackRoute
 import com.newjourney.feature.explore.exploreScreens
 import com.newjourney.feature.home.HomeRoute
 import com.newjourney.feature.home.homeScreen
+import com.newjourney.feature.journal.JournalEditorRoute
 import com.newjourney.feature.journal.JournalRoute
-import com.newjourney.feature.journal.journalScreen
+import com.newjourney.feature.journal.journalScreens
 import com.newjourney.feature.meditate.MeditateRoute
 import com.newjourney.feature.meditate.MeditationSessionRoute
 import com.newjourney.feature.meditate.meditateScreen
@@ -57,7 +58,7 @@ enum class TopLevelDestination(
     HOME(HomeRoute, HomeRoute::class, Icons.Outlined.Home, R.string.tab_home),
     EXPLORE(ExploreRoute, ExploreRoute::class, Icons.Outlined.Explore, R.string.tab_explore),
     MEDITATE(MeditateRoute(), MeditateRoute::class, Icons.Outlined.SelfImprovement, R.string.tab_meditate),
-    JOURNAL(JournalRoute(), JournalRoute::class, Icons.AutoMirrored.Outlined.MenuBook, R.string.tab_journal),
+    JOURNAL(JournalRoute, JournalRoute::class, Icons.AutoMirrored.Outlined.MenuBook, R.string.tab_journal),
     PROFILE(ProfileRoute, ProfileRoute::class, Icons.Outlined.Person, R.string.tab_profile),
 }
 
@@ -65,8 +66,9 @@ enum class TopLevelDestination(
 fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
-    // The running timer is full screen: no tab bar, nothing else competing for attention.
-    val showTabs = currentDestination?.hasRoute(MeditationSessionRoute::class) != true
+    // The running timer and journal writing are full screen: no tab bar, nothing else competing for attention.
+    val showTabs = currentDestination?.hasRoute(MeditationSessionRoute::class) != true &&
+        currentDestination?.hasRoute(JournalEditorRoute::class) != true
     val inLibrary = currentDestination?.hasRoute(CategoryRoute::class) == true ||
         currentDestination?.hasRoute(TrackRoute::class) == true
     val onTrackScreen = currentDestination?.hasRoute(TrackRoute::class) == true
@@ -116,7 +118,7 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                 onOpenExplore = { navController.navigateToTab(ExploreRoute) },
                 onOpenCategory = { id -> navController.navigate(CategoryRoute(id)) },
                 onOpenTrack = openTrack,
-                onMoodSelected = { mood -> navController.navigateToTab(JournalRoute(mood.name), restore = false) },
+                onMoodSelected = { mood -> navController.navigate(JournalEditorRoute(mood = mood.name)) },
             )
             exploreScreens(
                 onOpenCategory = { id -> navController.navigate(CategoryRoute(id)) },
@@ -137,9 +139,22 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                         navController.popBackStack()
                     }
                 },
-                onOpenJournal = { navController.navigateToTab(JournalRoute(), restore = false) },
+                onOpenJournal = { minutes ->
+                    // The finished timer makes way for the journal; Back from writing returns to where the session began.
+                    navController.navigate(JournalEditorRoute(afterSessionMinutes = minutes.takeIf { it > 0 })) {
+                        popUpTo<MeditationSessionRoute> { inclusive = true }
+                    }
+                },
             )
-            journalScreen()
+            journalScreens(
+                onWrite = { navController.navigate(JournalEditorRoute()) },
+                onOpenEntry = { id -> navController.navigate(JournalEditorRoute(entryId = id)) },
+                onCloseEditor = {
+                    if (navController.currentDestination?.hasRoute(JournalEditorRoute::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+            )
             profileScreen()
         }
     }

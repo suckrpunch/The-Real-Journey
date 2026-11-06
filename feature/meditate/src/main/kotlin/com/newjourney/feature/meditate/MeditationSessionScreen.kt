@@ -54,7 +54,7 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun MeditationSessionRouteContent(
     onClose: () -> Unit,
-    onOpenJournal: () -> Unit,
+    onOpenJournal: (sessionMinutes: Int) -> Unit,
     viewModel: MeditationSessionViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -81,8 +81,9 @@ internal fun MeditationSessionRouteContent(
         onEnd = viewModel::endEarly,
         onDone = viewModel::dismissFinished,
         onOpenJournal = {
+            val minutes = ((state as? TimerState.Finished)?.completedSeconds ?: 0) / 60
             viewModel.dismissFinished()
-            onOpenJournal()
+            onOpenJournal(minutes)
         },
     )
 }

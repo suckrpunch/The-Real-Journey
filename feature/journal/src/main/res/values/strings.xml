@@ -1,7 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Journal list -->
     <string name="journal_title">Journal</string>
-    <string name="journal_feeling">Feeling %1$s</string>
-    <string name="journal_mood_note">Soon you\'ll be able to write a few words here and save them privately on your phone.</string>
-    <string name="journal_empty">Your journal is private and stays on this phone. Writing entries, moods before and after meditation, search and a calendar view are coming in a later update.</string>
+    <string name="journal_private_note">Private to you. Encrypted and kept only on this phone.</string>
+    <string name="journal_write">Write in your journal</string>
+    <string name="journal_empty">Your journal is empty for now. Write a few words whenever you like; there is no right or wrong.</string>
+    <string name="journal_failed">Your journal could not be opened. Please close the app and try again.</string>
+    <string name="journal_view_list">List</string>
+    <string name="journal_view_calendar">Calendar</string>
+    <string name="journal_search">Search your journal</string>
+    <string name="journal_search_clear">Clear search</string>
+    <string name="journal_search_none">Nothing found for “%1$s”.</string>
+    <string name="journal_today">Today</string>
+    <string name="journal_yesterday">Yesterday</string>
+    <string name="journal_day_empty">No entries on this day.</string>
+    <string name="journal_month_previous">Earlier</string>
+    <string name="journal_month_next">Later</string>
+    <string name="journal_after_session_short">after %1$d min meditation</string>
+    <plurals name="journal_entry_count">
+        <item quantity="one">%d entry</item>
+        <item quantity="other">%d entries</item>
+    </plurals>
+
+    <!-- Writing -->
+    <string name="journal_back">Back</string>
+    <string name="journal_new_entry">New entry</string>
+    <string name="journal_after_session">After your %1$d-minute meditation</string>
+    <string name="journal_mood_now">How do you feel?</string>
+    <string name="journal_mood_before">How did you feel before meditating?</string>
+    <string name="journal_mood_after">And how do you feel now?</string>
+    <string name="journal_add_before">Add how you felt before meditating</string>
+    <string name="journal_thoughts">Your thoughts</string>
+    <string name="journal_thoughts_hint">Whatever is on your mind…</string>
+    <string name="journal_save">Save</string>
+    <string name="journal_discard">Don\'t save</string>
+    <string name="journal_unsaved_title">Save your entry?</string>
+    <string name="journal_unsaved_body">You have written something that is not saved yet.</string>
+    <string name="journal_delete">Delete entry</string>
+    <string name="journal_delete_title">Delete this entry?</string>
+    <string name="journal_delete_body">It will be removed from your journal for good.</string>
+    <string name="journal_delete_yes">Delete</string>
+    <string name="journal_delete_no">Keep it</string>
 </resources>

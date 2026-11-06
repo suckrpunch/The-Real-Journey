@@ -2,7 +2,7 @@
 
 A calm, accessible meditation and mindfulness app for Android, built with Kotlin and Jetpack Compose.
 
-## Status: Phase 3, music library (version 0.3.0)
+## Status: Phase 4a, journal (version 0.4.0)
 
 What works in this build:
 
@@ -11,9 +11,11 @@ What works in this build:
 - **Meditate with a track**: choose a length (5 and 10 minutes free, longer is Premium). The track starts with its own fade-in and then repeats seamlessly; at the end it fades out and the bell rings. Counts as a session.
 - **Continue listening** on Home picks up a track where you stopped. A **mini player** sits above the tabs while music is loaded.
 - A track listened to all the way through also counts as a session.
+- **Journal**: write entries with how you feel (and, after a session, how you felt before). Search, a list grouped by day, and a month calendar where each day's dot takes the colour of its mood. Edit and delete entries. Opens from the Journal tab, from the mood buttons on Home, and from "Write in your journal" after a session.
+- **Journal privacy**: entries are kept in their own database, encrypted as a whole with SQLCipher (AES-256). Its key is sealed by Android Keystore, so the file is unreadable off this phone. Nothing is sent anywhere, and the app does not take part in Android backups.
 - Everything from before: timer with bells and Rain/Forest, lock-screen controls, Today card, day and night themes.
 
-Not built yet: routines, journal entries, reminders, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
+Not built yet: routines, progress calendar and milestones, reminders, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
 
 ### Music: how tracks and loops work
 
@@ -46,11 +48,12 @@ core/
   database/              On-device database: sessions, favourites, listening history (schemas/ keeps each version)
   catalog/               catalog.json and the music files; CatalogRepository reads them
   playback/              PlaybackService (library player + lock-screen controls), MusicPlayer, LoopingTrackPlayer
+  journal/               Encrypted journal database (SQLCipher) and its Keystore-protected key
 feature/
   home/                  Home screen and its ViewModel
   explore/               Library, category and player screens
   meditate/              Timer screens; timer/ holds the timer logic and the background service
-  journal/               Journal (starter)
+  journal/               Journal list, search, calendar and the writing screen
   profile/               Profile and Appearance settings
 gradle/libs.versions.toml  Every library version in one place
 licenses/                Font licences (SIL Open Font License)
