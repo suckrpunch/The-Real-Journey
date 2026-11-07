@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.catalog.JourneyContentRepository
 import com.newjourney.core.database.LibraryRepository
 import com.newjourney.core.database.RecentTrack
 import com.newjourney.core.database.SessionRepository
@@ -11,7 +12,9 @@ import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.model.Catalog
 import com.newjourney.core.model.Category
 import com.newjourney.core.model.DailyQuote
+import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
+import com.newjourney.core.model.JourneyProgress
 import com.newjourney.core.model.PartOfDay
 import com.newjourney.core.model.Quote
 import com.newjourney.core.model.SampleQuotes
@@ -24,8 +27,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -62,12 +68,14 @@ class HomeViewModel @Inject constructor(
     private val catalogRepository: CatalogRepository,
     library: LibraryRepository,
     private val player: MusicPlayer,
+    journeyContent: JourneyContentRepository,
+    private val entitlements: EntitlementRepository,
 ) : ViewModel() {
 
     private val zone: ZoneId = ZoneId.systemDefault()
 
-    // Phase 4 replaces this with the verified entitlement from Google Play.
-    private val entitlement = Entitlement(isPremium = false)
+    /** Premium as confirmed by Google Play (see EntitlementRepository). */
+    private val entitlement: Entitlement get() = entitlements.entitlement.value
 
     private val selectedMinutes: StateFlow<Int> =
         savedStateHandle.getStateFlow(KEY_MINUTES, TimerLimits.DEFAULT_MINUTES)
@@ -95,12 +103,25 @@ class HomeViewModel @Inject constructor(
             categories = catalog?.categories.orEmpty(),
             continueListening = catalog?.let { continueListeningFrom(it, recent.firstOrNull()) },
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
+    }.combine(entitlements.entitlement) { state, current -> state.copy(entitlement = current) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
 
     /** Selects a free duration. Premium durations are handled by the screen, which explains premium. */
     fun selectDuration(minutes: Int) {
         if (!uiState.value.isLocked(minutes)) savedStateHandle[KEY_MINUTES] = minutes
     }
+
+    /**
+     * The furthest journey stage reached that the user has not opened yet: (stage id, name).
+     * Shown on Home until they read it.
+     */
+    val newStage: StateFlow<Pair<String, String>?> = combine(
+        sessions.sessionsSince(Instant.EPOCH).map { JourneyProgress.from(it).current },
+        settings.seenJourneyStages,
+        flow { emit(journeyContent.content()) },
+    ) { current, seen, content ->
+        current?.takeIf { it.name !in seen }?.let { it.name to (content[it]?.name ?: it.name) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     /** Resumes the last track where it stopped, with the rest of its category after it. */
     fun continueListening() {

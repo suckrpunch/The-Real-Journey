@@ -36,4 +36,6 @@
 
     <string name="home_mood_title">How are you feeling?</string>
     <string name="home_mood_subtitle">Tap one to start a journal entry.</string>
+    <string name="home_new_stage">You have reached a new stage of your journey</string>
+    <string name="home_new_stage_read">Read its reflection</string>
 </resources>

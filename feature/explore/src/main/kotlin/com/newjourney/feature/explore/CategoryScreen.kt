@@ -27,11 +27,13 @@ import androidx.navigation.toRoute
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.designsystem.component.PremiumTrackSheet
 import com.newjourney.core.designsystem.component.SectionTitle
+import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.Subcategory
 import com.newjourney.core.model.TrackTier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -51,11 +53,12 @@ internal data class CategoryUiState(
 internal class CategoryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     catalogRepository: CatalogRepository,
+    private val entitlements: EntitlementRepository,
 ) : ViewModel() {
     private val categoryId = savedStateHandle.toRoute<CategoryRoute>().categoryId
 
-    // Phase 4 replaces this with the verified entitlement from Google Play.
-    private val entitlement = Entitlement(isPremium = false)
+    /** Premium as confirmed by Google Play (see EntitlementRepository). */
+    private val entitlement: Entitlement get() = entitlements.entitlement.value
 
     val uiState: StateFlow<CategoryUiState> = catalogRepository.catalog.filterNotNull().map { catalog ->
         val category = catalog.category(categoryId)
@@ -67,7 +70,8 @@ internal class CategoryViewModel @Inject constructor(
             },
             entitlement = entitlement,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CategoryUiState())
+    }.combine(entitlements.entitlement) { state, current -> state.copy(entitlement = current) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CategoryUiState())
 }
 
 @Composable

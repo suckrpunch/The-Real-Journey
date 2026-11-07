@@ -74,12 +74,16 @@ internal fun HomeScreenRoute(
     onOpenExplore: () -> Unit,
     onOpenCategory: (String) -> Unit,
     onOpenTrack: (String) -> Unit,
+    onOpenStage: (String) -> Unit,
     onMoodSelected: (Mood) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val newStage by viewModel.newStage.collectAsStateWithLifecycle()
     HomeScreen(
         state = state,
+        newStage = newStage,
+        onOpenStage = onOpenStage,
         onSelectDuration = viewModel::selectDuration,
         onToggleQuoteSaved = viewModel::toggleQuoteSaved,
         onBeginMeditation = { onBeginMeditation(state.selectedMinutes) },
@@ -96,6 +100,8 @@ internal fun HomeScreenRoute(
 @Composable
 internal fun HomeScreen(
     state: HomeUiState,
+    newStage: Pair<String, String>?,
+    onOpenStage: (String) -> Unit,
     onSelectDuration: (Int) -> Unit,
     onToggleQuoteSaved: () -> Unit,
     onBeginMeditation: () -> Unit,
@@ -112,6 +118,19 @@ internal fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         item { Greeting(state) }
+        newStage?.let { (stageId, stageName) ->
+            item {
+                SoftCard(raised = true) {
+                    Text(stringResource(R.string.home_new_stage), style = MaterialTheme.typography.titleMedium)
+                    Text(stageName, style = MaterialTheme.typography.headlineSmall)
+                    SecondaryButton(
+                        text = stringResource(R.string.home_new_stage_read),
+                        onClick = { onOpenStage(stageId) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
         state.quote?.let { quote ->
             item {
                 QuoteCard(

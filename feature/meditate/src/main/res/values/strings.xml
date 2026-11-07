@@ -40,6 +40,8 @@
         <item quantity="other">You meditated for %d minutes.</item>
     </plurals>
     <string name="finished_milestone">A new milestone</string>
+    <string name="finished_stage_label">A new stage of your journey</string>
+    <string name="finished_stage_read">Read its reflection</string>
     <string name="finished_done">Done</string>
     <string name="finished_journal">Write in your journal</string>
 

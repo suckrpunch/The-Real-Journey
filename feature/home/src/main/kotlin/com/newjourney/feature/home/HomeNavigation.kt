@@ -13,6 +13,7 @@ fun NavGraphBuilder.homeScreen(
     onOpenExplore: () -> Unit,
     onOpenCategory: (categoryId: String) -> Unit,
     onOpenTrack: (trackId: String) -> Unit,
+    onOpenStage: (stage: String) -> Unit,
     onMoodSelected: (Mood) -> Unit,
 ) {
     composable<HomeRoute> {
@@ -21,6 +22,7 @@ fun NavGraphBuilder.homeScreen(
             onOpenExplore = onOpenExplore,
             onOpenCategory = onOpenCategory,
             onOpenTrack = onOpenTrack,
+            onOpenStage = onOpenStage,
             onMoodSelected = onMoodSelected,
         )
     }

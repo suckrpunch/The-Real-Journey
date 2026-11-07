@@ -17,10 +17,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Insights
 import androidx.compose.material.icons.outlined.NotificationsNone
+import androidx.compose.material.icons.outlined.Route
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -38,6 +41,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.newjourney.core.billing.EntitlementRepository
+import com.newjourney.core.catalog.JourneyContentRepository
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.designsystem.component.DurationChip
@@ -46,8 +51,11 @@ import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.milestoneTitle
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.DailyGoal
 import com.newjourney.core.model.DailyGoalChoices
+import com.newjourney.core.model.JourneyProgress
+import com.newjourney.core.model.JourneyStage
 import com.newjourney.core.model.ProgressStats
 import com.newjourney.core.model.ReminderSettings
 import com.newjourney.core.model.ThemeMode
@@ -56,8 +64,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
@@ -67,21 +78,33 @@ internal data class ProfileUiState(
     val stats: ProgressStats? = null,
     val goalMinutes: Int = DailyGoal.DEFAULT_MINUTES,
     val reminders: ReminderSettings = ReminderSettings(),
+    val journey: JourneyProgress = JourneyProgress.from(emptyList()),
+    val stageNames: Map<JourneyStage, String> = emptyMap(),
+    val isPremium: Boolean = false,
 )
 
 @HiltViewModel
 internal class ProfileViewModel @Inject constructor(
     private val settings: UserSettingsRepository,
     sessions: SessionRepository,
+    journeyContent: JourneyContentRepository,
+    entitlements: EntitlementRepository,
 ) : ViewModel() {
+
+    private val journeyExtras = combine(
+        sessions.sessionsSince(Instant.EPOCH).map { JourneyProgress.from(it) },
+        flow { emit(journeyContent.content().mapValues { it.value.name }) },
+        entitlements.entitlement,
+    ) { journey, names, entitlement -> Triple(journey, names, entitlement.isPremium) }
 
     val uiState: StateFlow<ProfileUiState> = combine(
         settings.themePreference,
         sessions.progress(),
         settings.dailyGoalMinutes,
         settings.reminderSettings,
-    ) { theme, stats, goal, reminders ->
-        ProfileUiState(theme, stats, goal, reminders)
+        journeyExtras,
+    ) { theme, stats, goal, reminders, (journey, names, premium) ->
+        ProfileUiState(theme, stats, goal, reminders, journey, names, premium)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
@@ -109,6 +132,8 @@ internal class ProfileViewModel @Inject constructor(
 internal fun ProfileRouteContent(
     onOpenProgress: () -> Unit,
     onOpenReminders: () -> Unit,
+    onOpenJourney: () -> Unit,
+    onOpenPremium: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -120,18 +145,65 @@ internal fun ProfileRouteContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         SectionTitle(stringResource(R.string.profile_title))
+        JourneyCard(state, onOpenJourney)
         state.stats?.let { ProgressSummary(it, onOpenProgress) }
         GoalCard(state.goalMinutes, viewModel::setGoal)
         RemindersSummary(state.reminders, onOpenReminders)
         AppearanceCard(state.theme, viewModel::setThemeMode, viewModel::shiftSchedule)
-        SoftCard {
-            Text(stringResource(R.string.profile_coming_title), style = MaterialTheme.typography.titleLarge)
+        PremiumCard(state.isPremium, onOpenPremium)
+    }
+}
+
+@Composable
+private fun JourneyCard(state: ProfileUiState, onOpen: () -> Unit) {
+    val current = state.journey.current
+    val next = state.journey.next
+    SoftCard {
+        Text(stringResource(R.string.journey_title), style = MaterialTheme.typography.titleLarge)
+        Text(
+            if (current == null) {
+                stringResource(R.string.journey_card_start)
+            } else {
+                stringResource(R.string.journey_card_current, state.stageNames[current].orEmpty())
+            },
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        if (next != null) {
+            LinearProgressIndicator(
+                progress = { state.journey.towardsNext },
+                modifier = Modifier.fillMaxWidth(),
+                trackColor = NewJourneyTheme.extraColors.progressTrack,
+            )
             Text(
-                stringResource(R.string.profile_coming_body),
-                style = MaterialTheme.typography.bodyLarge,
+                stringResource(R.string.journey_next_count, state.journey.sessions, next.sessionsToArrive),
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        SecondaryButton(
+            text = stringResource(R.string.journey_open),
+            onClick = onOpen,
+            modifier = Modifier.fillMaxWidth(),
+            leading = { Icon(Icons.Outlined.Route, contentDescription = null) },
+        )
+    }
+}
+
+@Composable
+private fun PremiumCard(isPremium: Boolean, onOpen: () -> Unit) {
+    SoftCard {
+        Text(stringResource(R.string.premium_title), style = MaterialTheme.typography.titleLarge)
+        Text(
+            stringResource(if (isPremium) R.string.premium_card_active else R.string.premium_card_invite),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        SecondaryButton(
+            text = stringResource(if (isPremium) R.string.premium_card_manage else R.string.premium_discover_button),
+            onClick = onOpen,
+            modifier = Modifier.fillMaxWidth(),
+            leading = { Icon(Icons.Outlined.AutoAwesome, contentDescription = null, tint = NewJourneyTheme.extraColors.premium) },
+        )
     }
 }
 

@@ -2,7 +2,7 @@
 
 A calm, accessible meditation and mindfulness app for Android, built with Kotlin and Jetpack Compose.
 
-## Status: Phase 4b, progress and reminders (version 0.5.0)
+## Status: Phase 5, Premium and The Journey Within (version 0.7.0)
 
 What works in this build:
 
@@ -20,7 +20,15 @@ What works in this build:
 - **Milestones** reached by a session are shown on its finish screen.
 - **Reminders** (Profile › Set reminders), all off until turned on: daily reminder (can skip days you already meditated), evening wind-down, Sunday summary (skipped in a week without sessions), and one kind note after three quiet days. Times move in 15-minute steps. Planned with AlarmManager windows (no exact-alarm permission, battery-friendly) and restored after a restart, update or time-zone change.
 
-Not built yet: routines, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
+- **The Journey Within** (Profile): six stages reached by total sessions (1, 7, 20, 50, 100, 200). Each has a reflection and a "what opens here" note. Stages 1–2 are free, stage 3 is a preview, 4–6 are Premium. A newly reached stage appears on the finish screen and on Home until it is opened. The texts are in `core/catalog/src/main/assets/journey/journey.json`.
+- **Premium** (Profile › Premium, or "Discover Premium" from any Premium note): one subscription through Google Play Billing, monthly or annual (annual with a free trial). No timers, no pressure; "Not now" is always as large as the buy button. Active subscribers get "Manage in Google Play".
+- **Developer preview**: debug builds only show a "Preview Premium" switch on the Premium screen. It does not exist in release builds and never touches Google Play.
+
+Not built yet: routines, online catalog (dormant until a storage bucket is set), server-side purchase verification, offline downloads.
+
+### Google Play Billing setup
+
+In Play Console › Monetize › Subscriptions create product `premium` with base plans `monthly` and `annual`, and on `annual` an offer `annual-free-trial` (free trial phase). IDs live in `core/billing/.../PlayEntitlementRepository.kt`. Purchases are verified on the device and cached; add server verification before relying on it for anything beyond unlocking content. Test with license testers on the internal testing track; until the app is uploaded there, the Premium screen shows "not available".
 
 ### Music: where it lives and how to add more
 
@@ -84,6 +92,7 @@ Rules that keep the code easy to change:
 | App name under the icon | `app/src/main/res/values/strings.xml` → `app_name` |
 | Colours | `core/designsystem/.../theme/Color.kt` |
 | Sample quotes | `core/model/.../Quote.kt` → `SampleQuotes` (moves online in Phase 3) |
+| Journey stage texts | `core/catalog/src/main/assets/journey/journey.json` |
 | Free timer limit | `core/model/.../Meditation.kt` → `FREE_MAX_MINUTES` |
 | App icon | `app/src/main/res/drawable/ic_launcher_foreground.xml` (placeholder) |
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.database.LibraryRepository
+import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.TimerLimits
 import com.newjourney.core.model.Track
@@ -42,12 +43,13 @@ internal class TrackViewModel @Inject constructor(
     private val catalogRepository: CatalogRepository,
     private val library: LibraryRepository,
     private val player: MusicPlayer,
+    private val entitlements: EntitlementRepository,
 ) : ViewModel() {
 
     private val trackId = savedStateHandle.toRoute<TrackRoute>().trackId
 
-    // Phase 4 replaces this with the verified entitlement from Google Play.
-    private val entitlement = Entitlement(isPremium = false)
+    /** Premium as confirmed by Google Play (see EntitlementRepository). */
+    private val entitlement: Entitlement get() = entitlements.entitlement.value
 
     private val selectedMinutes = savedStateHandle.getStateFlow(KEY_MINUTES, TimerLimits.DEFAULT_MINUTES)
 
@@ -69,7 +71,8 @@ internal class TrackViewModel @Inject constructor(
             selectedMinutes = minutes,
             entitlement = entitlement,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TrackUiState())
+    }.combine(entitlements.entitlement) { state, current -> state.copy(entitlement = current) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TrackUiState())
 
     fun positionMs(): Long = player.positionMs()
 

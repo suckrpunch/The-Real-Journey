@@ -2,6 +2,8 @@ package com.newjourney.core.designsystem.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -9,10 +11,17 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.newjourney.core.designsystem.R
+
+/**
+ * Opens the Premium screen from anywhere. Provided once by the app's navigation; when absent
+ * (for example in previews) the notes simply close with "Okay".
+ */
+val LocalOpenPremium = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 /**
  * A calm note shown when a free user taps something that is part of Premium.
@@ -29,7 +38,24 @@ fun PremiumNoteSheet(title: String, body: String, onDismiss: () -> Unit) {
         ) {
             Text(title, style = MaterialTheme.typography.headlineSmall)
             Text(body, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            PrimaryButton(text = stringResource(R.string.premium_duration_ok), onClick = onDismiss)
+            val openPremium = LocalOpenPremium.current
+            if (openPremium != null) {
+                PrimaryButton(
+                    text = stringResource(R.string.premium_discover),
+                    onClick = {
+                        onDismiss()
+                        openPremium()
+                    },
+                )
+                SecondaryButton(
+                    text = stringResource(R.string.premium_not_now),
+                    onClick = onDismiss,
+                    // Just as large as the invitation: saying no is equally easy.
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+                )
+            } else {
+                PrimaryButton(text = stringResource(R.string.premium_duration_ok), onClick = onDismiss)
+            }
         }
     }
 }

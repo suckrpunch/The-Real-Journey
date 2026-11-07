@@ -61,12 +61,14 @@ import kotlinx.coroutines.delay
 internal fun MeditationSessionRouteContent(
     onClose: () -> Unit,
     onOpenJournal: (sessionMinutes: Int) -> Unit,
+    onOpenStage: (stage: String) -> Unit,
     viewModel: MeditationSessionViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val hadSession by viewModel.hadSession.collectAsStateWithLifecycle()
     val trackTitle by viewModel.trackTitle.collectAsStateWithLifecycle()
     val newMilestones by viewModel.newMilestones.collectAsStateWithLifecycle()
+    val newStages by viewModel.newStages.collectAsStateWithLifecycle()
 
     RequestNotificationPermissionOnce()
 
@@ -84,6 +86,11 @@ internal fun MeditationSessionRouteContent(
         state = state,
         trackTitle = trackTitle,
         newMilestones = newMilestones,
+        newStages = newStages,
+        onOpenStage = { stage ->
+            viewModel.dismissFinished()
+            onOpenStage(stage)
+        },
         onPause = viewModel::pause,
         onResume = viewModel::resume,
         onEnd = viewModel::endEarly,
@@ -101,6 +108,8 @@ internal fun MeditationSessionScreen(
     state: TimerState,
     trackTitle: String?,
     newMilestones: List<Milestone>,
+    newStages: List<Pair<String, String>>,
+    onOpenStage: (String) -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
@@ -118,7 +127,7 @@ internal fun MeditationSessionScreen(
     ) {
         when (state) {
             is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onPause, onResume, onEnd)
-            is TimerState.Finished -> Finished(state, newMilestones, onDone, onOpenJournal)
+            is TimerState.Finished -> Finished(state, newMilestones, newStages, onOpenStage, onDone, onOpenJournal)
             TimerState.Idle -> Spacer(Modifier.height(1.dp))
         }
     }
@@ -218,6 +227,8 @@ private fun Countdown(
 private fun Finished(
     state: TimerState.Finished,
     newMilestones: List<Milestone>,
+    newStages: List<Pair<String, String>>,
+    onOpenStage: (String) -> Unit,
     onDone: () -> Unit,
     onOpenJournal: () -> Unit,
 ) {
@@ -235,6 +246,17 @@ private fun Finished(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
     )
+    newStages.forEach { (stageId, stageName) ->
+        SoftCard(raised = true) {
+            Text(stringResource(R.string.finished_stage_label), style = MaterialTheme.typography.titleMedium)
+            Text(stageName, style = MaterialTheme.typography.headlineSmall)
+            SecondaryButton(
+                text = stringResource(R.string.finished_stage_read),
+                onClick = { onOpenStage(stageId) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
     if (newMilestones.isNotEmpty()) {
         SoftCard(raised = true) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

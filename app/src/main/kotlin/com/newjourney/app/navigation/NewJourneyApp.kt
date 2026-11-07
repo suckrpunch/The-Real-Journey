@@ -19,6 +19,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.newjourney.app.R
+import com.newjourney.core.designsystem.component.LocalOpenPremium
 import com.newjourney.feature.explore.CategoryRoute
 import com.newjourney.feature.explore.ExploreRoute
 import com.newjourney.feature.explore.TrackRoute
@@ -44,7 +46,10 @@ import com.newjourney.feature.meditate.MeditateRoute
 import com.newjourney.feature.meditate.MeditationSessionRoute
 import com.newjourney.feature.meditate.meditateScreen
 import com.newjourney.feature.meditate.meditationSessionScreen
+import com.newjourney.feature.profile.JourneyRoute
+import com.newjourney.feature.profile.PremiumRoute
 import com.newjourney.feature.profile.ProfileRoute
+import com.newjourney.feature.profile.StageRoute
 import com.newjourney.feature.profile.ProgressRoute
 import com.newjourney.feature.profile.RemindersRoute
 import com.newjourney.feature.profile.profileScreens
@@ -73,11 +78,14 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
         currentDestination?.hasRoute(JournalEditorRoute::class) != true
     val inLibrary = currentDestination?.hasRoute(CategoryRoute::class) == true ||
         currentDestination?.hasRoute(TrackRoute::class) == true
-    val inProfile = currentDestination?.hasRoute(ProgressRoute::class) == true ||
-        currentDestination?.hasRoute(RemindersRoute::class) == true
+    val inProfile = listOf(ProgressRoute::class, RemindersRoute::class, JourneyRoute::class, StageRoute::class, PremiumRoute::class)
+        .any { currentDestination?.hasRoute(it) == true }
     val onTrackScreen = currentDestination?.hasRoute(TrackRoute::class) == true
     val openTrack: (String) -> Unit = { id -> navController.navigate(TrackRoute(id)) { launchSingleTop = true } }
+    val openStage: (String) -> Unit = { stage -> navController.navigate(StageRoute(stage)) { launchSingleTop = true } }
+    val openPremium: () -> Unit = { navController.navigate(PremiumRoute) { launchSingleTop = true } }
 
+    CompositionLocalProvider(LocalOpenPremium provides openPremium) {
     Scaffold(
         bottomBar = {
             if (showTabs) {
@@ -123,6 +131,7 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                 onOpenExplore = { navController.navigateToTab(ExploreRoute) },
                 onOpenCategory = { id -> navController.navigate(CategoryRoute(id)) },
                 onOpenTrack = openTrack,
+                onOpenStage = openStage,
                 onMoodSelected = { mood -> navController.navigate(JournalEditorRoute(mood = mood.name)) },
             )
             exploreScreens(
@@ -144,6 +153,12 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                         navController.popBackStack()
                     }
                 },
+                onOpenStage = { stage ->
+                    // Like the journal: the finished timer makes way for the stage.
+                    navController.navigate(StageRoute(stage)) {
+                        popUpTo<MeditationSessionRoute> { inclusive = true }
+                    }
+                },
                 onOpenJournal = { minutes ->
                     // The finished timer makes way for the journal; Back from writing returns to where the session began.
                     navController.navigate(JournalEditorRoute(afterSessionMinutes = minutes.takeIf { it > 0 })) {
@@ -163,9 +178,13 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
             profileScreens(
                 onOpenProgress = { navController.navigate(ProgressRoute) },
                 onOpenReminders = { navController.navigate(RemindersRoute) },
+                onOpenJourney = { navController.navigate(JourneyRoute) },
+                onOpenStage = openStage,
+                onOpenPremium = openPremium,
                 onBack = { navController.popBackStack() },
             )
         }
+    }
     }
 }
 

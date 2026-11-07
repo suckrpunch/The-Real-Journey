@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.model.BackgroundSound
+import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.TimerLimits
 import com.newjourney.core.model.TimerSettings
@@ -35,10 +36,11 @@ class MeditateSetupViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val settingsRepository: UserSettingsRepository,
     timer: MeditationTimer,
+    private val entitlements: EntitlementRepository,
 ) : ViewModel() {
 
-    // Phase 4 replaces this with the verified entitlement from Google Play.
-    private val entitlement = Entitlement(isPremium = false)
+    /** Premium as confirmed by Google Play (see EntitlementRepository). */
+    private val entitlement: Entitlement get() = entitlements.entitlement.value
 
     private val selectedMinutes = savedStateHandle.getStateFlow(
         KEY_MINUTES,
@@ -58,7 +60,8 @@ class MeditateSetupViewModel @Inject constructor(
             sessionInProgress = timerState is TimerState.Running || timerState is TimerState.Paused,
             entitlement = entitlement,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MeditateSetupUiState())
+    }.combine(entitlements.entitlement) { state, current -> state.copy(entitlement = current) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MeditateSetupUiState())
 
     fun selectDuration(minutes: Int) {
         if (!uiState.value.isLocked(minutes)) savedStateHandle[KEY_MINUTES] = minutes

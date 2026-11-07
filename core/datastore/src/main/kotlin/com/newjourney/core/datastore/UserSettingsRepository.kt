@@ -46,6 +46,18 @@ interface UserSettingsRepository {
     /** The day (epoch day) the "we're here when you're ready" note was last sent, or null. */
     val lastEncouragementDay: Flow<Long?>
     suspend fun setLastEncouragementDay(epochDay: Long?)
+
+    /** The last Premium status confirmed by Google Play, so Premium keeps working offline. */
+    val cachedPremium: Flow<Boolean>
+    suspend fun setCachedPremium(premium: Boolean)
+
+    /** Developer-only preview of Premium (debug builds). Never used in release builds. */
+    val debugPremium: Flow<Boolean>
+    suspend fun setDebugPremium(on: Boolean)
+
+    /** Journey stages whose arrival the user has already seen, by stage name. */
+    val seenJourneyStages: Flow<Set<String>>
+    suspend fun markJourneyStagesSeen(stages: Set<String>)
 }
 
 @Singleton
@@ -151,7 +163,28 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         }
     }
 
+    override val cachedPremium: Flow<Boolean> = safeData.map { it[Keys.CACHED_PREMIUM] ?: false }
+
+    override suspend fun setCachedPremium(premium: Boolean) {
+        dataStore.edit { it[Keys.CACHED_PREMIUM] = premium }
+    }
+
+    override val debugPremium: Flow<Boolean> = safeData.map { it[Keys.DEBUG_PREMIUM] ?: false }
+
+    override suspend fun setDebugPremium(on: Boolean) {
+        dataStore.edit { it[Keys.DEBUG_PREMIUM] = on }
+    }
+
+    override val seenJourneyStages: Flow<Set<String>> = safeData.map { it[Keys.SEEN_STAGES] ?: emptySet() }
+
+    override suspend fun markJourneyStagesSeen(stages: Set<String>) {
+        dataStore.edit { it[Keys.SEEN_STAGES] = (it[Keys.SEEN_STAGES] ?: emptySet()) + stages }
+    }
+
     private object Keys {
+        val CACHED_PREMIUM = booleanPreferencesKey("premium_cached")
+        val DEBUG_PREMIUM = booleanPreferencesKey("premium_debug_preview")
+        val SEEN_STAGES = stringSetPreferencesKey("journey_seen_stages")
         val DAILY_GOAL = intPreferencesKey("daily_goal_minutes")
         val R_DAILY_ON = booleanPreferencesKey("reminder_daily_on")
         val R_DAILY_TIME = intPreferencesKey("reminder_daily_minute_of_day")

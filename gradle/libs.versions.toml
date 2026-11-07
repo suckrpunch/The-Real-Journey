@@ -13,6 +13,7 @@ androidxComposeBom = "2024.12.01"
 androidxMedia3 = "1.5.1"
 androidxRoom = "2.8.5"
 sqlcipher = "4.6.1"
+playBilling = "9.1.0"
 kotlinxCoroutines = "1.9.0"
 kotlinxSerializationJson = "1.7.3"
 junit = "4.13.2"
@@ -32,6 +33,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
 sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
+play-billing = { group = "com.android.billingclient", name = "billing", version.ref = "playBilling" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }

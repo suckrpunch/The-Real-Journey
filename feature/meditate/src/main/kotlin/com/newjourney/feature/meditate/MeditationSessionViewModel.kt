@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.catalog.JourneyContentRepository
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
+import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
+import com.newjourney.core.model.JourneyProgress
 import com.newjourney.core.model.Milestone
 import com.newjourney.core.model.ProgressStats
 import com.newjourney.core.model.TimerLimits
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -32,6 +36,8 @@ class MeditationSessionViewModel @Inject constructor(
     settings: UserSettingsRepository,
     catalog: CatalogRepository,
     sessions: SessionRepository,
+    journeyContent: JourneyContentRepository,
+    private val entitlements: EntitlementRepository,
 ) : ViewModel() {
 
     val state: StateFlow<TimerState> = timer.state
@@ -54,11 +60,22 @@ class MeditationSessionViewModel @Inject constructor(
         ProgressStats.from(all, LocalDate.now(zone), zone).reachedBy(Instant.ofEpochMilli(finished.session.id))
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    /** Journey stages reached by the session that just finished: (stage id, stage name). */
+    val newStages: StateFlow<List<Pair<String, String>>> = combine(
+        timer.state,
+        sessions.sessionsSince(Instant.EPOCH),
+        flow { emit(journeyContent.content()) },
+    ) { timerState, all, content ->
+        val finished = timerState as? TimerState.Finished ?: return@combine emptyList()
+        JourneyProgress.from(all).reachedBy(Instant.ofEpochMilli(finished.session.id))
+            .map { it.name to (content[it]?.name ?: it.name) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     /** True once this screen has had a session, so it can close itself when the session is over. */
     val hadSession: StateFlow<Boolean> = savedStateHandle.getStateFlow(KEY_HAD_SESSION, false)
 
-    // Phase 4 replaces this with the verified entitlement from Google Play.
-    private val entitlement = Entitlement(isPremium = false)
+    /** Premium as confirmed by Google Play (see EntitlementRepository). */
+    private val entitlement: Entitlement get() = entitlements.entitlement.value
 
     init {
         val route = savedStateHandle.toRoute<MeditationSessionRoute>()

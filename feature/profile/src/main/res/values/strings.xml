@@ -80,6 +80,52 @@
     <string name="theme_night_starts">Night starts</string>
     <string name="theme_day_returns">Day returns</string>
 
-    <string name="profile_coming_title">Coming soon</string>
-    <string name="profile_coming_body">The Journey Within and Premium will appear here in coming updates.</string>
+
+    <!-- The Journey Within -->
+    <string name="journey_title">The Journey Within</string>
+    <string name="journey_intro">A quiet path of six stages. Every meditation is a step; the path only moves forward.</string>
+    <string name="journey_open">Open your journey</string>
+    <string name="journey_card_start">Your journey begins with your first meditation.</string>
+    <string name="journey_card_current">You are at %1$s.</string>
+    <string name="journey_next">Next: %1$s</string>
+    <string name="journey_next_count">%1$d of %2$d meditations</string>
+    <string name="journey_complete">You have reached every stage. The sanctuary is yours to wander.</string>
+    <string name="journey_reached">Reached on %1$s</string>
+    <string name="journey_after">After %1$d meditations</string>
+    <string name="journey_premium_stage">Opens fully with Premium</string>
+    <string name="journey_stage_ahead">This stage opens after %1$d meditations. You have meditated %2$d times so far; there is no hurry.</string>
+    <string name="journey_invite_title">You have arrived</string>
+    <string name="journey_invite_body">You reached this stage through your own practice, and it stays yours. Its reflection and what it opens are part of Premium, whenever you would like to go further.</string>
+    <string name="journey_opens">What opens here</string>
+
+    <!-- Premium -->
+    <string name="premium_title">Premium</string>
+    <string name="premium_intro">An invitation to go further on your journey, at your own pace.</string>
+    <string name="premium_benefit_library">The full music library, every collection</string>
+    <string name="premium_benefit_length">Sessions of 15 minutes up to an hour, with any track</string>
+    <string name="premium_benefit_journey">Every stage of The Journey Within</string>
+    <string name="premium_benefit_support">Support for new music and new experiences</string>
+    <string name="premium_free_stays">Everything free stays free: the timer up to 10 minutes, the free tracks, your journal, progress and reminders.</string>
+    <string name="premium_plan_annual">Yearly</string>
+    <string name="premium_plan_monthly">Monthly</string>
+    <string name="premium_price_year">%1$s per year</string>
+    <string name="premium_price_month">%1$s per month</string>
+    <string name="premium_trial">%1$d days free to try</string>
+    <string name="premium_start_trial">Start %1$d days free</string>
+    <string name="premium_subscribe">Subscribe</string>
+    <string name="premium_discover_button">Discover Premium</string>
+    <string name="premium_not_now_button">Not now</string>
+    <string name="premium_terms">Payment is handled by Google Play. The subscription renews automatically until you cancel, which you can do any time in Google Play. After a free trial, the price above applies unless you cancel before it ends.</string>
+    <string name="premium_loading">Looking up the prices…</string>
+    <string name="premium_unavailable_title">Premium isn\'t available just now</string>
+    <string name="premium_unavailable_body">Subscriptions work when the app is installed from Google Play and there is an internet connection. Please try again later.</string>
+    <string name="premium_active_title">You are a Premium member</string>
+    <string name="premium_active_body">Thank you for supporting this sanctuary. Everything is open to you.</string>
+    <string name="premium_manage">Manage in Google Play</string>
+    <string name="premium_card_invite">The full library, longer sessions and every stage of your journey.</string>
+    <string name="premium_card_active">Everything is open to you. Thank you.</string>
+    <string name="premium_card_manage">Your membership</string>
+    <string name="premium_dev_title">Developer preview (test builds only)</string>
+    <string name="premium_dev_body">Shows the app as a Premium member, without paying. This switch does not exist in the version on Google Play.</string>
+    <string name="premium_dev_switch">Preview Premium</string>
 </resources>

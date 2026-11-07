@@ -1,0 +1,53 @@
+{
+  "note": "The Journey Within. Edit the words freely; keep the six ids. Paragraphs in a reflection are separated by \\n\\n.",
+  "stages": [
+    {
+      "id": "AWAKENING",
+      "name": "The Awakening",
+      "tagline": "Where every journey begins",
+      "color": "#D2AE6E",
+      "reflection": "You sat down, and you stayed. That is how every journey within begins: not with a great leap, but with one quiet moment of choosing to be here.\n\nNothing needs to be different yet. Simply notice that you came.",
+      "opens": "The path is open. Each meditation, of any length, is a step along it."
+    },
+    {
+      "id": "FOUNDATION",
+      "name": "The Foundation",
+      "tagline": "Seven moments of stillness",
+      "color": "#8FA37E",
+      "reflection": "A house stands on what you cannot see. Seven times you have returned to stillness, and something steady is taking shape beneath the surface.\n\nThere is no need to measure it. Roots grow in the dark, at their own pace.",
+      "opens": "A steady practice. Every free session and track stays yours, always."
+    },
+    {
+      "id": "INNER_BALANCE",
+      "name": "The Inner Balance",
+      "tagline": "Finding the quiet centre",
+      "color": "#6E9A8E",
+      "reflection": "Life will keep moving: busy days, restless nights, joy and worry side by side. Balance is not standing perfectly still. It is knowing the way back to your centre.\n\nTwenty times you have found that way. It is becoming familiar.",
+      "opens": "With Premium: longer sessions and the full music library, to let the balance deepen."
+    },
+    {
+      "id": "PATH_OF_AWARENESS",
+      "name": "The Path of Awareness",
+      "tagline": "Seeing clearly, gently",
+      "color": "#6F93B8",
+      "reflection": "With practice, the space between what happens and how you respond grows a little wider. In that space there is room to notice, to soften, and to choose.\n\nFifty meditations have opened this path. Walk it with curiosity rather than effort.",
+      "opens": "With Premium: sessions of up to an hour, and every collection to explore."
+    },
+    {
+      "id": "DEEPER_SELF",
+      "name": "The Deeper Self",
+      "tagline": "Beneath the surface",
+      "color": "#6C6AA8",
+      "reflection": "Beneath the stream of thoughts there is a quieter you, one that has been here all along. One hundred times you have listened for it.\n\nYou do not have to find anything. Only keep listening.",
+      "opens": "With Premium: long-form sessions and the deepest music in the library."
+    },
+    {
+      "id": "INNER_SANCTUARY",
+      "name": "The Inner Sanctuary",
+      "tagline": "A place you can always return to",
+      "color": "#9A86C2",
+      "reflection": "Two hundred meditations. What began as a practice has become a place: a sanctuary within you that no busy day can take away.\n\nThe journey does not end here. It simply becomes yours to wander, for as long as you wish.",
+      "opens": "With Premium: the whole sanctuary, every length and every collection, and new music as it arrives."
+    }
+  ]
+}
