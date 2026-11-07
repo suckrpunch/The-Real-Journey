@@ -24,13 +24,11 @@ Not built yet: routines, accounts and online catalog, premium purchases, offline
 
 ### Music: where it lives and how to add more
 
-- **In the app** (`core/catalog/src/main/assets/`): the Seven Chakras and a bundled `catalog.json`. These always work, even offline and before the first online check.
-- **Online** (Firebase Storage): every other track, plus `catalog/catalog.json`, the full list of all categories and tracks. The app fetches it at start-up and keeps the last copy, so the library also opens offline. Online music is kept in a 500 MB cache once heard, so it plays again without data.
-- The source of the online catalog is kept in this repository: `content/catalog/catalog.json`. A unit test checks it.
-- The bucket name is set in `core/catalog/build.gradle.kts` (`CONTENT_BUCKET`). Empty = in-app music only.
-- `firebase/storage.rules`: everyone can read, nobody can write through the app.
+- **Today: everything is in the app** (`core/catalog/src/main/assets/`): all 27 tracks (Seven Chakras plus Sleep Momentum, Relaxation Reserve, Focus Point and Deep Journey Essentials) and `catalog/catalog.json`. Everything works offline. The app is about 140 MB.
+- **Ready for online music**: once a Firebase Storage bucket exists, set its name in `core/catalog/build.gradle.kts` (`CONTENT_BUCKET`) and upload `content/catalog/catalog.json` with the audio. The app then fetches the online catalog at start-up (keeping the last copy for offline use), streams online tracks and keeps them in a 500 MB cache. Bundled tracks keep working. `firebase/storage.rules`: everyone can read, nobody can write through the app.
+- While music is bundled, adding tracks needs an app update. Online storage removes that step and keeps the app small; Google Play allows up to about 200 MB for the app download, so online storage is needed before the library grows much further.
 
-**Adding music** (no app update needed):
+**Adding music** (no app update needed once online storage is set up):
 1. Put the new recordings (WAV preferred) in a folder and tell Claude which category, sub-category and free/premium each belongs to.
 2. Claude matches the loudness (−19 LUFS, gain only), finds seamless loop points (and lines up beats in rhythmic tracks), sends listening previews, and prepares an upload folder with the `.m4a` files and an updated `catalog/catalog.json`.
 3. Upload that folder's contents to Firebase Storage, keeping the folder names (`audio/…`, `catalog/catalog.json`).

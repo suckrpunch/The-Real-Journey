@@ -16,6 +16,7 @@ class CatalogParserTest {
         val catalog = CatalogParser.parse(text)
         assertEquals(6, catalog.categories.size)
         assertEquals(7, catalog.tracksInCategory("chakras").size)
+        assertEquals(27, catalog.tracks.size)
 
         val subcategoryIds = catalog.categories.flatMap { c -> c.subcategories.map { it.id } }.toSet()
         catalog.tracks.forEach { track ->

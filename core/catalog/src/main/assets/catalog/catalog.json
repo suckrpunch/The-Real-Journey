@@ -6,13 +6,41 @@
       "name": "Seven Chakras",
       "icon": "chakras",
       "subcategories": [
-        { "id": "root", "name": "Root Chakra", "color": "#B4675C" },
-        { "id": "sacral", "name": "Sacral Chakra", "color": "#C88A55" },
-        { "id": "solar-plexus", "name": "Solar Plexus Chakra", "color": "#C4A24A" },
-        { "id": "heart", "name": "Heart Chakra", "color": "#6E9A6B" },
-        { "id": "throat", "name": "Throat Chakra", "color": "#5F8DB0" },
-        { "id": "third-eye", "name": "Third Eye Chakra", "color": "#6C6AA8" },
-        { "id": "crown", "name": "Crown Chakra", "color": "#9478B2" }
+        {
+          "id": "root",
+          "name": "Root Chakra",
+          "color": "#B4675C"
+        },
+        {
+          "id": "sacral",
+          "name": "Sacral Chakra",
+          "color": "#C88A55"
+        },
+        {
+          "id": "solar-plexus",
+          "name": "Solar Plexus Chakra",
+          "color": "#C4A24A"
+        },
+        {
+          "id": "heart",
+          "name": "Heart Chakra",
+          "color": "#6E9A6B"
+        },
+        {
+          "id": "throat",
+          "name": "Throat Chakra",
+          "color": "#5F8DB0"
+        },
+        {
+          "id": "third-eye",
+          "name": "Third Eye Chakra",
+          "color": "#6C6AA8"
+        },
+        {
+          "id": "crown",
+          "name": "Crown Chakra",
+          "color": "#9478B2"
+        }
       ]
     },
     {
@@ -20,10 +48,22 @@
       "name": "Sleep",
       "icon": "sleep",
       "subcategories": [
-        { "id": "deep-sleep", "name": "Deep sleep" },
-        { "id": "before-bed", "name": "Relaxing before bedtime" },
-        { "id": "sleep-sounds", "name": "Sleep sounds" },
-        { "id": "night-meditation", "name": "Night meditation" }
+        {
+          "id": "deep-sleep",
+          "name": "Deep sleep"
+        },
+        {
+          "id": "before-bed",
+          "name": "Relaxing before bedtime"
+        },
+        {
+          "id": "sleep-sounds",
+          "name": "Sleep sounds"
+        },
+        {
+          "id": "night-meditation",
+          "name": "Night meditation"
+        }
       ]
     },
     {
@@ -31,10 +71,22 @@
       "name": "Relaxation",
       "icon": "relaxation",
       "subcategories": [
-        { "id": "stress", "name": "Stress relief" },
-        { "id": "anxiety", "name": "Anxiety relaxation" },
-        { "id": "emotional-release", "name": "Emotional release" },
-        { "id": "inner-peace", "name": "Inner peace" }
+        {
+          "id": "stress",
+          "name": "Stress relief"
+        },
+        {
+          "id": "anxiety",
+          "name": "Anxiety relaxation"
+        },
+        {
+          "id": "emotional-release",
+          "name": "Emotional release"
+        },
+        {
+          "id": "inner-peace",
+          "name": "Inner peace"
+        }
       ]
     },
     {
@@ -42,10 +94,22 @@
       "name": "Focus & Productivity",
       "icon": "focus",
       "subcategories": [
-        { "id": "deep-focus", "name": "Deep focus" },
-        { "id": "concentration", "name": "Concentration" },
-        { "id": "clarity", "name": "Mental clarity" },
-        { "id": "creative", "name": "Creative thinking" }
+        {
+          "id": "deep-focus",
+          "name": "Deep focus"
+        },
+        {
+          "id": "concentration",
+          "name": "Concentration"
+        },
+        {
+          "id": "clarity",
+          "name": "Mental clarity"
+        },
+        {
+          "id": "creative",
+          "name": "Creative thinking"
+        }
       ]
     },
     {
@@ -53,10 +117,22 @@
       "name": "Deep Meditation",
       "icon": "deep",
       "subcategories": [
-        { "id": "consciousness", "name": "Deep consciousness" },
-        { "id": "exploration", "name": "Inner exploration" },
-        { "id": "mindfulness", "name": "Mindfulness" },
-        { "id": "spiritual", "name": "Spiritual meditation" }
+        {
+          "id": "consciousness",
+          "name": "Deep consciousness"
+        },
+        {
+          "id": "exploration",
+          "name": "Inner exploration"
+        },
+        {
+          "id": "mindfulness",
+          "name": "Mindfulness"
+        },
+        {
+          "id": "spiritual",
+          "name": "Spiritual meditation"
+        }
       ]
     },
     {
@@ -64,10 +140,22 @@
       "name": "Healing & Energy",
       "icon": "healing",
       "subcategories": [
-        { "id": "balance", "name": "Emotional balance" },
-        { "id": "self-love", "name": "Self-love" },
-        { "id": "positive-energy", "name": "Positive energy" },
-        { "id": "inner-healing", "name": "Inner healing" }
+        {
+          "id": "balance",
+          "name": "Emotional balance"
+        },
+        {
+          "id": "self-love",
+          "name": "Self-love"
+        },
+        {
+          "id": "positive-energy",
+          "name": "Positive energy"
+        },
+        {
+          "id": "inner-healing",
+          "name": "Inner healing"
+        }
       ]
     }
   ],
@@ -81,7 +169,11 @@
       "durationMs": 332146,
       "audio": "audio/chakra_root.m4a",
       "tier": "free",
-      "loop": { "inMs": 7000, "outMs": 310510, "crossfadeMs": 8000 }
+      "loop": {
+        "inMs": 7000,
+        "outMs": 310510,
+        "crossfadeMs": 8000
+      }
     },
     {
       "id": "chakra-sacral-stillness",
@@ -92,7 +184,11 @@
       "durationMs": 316660,
       "audio": "audio/chakra_sacral.m4a",
       "tier": "free",
-      "loop": { "inMs": 6500, "outMs": 306017, "crossfadeMs": 6000 }
+      "loop": {
+        "inMs": 6500,
+        "outMs": 306017,
+        "crossfadeMs": 6000
+      }
     },
     {
       "id": "chakra-solar-plexus-activation",
@@ -103,7 +199,11 @@
       "durationMs": 248785,
       "audio": "audio/chakra_solar_plexus.m4a",
       "tier": "free",
-      "loop": { "inMs": 4000, "outMs": 221029, "crossfadeMs": 10000 }
+      "loop": {
+        "inMs": 4000,
+        "outMs": 221029,
+        "crossfadeMs": 10000
+      }
     },
     {
       "id": "chakra-heart-cleansing",
@@ -114,7 +214,11 @@
       "durationMs": 242319,
       "audio": "audio/chakra_heart.m4a",
       "tier": "free",
-      "loop": { "inMs": 15000, "outMs": 219025, "crossfadeMs": 6000 }
+      "loop": {
+        "inMs": 15000,
+        "outMs": 219025,
+        "crossfadeMs": 6000
+      }
     },
     {
       "id": "chakra-throat-circle",
@@ -125,7 +229,11 @@
       "durationMs": 239090,
       "audio": "audio/chakra_throat.m4a",
       "tier": "free",
-      "loop": { "inMs": 8000, "outMs": 231505, "crossfadeMs": 8000 }
+      "loop": {
+        "inMs": 8000,
+        "outMs": 231505,
+        "crossfadeMs": 8000
+      }
     },
     {
       "id": "chakra-third-eye-focus",
@@ -136,7 +244,11 @@
       "durationMs": 297146,
       "audio": "audio/chakra_third_eye.m4a",
       "tier": "free",
-      "loop": { "inMs": 13500, "outMs": 283028, "crossfadeMs": 10000 }
+      "loop": {
+        "inMs": 13500,
+        "outMs": 283028,
+        "crossfadeMs": 10000
+      }
     },
     {
       "id": "chakra-crown-bliss",
@@ -147,7 +259,291 @@
       "durationMs": 244095,
       "audio": "audio/chakra_crown.m4a",
       "tier": "free",
-      "loop": { "inMs": 8000, "outMs": 233016, "crossfadeMs": 6000 }
+      "loop": {
+        "inMs": 8000,
+        "outMs": 233016,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "deep-sleep-drifter",
+      "title": "Deep Sleep Drifter",
+      "category": "sleep",
+      "subcategory": "deep-sleep",
+      "durationMs": 266402,
+      "audio": "audio/sleep/deep-sleep-drifter.m4a",
+      "tier": "free",
+      "loop": {
+        "inMs": 46000,
+        "outMs": 216523,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "sleeping-panda-dream",
+      "title": "Sleeping Panda Dream",
+      "category": "sleep",
+      "subcategory": "deep-sleep",
+      "durationMs": 470505,
+      "audio": "audio/sleep/sleeping-panda-dream.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 18500,
+        "outMs": 456022,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "partical-heaven-zone",
+      "title": "Partical Heaven Zone",
+      "category": "sleep",
+      "subcategory": "before-bed",
+      "durationMs": 175775,
+      "audio": "audio/sleep/partical-heaven-zone.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 11000,
+        "outMs": 151482,
+        "crossfadeMs": 10000
+      }
+    },
+    {
+      "id": "pluto-planet-calmth",
+      "title": "Pluto Planet Calmth",
+      "category": "sleep",
+      "subcategory": "night-meditation",
+      "durationMs": 207423,
+      "audio": "audio/sleep/pluto-planet-calmth.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 20000,
+        "outMs": 182520,
+        "crossfadeMs": 8000
+      }
+    },
+    {
+      "id": "universe-calling-home",
+      "title": "Universe Calling Home",
+      "category": "sleep",
+      "subcategory": "night-meditation",
+      "durationMs": 334481,
+      "audio": "audio/sleep/universe-calling-home.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 4500,
+        "outMs": 299473,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "relaxed-calm-mind",
+      "title": "Relaxed Calm Mind",
+      "category": "relaxation",
+      "subcategory": "inner-peace",
+      "durationMs": 172919,
+      "audio": "audio/relaxation/relaxed-calm-mind.m4a",
+      "tier": "free",
+      "loop": {
+        "inMs": 8500,
+        "outMs": 144471,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "lay-back-and-chill",
+      "title": "Lay Back and Chill",
+      "category": "relaxation",
+      "subcategory": "stress",
+      "durationMs": 199877,
+      "audio": "audio/relaxation/lay-back-and-chill.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 8000,
+        "outMs": 183031,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "sleep-on-the-keys",
+      "title": "Sleep on The Keys",
+      "category": "relaxation",
+      "subcategory": "stress",
+      "durationMs": 188035,
+      "audio": "audio/relaxation/sleep-on-the-keys.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 10500,
+        "outMs": 167702,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "will-be-right-with-you",
+      "title": "Will Be Right With You",
+      "category": "relaxation",
+      "subcategory": "anxiety",
+      "durationMs": 234261,
+      "audio": "audio/relaxation/will-be-right-with-you.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 38500,
+        "outMs": 201984,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "vibe-says-it-all",
+      "title": "Vibe Says It All",
+      "category": "relaxation",
+      "subcategory": "emotional-release",
+      "durationMs": 118770,
+      "audio": "audio/relaxation/vibe-says-it-all.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 12000,
+        "outMs": 89688,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "study-with-me",
+      "title": "Study With Me",
+      "category": "focus",
+      "subcategory": "concentration",
+      "durationMs": 176053,
+      "audio": "audio/focus/study-with-me.m4a",
+      "tier": "free",
+      "loop": {
+        "inMs": 10500,
+        "outMs": 155832,
+        "crossfadeMs": 8000
+      }
+    },
+    {
+      "id": "eyes-on-the-road",
+      "title": "Eyes on The Road",
+      "category": "focus",
+      "subcategory": "concentration",
+      "durationMs": 166045,
+      "audio": "audio/focus/eyes-on-the-road.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 42500,
+        "outMs": 153495,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "delta-for-your-brain-waves",
+      "title": "Delta for Your Brain Waves",
+      "category": "focus",
+      "subcategory": "deep-focus",
+      "durationMs": 442895,
+      "audio": "audio/focus/delta-for-your-brain-waves.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 11500,
+        "outMs": 410518,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "relax-my-friend",
+      "title": "Relax My Friend",
+      "category": "focus",
+      "subcategory": "clarity",
+      "durationMs": 234962,
+      "audio": "audio/focus/relax-my-friend.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 18000,
+        "outMs": 198971,
+        "crossfadeMs": 10000
+      }
+    },
+    {
+      "id": "dream-team-vibe",
+      "title": "Dream Team Vibe",
+      "category": "focus",
+      "subcategory": "creative",
+      "durationMs": 115588,
+      "audio": "audio/focus/dream-team-vibe.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 7500,
+        "outMs": 90201,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "come-and-find-me",
+      "title": "Come And Find Me",
+      "category": "deep",
+      "subcategory": "spiritual",
+      "durationMs": 251472,
+      "audio": "audio/deep/come-and-find-me.m4a",
+      "tier": "free",
+      "loop": {
+        "inMs": 81000,
+        "outMs": 223999,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "deep-inside-restoration",
+      "title": "Deep Inside Restoration",
+      "category": "deep",
+      "subcategory": "consciousness",
+      "durationMs": 427361,
+      "audio": "audio/deep/deep-inside-restoration.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 13000,
+        "outMs": 376489,
+        "crossfadeMs": 10000
+      }
+    },
+    {
+      "id": "positive-alpha",
+      "title": "Positive Alpha",
+      "category": "deep",
+      "subcategory": "consciousness",
+      "durationMs": 395225,
+      "audio": "audio/deep/positive-alpha.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 6000,
+        "outMs": 362998,
+        "crossfadeMs": 10000
+      }
+    },
+    {
+      "id": "void-dancer",
+      "title": "Void Dancer",
+      "category": "deep",
+      "subcategory": "exploration",
+      "durationMs": 463166,
+      "audio": "audio/deep/void-dancer.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 15000,
+        "outMs": 422474,
+        "crossfadeMs": 10000
+      }
+    },
+    {
+      "id": "focused-on-healing",
+      "title": "Focused on Healing",
+      "category": "deep",
+      "subcategory": "mindfulness",
+      "durationMs": 149327,
+      "audio": "audio/deep/focused-on-healing.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 11000,
+        "outMs": 119028,
+        "crossfadeMs": 6000
+      }
     }
   ]
 }
