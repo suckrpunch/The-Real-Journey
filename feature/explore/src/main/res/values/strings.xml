@@ -24,4 +24,7 @@
     <string name="track_meditate_title">Meditate with this track</string>
     <string name="track_meditate_body">The music flows on seamlessly for as long as you choose, then fades out and the bell rings.</string>
     <string name="track_meditate_begin">Meditate for %1$d minutes</string>
+
+    <string name="track_offline_title">This track can\'t play right now</string>
+    <string name="track_offline_body">It comes from the internet the first time you play it. Check your connection, then tap Play to try again. Once heard, it also plays offline.</string>
 </resources>

@@ -22,16 +22,21 @@ What works in this build:
 
 Not built yet: routines, accounts and online catalog, premium purchases, offline downloads and The Journey Within.
 
-### Music: how tracks and loops work
+### Music: where it lives and how to add more
 
-- Tracks live in `core/catalog/src/main/assets/audio/` (AAC, 160 kbps). Each is the owner's master with one volume adjustment, so all tracks play at the same loudness (−19 LUFS). No compression or other processing.
-- `core/catalog/src/main/assets/catalog/catalog.json` describes every category, sub-category and track. **Adding a track** = put the `.m4a` in `audio/` and add one entry under `"tracks"`. A unit test (`CatalogParserTest`) checks every entry points to a real file.
-- `"loop"` gives the seamless-repeat points in milliseconds: `inMs` (after the fade-in), `outMs` (before the fade-out) and `crossfadeMs`. During a long session `LoopingTrackPlayer` starts a second copy at `inMs` shortly before `outMs` and crossfades the two, so playback never reaches a file edge. The points for the chakra tracks were chosen by measuring where loudness and sound colour match best. Leave `"loop"` out and a track simply repeats from the start.
-- Later the same catalog moves online, so tracks can be added without an app update.
+- **In the app** (`core/catalog/src/main/assets/`): the Seven Chakras and a bundled `catalog.json`. These always work, even offline and before the first online check.
+- **Online** (Firebase Storage): every other track, plus `catalog/catalog.json`, the full list of all categories and tracks. The app fetches it at start-up and keeps the last copy, so the library also opens offline. Online music is kept in a 500 MB cache once heard, so it plays again without data.
+- The source of the online catalog is kept in this repository: `content/catalog/catalog.json`. A unit test checks it.
+- The bucket name is set in `core/catalog/build.gradle.kts` (`CONTENT_BUCKET`). Empty = in-app music only.
+- `firebase/storage.rules`: everyone can read, nobody can write through the app.
 
-### Sounds
+**Adding music** (no app update needed):
+1. Put the new recordings (WAV preferred) in a folder and tell Claude which category, sub-category and free/premium each belongs to.
+2. Claude matches the loudness (−19 LUFS, gain only), finds seamless loop points (and lines up beats in rhythmic tracks), sends listening previews, and prepares an upload folder with the `.m4a` files and an updated `catalog/catalog.json`.
+3. Upload that folder's contents to Firebase Storage, keeping the folder names (`audio/…`, `catalog/catalog.json`).
+4. Open the app: the new music appears after its next start.
 
-`feature/meditate/src/main/res/raw/` holds `bell.m4a`, `rain.m4a` and `forest.m4a`. Rain and Forest were made loop-ready: their last 3 seconds crossfade into the start, so the loop has no dip. To replace a sound, put a new `.m4a` file with the same name in that folder; no code changes are needed. For a looping sound, make sure its end flows into its start.
+**Loop points** (`"loop"` in the catalog, milliseconds): `inMs` (after the fade-in), `outMs` (before the fade-out), `crossfadeMs`. In long sessions `LoopingTrackPlayer` starts a second copy at `inMs` shortly before `outMs` and crossfades the two, so playback never reaches a file edge.
 
 ## Open and run it
 
@@ -51,7 +56,7 @@ core/
   designsystem/          Colours, fonts, shapes, the app theme and shared buttons and cards
   datastore/             Saves small settings on the phone (theme, timer choices, saved quotes)
   database/              On-device database: sessions, favourites, listening history (schemas/ keeps each version)
-  catalog/               catalog.json and the music files; CatalogRepository reads them
+  catalog/               Bundled catalog.json and chakra music; CatalogRepository merges in the online catalog
   playback/              PlaybackService (library player + lock-screen controls), MusicPlayer, LoopingTrackPlayer
   journal/               Encrypted journal database (SQLCipher) and its Keystore-protected key
   notifications/         Reminder planning (ReminderScheduler) and the receivers that show them
@@ -62,6 +67,8 @@ feature/
   journal/               Journal list, search, calendar and the writing screen
   profile/               Profile, progress, daily goal, reminders and appearance
 gradle/libs.versions.toml  Every library version in one place
+content/catalog/         The online catalog.json (uploaded to Firebase Storage with the music)
+firebase/                Firebase Storage rules
 licenses/                Font licences (SIL Open Font License)
 ```
 

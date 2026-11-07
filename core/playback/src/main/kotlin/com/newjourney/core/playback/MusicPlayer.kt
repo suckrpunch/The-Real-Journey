@@ -31,6 +31,8 @@ data class NowPlaying(
     val durationMs: Long,
     val hasNext: Boolean,
     val hasPrevious: Boolean,
+    /** True when the track could not be played, usually because it is online and there is no connection. */
+    val failed: Boolean = false,
 )
 
 /**
@@ -59,7 +61,17 @@ class MusicPlayer @Inject constructor(
         controller.play()
     }
 
-    fun togglePlayPause() = withController { if (it.isPlaying) it.pause() else it.play() }
+    fun togglePlayPause() = withController {
+        when {
+            it.playerError != null -> {
+                // Try again, for example once the internet connection is back.
+                it.prepare()
+                it.play()
+            }
+            it.isPlaying -> it.pause()
+            else -> it.play()
+        }
+    }
     fun pause() = withController { it.pause() }
     fun seekTo(positionMs: Long) = withController { it.seekTo(positionMs) }
     fun next() = withController { it.seekToNextMediaItem() }
@@ -107,6 +119,7 @@ class MusicPlayer @Inject constructor(
                     ?: it.mediaMetadata.extras?.getLong(PlaybackService.EXTRA_DURATION_MS) ?: 0L,
                 hasNext = player.hasNextMediaItem(),
                 hasPrevious = player.hasPreviousMediaItem(),
+                failed = player.playerError != null,
             )
         }
     }

@@ -30,6 +30,34 @@ class CatalogParserTest {
         assertEquals(catalog.tracks.size, catalog.tracks.map { it.id }.toSet().size)
     }
 
+    /** The online catalog kept in the repository (content/catalog/catalog.json) must parse and be consistent. */
+    @Test
+    fun onlineCatalogIsValid() {
+        val text = File("../../content/catalog/catalog.json").readText()
+        val catalog = CatalogParser.parse(text, CatalogParser.onlineResolver("example-bucket"))
+        assertEquals(27, catalog.tracks.size)
+        val subcategoryIds = catalog.categories.flatMap { c -> c.subcategories.map { it.id } }.toSet()
+        catalog.tracks.forEach { track ->
+            assertTrue("${track.id}: unknown subcategory", track.subcategoryId in subcategoryIds)
+            assertNotNull("${track.id}: no loop points", track.loop)
+            if (track.audioUri.startsWith("asset:///")) {
+                val file = File("src/main/assets/" + track.audioUri.removePrefix("asset:///"))
+                assertTrue("${track.id}: missing bundled file ${file.path}", file.exists())
+            } else {
+                assertTrue(track.audioUri.startsWith("https://firebasestorage.googleapis.com/v0/b/example-bucket/o/audio%2F"))
+            }
+        }
+        assertEquals(catalog.tracks.size, catalog.tracks.map { it.id }.toSet().size)
+    }
+
+    @Test
+    fun storageAddressIsEncoded() {
+        assertEquals(
+            "https://firebasestorage.googleapis.com/v0/b/b.firebasestorage.app/o/audio%2Fsleep%2Fdeep-sleep-drifter.m4a?alt=media",
+            CatalogParser.storageUrl("b.firebasestorage.app", "audio/sleep/deep-sleep-drifter.m4a"),
+        )
+    }
+
     @Test
     fun onlineAddressesAreKept() {
         assertEquals("https://example.com/a.m4a", CatalogParser.toUri("https://example.com/a.m4a"))

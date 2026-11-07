@@ -9,7 +9,13 @@ plugins {
 android {
     namespace = "com.newjourney.core.catalog"
     compileSdk = 35
-    defaultConfig { minSdk = 26 }
+    defaultConfig {
+        minSdk = 26
+        // The Firebase Storage bucket that holds the online catalog and music, for example
+        // "new-journey-1234.firebasestorage.app". Empty = use only the music bundled in the app.
+        buildConfigField("String", "CONTENT_BUCKET", "\"\"")
+    }
+    buildFeatures { buildConfig = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

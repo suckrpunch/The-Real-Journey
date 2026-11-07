@@ -49,6 +49,7 @@ class PlaybackService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
         val player = ExoPlayer.Builder(this)
+            .setMediaSourceFactory(AudioCache.mediaSourceFactory(this))
             .setAudioAttributes(
                 AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(),
                 true, // pauses for calls and other apps

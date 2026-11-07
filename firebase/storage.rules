@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Online music for New Journey.
+// Everyone may read (the app streams music and the catalog without signing in).
+// Nobody may write through the app: files are uploaded only by the owner in the Firebase console.
+//
+// Later, with Premium: premium files move behind short-lived signed links from a Cloud Function,
+// and this rule then allows reading only the catalog and free tracks.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

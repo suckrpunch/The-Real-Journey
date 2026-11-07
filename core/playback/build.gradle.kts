@@ -28,6 +28,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     api(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.media3.datasource)
+    implementation(libs.androidx.media3.database)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

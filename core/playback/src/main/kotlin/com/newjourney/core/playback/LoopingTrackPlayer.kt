@@ -187,6 +187,7 @@ class LoopingTrackPlayer(
 
     private fun newPlayer(track: Track): ExoPlayer =
         ExoPlayer.Builder(context)
+            .setMediaSourceFactory(AudioCache.mediaSourceFactory(context))
             // Focus is handled above for both players together.
             .setAudioAttributes(
                 AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(),

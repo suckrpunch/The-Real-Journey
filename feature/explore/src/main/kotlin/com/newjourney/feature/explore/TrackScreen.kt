@@ -115,6 +115,17 @@ internal fun TrackRouteContent(
             onPrevious = viewModel::previous,
         )
 
+        if (state.nowPlaying?.failed == true) {
+            SoftCard(raised = true) {
+                Text(stringResource(R.string.track_offline_title), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.track_offline_body),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
         SoftCard {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Icon(Icons.Outlined.SelfImprovement, contentDescription = null, tint = MaterialTheme.colorScheme.primary)

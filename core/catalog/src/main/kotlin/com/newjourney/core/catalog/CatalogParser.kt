@@ -14,7 +14,11 @@ import kotlinx.serialization.json.Json
 object CatalogParser {
     private val json = Json { ignoreUnknownKeys = true }
 
-    fun parse(text: String): Catalog {
+    /**
+     * [resolveAudio] turns a track's "audio" value into a playable address. For the catalog bundled
+     * in the app, relative paths are app files; for the online catalog they are files in online storage.
+     */
+    fun parse(text: String, resolveAudio: (String) -> String = ::toUri): Catalog {
         val file = json.decodeFromString<CatalogFile>(text)
         val categories = file.categories.map { category ->
             Category(
@@ -34,7 +38,7 @@ object CatalogParser {
                 categoryId = track.category,
                 subcategoryId = track.subcategory,
                 durationMs = track.durationMs,
-                audioUri = toUri(track.audio),
+                audioUri = resolveAudio(track.audio),
                 tier = if (track.tier.equals("premium", ignoreCase = true)) TrackTier.PREMIUM else TrackTier.FREE,
                 loop = track.loop?.takeIf { it.outMs > it.inMs + it.crossfadeMs }
                     ?.let { LoopPoints(it.inMs, it.outMs, it.crossfadeMs) },
@@ -43,9 +47,22 @@ object CatalogParser {
         return Catalog(categories, tracks)
     }
 
-    /** "audio/x.m4a" means a file inside the app; a full https:// address is used as is. */
+    /** "audio/x.m4a" means a file inside the app; a full address (asset:///, https://) is used as is. */
     internal fun toUri(audio: String): String =
         if (audio.contains("://")) audio else "asset:///" + audio.trimStart('/')
+
+    /**
+     * For the online catalog: "audio/sleep/x.m4a" is a file in the Firebase Storage [bucket].
+     * Full addresses (such as asset:/// for music bundled in the app) are used as is.
+     */
+    fun onlineResolver(bucket: String): (String) -> String = { audio ->
+        if (audio.contains("://")) audio else storageUrl(bucket, audio.trimStart('/'))
+    }
+
+    /** The public download address of a file in Firebase Storage. */
+    fun storageUrl(bucket: String, path: String): String =
+        "https://firebasestorage.googleapis.com/v0/b/$bucket/o/" +
+            java.net.URLEncoder.encode(path, "UTF-8").replace("+", "%20") + "?alt=media"
 
     @Serializable
     private data class CatalogFile(
