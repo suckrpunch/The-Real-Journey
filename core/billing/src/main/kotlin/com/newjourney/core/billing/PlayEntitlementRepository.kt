@@ -144,7 +144,7 @@ internal class PlayEntitlementRepository @Inject constructor(
 
     private suspend fun queryPurchases() {
         val params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
-        val purchases = suspendCancellableCoroutine { cont ->
+        val purchases: List<Purchase> = suspendCancellableCoroutine<List<Purchase>?> { cont ->
             client.queryPurchasesAsync(params) { result, list ->
                 cont.resume(if (result.responseCode == BillingClient.BillingResponseCode.OK) list else null)
             }
@@ -171,7 +171,7 @@ internal class PlayEntitlementRepository @Inject constructor(
 
     private suspend fun acknowledge(purchase: Purchase) {
         val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-        suspendCancellableCoroutine { cont ->
+        suspendCancellableCoroutine<Unit> { cont ->
             client.acknowledgePurchase(params) { result ->
                 if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                     Log.w(TAG, "Acknowledge failed, will retry on next start: ${result.debugMessage}")
@@ -192,7 +192,7 @@ internal class PlayEntitlementRepository @Inject constructor(
                 ),
             )
             .build()
-        val details = suspendCancellableCoroutine { cont ->
+        val details: ProductDetails? = suspendCancellableCoroutine<ProductDetails?> { cont ->
             client.queryProductDetailsAsync(params) { result, queryResult ->
                 cont.resume(
                     if (result.responseCode == BillingClient.BillingResponseCode.OK) {
