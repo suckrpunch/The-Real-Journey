@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.newjourney.feature.home"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 26 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

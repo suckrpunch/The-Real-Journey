@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.newjourney.core.billing"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 26 }
     // BuildConfig.DEBUG decides whether the developer-only Premium preview exists.
     buildFeatures { buildConfig = true }

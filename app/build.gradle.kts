@@ -9,13 +9,13 @@ plugins {
 
 android {
     namespace = "com.newjourney.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         // The application ID is permanent once the app is on Google Play. Confirm it before the first upload.
         applicationId = "com.newjourney.app"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 7
         versionName = "0.7.0"
     }

@@ -99,7 +99,7 @@ Rules that keep the code easy to change:
 ## Before publishing on Google Play
 
 - Confirm the application ID `com.newjourney.app` in `app/build.gradle.kts`; it can't change after the first upload.
-- Raise `targetSdk` to the level Google Play requires at that time.
+- `targetSdk` is 36 (Android 16), the level Google Play requires for new apps since 31 August 2026. Check again before each release.
 - Replace the placeholder icon and sample quotes.
 
 ## Fonts

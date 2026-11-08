@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.newjourney.core.catalog"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 26
         // The Firebase Storage bucket that holds the online catalog and music, for example
