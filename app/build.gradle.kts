@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         // The application ID is permanent once the app is on Google Play. Confirm it before the first upload.
-        applicationId = "com.newjourney.app"
+        applicationId = "nl.FrequenC.NewJourney"
         minSdk = 26
         targetSdk = 36
         versionCode = 7
