@@ -17,14 +17,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -53,9 +58,9 @@ import com.newjourney.core.designsystem.component.SwitchRow
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.Entitlement
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 internal class PremiumViewModel @Inject constructor(
@@ -74,6 +79,13 @@ internal class PremiumViewModel @Inject constructor(
 
     fun setPreview(on: Boolean) {
         viewModelScope.launch { repository.setPreview(on) }
+    }
+
+    val reviewCodeAvailable: Boolean = repository.reviewCodeAvailable
+
+    /** Calls [onResult] with whether the code unlocked Premium. */
+    fun redeemReviewCode(code: String, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch { onResult(repository.redeemReviewCode(code)) }
     }
 }
 
@@ -144,6 +156,22 @@ internal fun PremiumRouteContent(onBack: () -> Unit, viewModel: PremiumViewModel
             }
         }
 
+        if (!entitlement.isPremium && viewModel.reviewCodeAvailable) {
+            var showCode by rememberSaveable { mutableStateOf(false) }
+            TextButton(
+                onClick = { showCode = true },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+            ) {
+                Text(stringResource(R.string.premium_code_button), style = MaterialTheme.typography.bodyLarge)
+            }
+            if (showCode) {
+                AccessCodeDialog(
+                    onRedeem = viewModel::redeemReviewCode,
+                    onDismiss = { showCode = false },
+                )
+            }
+        }
+
         if (viewModel.previewAvailable) {
             SoftCard {
                 Text(stringResource(R.string.premium_dev_title), style = MaterialTheme.typography.titleMedium)
@@ -156,6 +184,53 @@ internal fun PremiumRouteContent(onBack: () -> Unit, viewModel: PremiumViewModel
             }
         }
     }
+}
+
+@Composable
+private fun AccessCodeDialog(
+    onRedeem: (code: String, onResult: (Boolean) -> Unit) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var code by rememberSaveable { mutableStateOf("") }
+    var wrong by rememberSaveable { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.premium_code_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.premium_code_body), style = MaterialTheme.typography.bodyLarge)
+                OutlinedTextField(
+                    value = code,
+                    onValueChange = { code = it; wrong = false },
+                    label = { Text(stringResource(R.string.premium_code_label)) },
+                    singleLine = true,
+                    isError = wrong,
+                    supportingText = if (wrong) {
+                        { Text(stringResource(R.string.premium_code_wrong)) }
+                    } else {
+                        null
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Characters,
+                        autoCorrectEnabled = false,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onRedeem(code) { ok -> if (ok) onDismiss() else wrong = true } },
+                enabled = code.isNotBlank(),
+                modifier = Modifier.heightIn(min = 48.dp),
+            ) { Text(stringResource(R.string.premium_code_unlock)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss, modifier = Modifier.heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.premium_code_cancel))
+            }
+        },
+    )
 }
 
 @Composable

@@ -49,4 +49,13 @@ interface EntitlementRepository {
     val previewAvailable: Boolean
     val previewOn: StateFlow<Boolean>
     suspend fun setPreview(on: Boolean)
+
+    /**
+     * Access for Google Play's app reviewers, who cannot buy a subscription. True when this build
+     * has a review code (set in local.properties). The code is given to Google in Play Console only.
+     */
+    val reviewCodeAvailable: Boolean
+
+    /** Unlocks Premium on this device when [code] matches. Returns whether it matched. */
+    suspend fun redeemReviewCode(code: String): Boolean
 }

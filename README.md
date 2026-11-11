@@ -26,6 +26,10 @@ What works in this build:
 
 Not built yet: routines, online catalog (dormant until a storage bucket is set), server-side purchase verification, offline downloads.
 
+### Access code for Google Play reviewers
+
+Google's reviewers cannot buy subscriptions. Put a code in `local.properties` (it is never uploaded to GitHub), for example `reviewCode=CALM2026` (letters and digits only), then build the release bundle. The Premium screen then shows "I have an access code"; the right code opens Premium on that phone. Give the code only in Play Console › App content › App access (Login details). Changing the code in a new version closes access for old codes. Without a code the button is hidden.
+
 ### Google Play Billing setup
 
 In Play Console › Monetize › Subscriptions create product `premium` with base plans `monthly` and `annual`, and on `annual` an offer `annual-free-trial` (free trial phase). IDs live in `core/billing/.../PlayEntitlementRepository.kt`. Purchases are verified on the device and cached; add server verification before relying on it for anything beyond unlocking content. Test with license testers on the internal testing track; until the app is uploaded there, the Premium screen shows "not available".

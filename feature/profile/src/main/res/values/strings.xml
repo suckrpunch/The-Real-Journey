@@ -125,6 +125,13 @@
     <string name="premium_card_invite">The full library, longer sessions and every stage of your journey.</string>
     <string name="premium_card_active">Everything is open to you. Thank you.</string>
     <string name="premium_card_manage">Your membership</string>
+    <string name="premium_code_button">I have an access code</string>
+    <string name="premium_code_title">Access code</string>
+    <string name="premium_code_body">Enter the code you received to open Premium on this phone.</string>
+    <string name="premium_code_label">Code</string>
+    <string name="premium_code_wrong">That code doesn\'t work. Please check it and try again.</string>
+    <string name="premium_code_unlock">Unlock</string>
+    <string name="premium_code_cancel">Cancel</string>
     <string name="premium_dev_title">Developer preview (test builds only)</string>
     <string name="premium_dev_body">Shows the app as a Premium member, without paying. This switch does not exist in the version on Google Play.</string>
     <string name="premium_dev_switch">Preview Premium</string>

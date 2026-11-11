@@ -5,10 +5,19 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+// The access code for Google Play's app reviewers. It lives in local.properties (never on GitHub),
+// for example:  reviewCode=CALM2026   Letters and digits only. Empty = the code field is hidden.
+val reviewCode: String = rootProject.file("local.properties").takeIf { it.exists() }?.let { file ->
+    java.util.Properties().apply { file.inputStream().use { load(it) } }.getProperty("reviewCode")
+}.orEmpty().filter { it.isLetterOrDigit() }
+
 android {
     namespace = "com.newjourney.core.billing"
     compileSdk = 36
-    defaultConfig { minSdk = 26 }
+    defaultConfig {
+        minSdk = 26
+        buildConfigField("String", "REVIEW_CODE", "\"$reviewCode\"")
+    }
     // BuildConfig.DEBUG decides whether the developer-only Premium preview exists.
     buildFeatures { buildConfig = true }
     compileOptions {

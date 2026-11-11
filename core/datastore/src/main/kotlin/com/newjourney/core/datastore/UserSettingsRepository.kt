@@ -55,6 +55,10 @@ interface UserSettingsRepository {
     val debugPremium: Flow<Boolean>
     suspend fun setDebugPremium(on: Boolean)
 
+    /** The review access code entered on this device, if any (for Google Play's app reviewers). */
+    val reviewCode: Flow<String?>
+    suspend fun setReviewCode(code: String?)
+
     /** Journey stages whose arrival the user has already seen, by stage name. */
     val seenJourneyStages: Flow<Set<String>>
     suspend fun markJourneyStagesSeen(stages: Set<String>)
@@ -175,6 +179,12 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         dataStore.edit { it[Keys.DEBUG_PREMIUM] = on }
     }
 
+    override val reviewCode: Flow<String?> = safeData.map { it[Keys.REVIEW_CODE] }
+
+    override suspend fun setReviewCode(code: String?) {
+        dataStore.edit { if (code == null) it.remove(Keys.REVIEW_CODE) else it[Keys.REVIEW_CODE] = code }
+    }
+
     override val seenJourneyStages: Flow<Set<String>> = safeData.map { it[Keys.SEEN_STAGES] ?: emptySet() }
 
     override suspend fun markJourneyStagesSeen(stages: Set<String>) {
@@ -184,6 +194,7 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
     private object Keys {
         val CACHED_PREMIUM = booleanPreferencesKey("premium_cached")
         val DEBUG_PREMIUM = booleanPreferencesKey("premium_debug_preview")
+        val REVIEW_CODE = stringPreferencesKey("premium_review_code")
         val SEEN_STAGES = stringSetPreferencesKey("journey_seen_stages")
         val DAILY_GOAL = intPreferencesKey("daily_goal_minutes")
         val R_DAILY_ON = booleanPreferencesKey("reminder_daily_on")

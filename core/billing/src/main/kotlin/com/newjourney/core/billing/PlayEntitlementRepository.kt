@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -65,9 +66,16 @@ internal class PlayEntitlementRepository @Inject constructor(
     override val previewOn: StateFlow<Boolean> =
         settings.debugPremium.stateIn(scope, SharingStarted.Eagerly, false)
 
+    override val reviewCodeAvailable: Boolean = BuildConfig.REVIEW_CODE.isNotEmpty()
+
+    // Valid only while the stored code matches this build's code, so changing the code closes old access.
+    private val reviewAccess = settings.reviewCode.map { stored ->
+        reviewCodeAvailable && stored.equals(BuildConfig.REVIEW_CODE, ignoreCase = true)
+    }
+
     override val entitlement: StateFlow<Entitlement> =
-        combine(confirmed, settings.cachedPremium, previewOn) { fromPlay, cached, preview ->
-            Entitlement(isPremium = (previewAvailable && preview) || (fromPlay ?: cached))
+        combine(confirmed, settings.cachedPremium, previewOn, reviewAccess) { fromPlay, cached, preview, review ->
+            Entitlement(isPremium = (previewAvailable && preview) || review || (fromPlay ?: cached))
         }.stateIn(scope, SharingStarted.Eagerly, Entitlement())
 
     private val purchasesListener = PurchasesUpdatedListener { result, purchases ->
@@ -123,6 +131,13 @@ internal class PlayEntitlementRepository @Inject constructor(
 
     override suspend fun setPreview(on: Boolean) {
         if (previewAvailable) settings.setDebugPremium(on)
+    }
+
+    override suspend fun redeemReviewCode(code: String): Boolean {
+        val entered = code.trim()
+        val matches = reviewCodeAvailable && entered.equals(BuildConfig.REVIEW_CODE, ignoreCase = true)
+        if (matches) settings.setReviewCode(entered)
+        return matches
     }
 
     // ---- Google Play ----
