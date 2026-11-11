@@ -7,9 +7,14 @@ plugins {
 
 // The access code for Google Play's app reviewers. It lives in local.properties (never on GitHub),
 // for example:  reviewCode=CALM2026   Letters and digits only. Empty = the code field is hidden.
-val reviewCode: String = rootProject.file("local.properties").takeIf { it.exists() }?.let { file ->
-    java.util.Properties().apply { file.inputStream().use { load(it) } }.getProperty("reviewCode")
-}.orEmpty().filter { it.isLetterOrDigit() }
+val reviewCode: String = rootProject.file("local.properties")
+    .takeIf { it.exists() }
+    ?.readLines()
+    ?.map { it.trim() }
+    ?.firstOrNull { it.startsWith("reviewCode=") }
+    ?.substringAfter("=")
+    .orEmpty()
+    .filter { it.isLetterOrDigit() }
 
 android {
     namespace = "com.newjourney.core.billing"
