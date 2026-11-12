@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.catalog.JourneyContentRepository
+import com.newjourney.core.database.RoutineRepository
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.billing.EntitlementRepository
@@ -38,6 +39,7 @@ class MeditationSessionViewModel @Inject constructor(
     sessions: SessionRepository,
     journeyContent: JourneyContentRepository,
     private val entitlements: EntitlementRepository,
+    routines: RoutineRepository,
 ) : ViewModel() {
 
     val state: StateFlow<TimerState> = timer.state
@@ -83,10 +85,14 @@ class MeditationSessionViewModel @Inject constructor(
         if (current !is TimerState.Idle) {
             savedStateHandle[KEY_HAD_SESSION] = true
         } else if (route.autoStart && !hadSession.value) {
-            val allowed = entitlement.isPremium || !TimerLimits.isPremiumDuration(route.minutes)
-            val minutes = if (allowed) route.minutes else TimerLimits.FREE_MAX_MINUTES
             viewModelScope.launch {
-                timer.start(minutes, settings.timerSettings.first(), route.trackId)
+                // A routine brings its own length, bells and sound; otherwise the saved timer settings.
+                val routine = route.routineId?.let { routines.get(it) }
+                val requested = routine?.minutes ?: route.minutes
+                val allowed = entitlement.isPremium || !TimerLimits.isPremiumDuration(requested)
+                val minutes = if (allowed) requested else TimerLimits.FREE_MAX_MINUTES
+                val timerSettings = routine?.settings ?: settings.timerSettings.first()
+                timer.start(minutes, timerSettings, if (routine != null) null else route.trackId)
                 savedStateHandle[KEY_HAD_SESSION] = true
             }
         } else {

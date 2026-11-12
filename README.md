@@ -24,7 +24,9 @@ What works in this build:
 - **Premium** (Profile › Premium, or "Discover Premium" from any Premium note): one subscription through Google Play Billing, monthly or annual (annual with a free trial). No timers, no pressure; "Not now" is always as large as the buy button. Active subscribers get "Manage in Google Play".
 - **Developer preview**: debug builds only show a "Preview Premium" switch on the Premium screen. It does not exist in release builds and never touches Google Play.
 
-Not built yet: routines, online catalog (dormant until a storage bucket is set), server-side purchase verification, offline downloads.
+- **Routines** (Meditate tab, and up to three on Home): save the current length, bells and background sound under a name, then start it with one tap. Up to 10 routines; a routine with a Premium length asks for Premium just like the timer. Stored in the main database (version 3, migration keeps all sessions).
+
+Not built yet: online catalog (dormant until a storage bucket is set), server-side purchase verification, offline downloads.
 
 ### Access code for Google Play reviewers
 

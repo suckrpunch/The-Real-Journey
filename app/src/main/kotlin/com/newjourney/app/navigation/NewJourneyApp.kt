@@ -133,6 +133,7 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                 onOpenTrack = openTrack,
                 onOpenStage = openStage,
                 onMoodSelected = { mood -> navController.navigate(JournalEditorRoute(mood = mood.name)) },
+                onStartRoutine = { id -> navController.navigate(MeditationSessionRoute(routineId = id)) },
             )
             exploreScreens(
                 onOpenCategory = { id -> navController.navigate(CategoryRoute(id)) },
@@ -144,6 +145,7 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
             )
             meditateScreen(
                 onStartSession = { minutes -> navController.navigate(MeditationSessionRoute(minutes)) },
+                onStartRoutine = { id -> navController.navigate(MeditationSessionRoute(routineId = id)) },
                 onReturnToSession = { navController.navigate(MeditationSessionRoute(autoStart = false)) },
             )
             meditationSessionScreen(

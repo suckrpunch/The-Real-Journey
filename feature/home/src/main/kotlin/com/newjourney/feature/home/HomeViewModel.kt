@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.catalog.JourneyContentRepository
 import com.newjourney.core.database.LibraryRepository
+import com.newjourney.core.database.RoutineRepository
 import com.newjourney.core.database.RecentTrack
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
@@ -16,6 +17,7 @@ import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.JourneyProgress
 import com.newjourney.core.model.PartOfDay
+import com.newjourney.core.model.Routine
 import com.newjourney.core.model.Quote
 import com.newjourney.core.model.SampleQuotes
 import com.newjourney.core.model.TimerLimits
@@ -48,6 +50,8 @@ data class HomeUiState(
     val week: WeekProgress,
     val categories: List<Category> = emptyList(),
     val continueListening: ContinueListening? = null,
+    /** The first few saved routines, as one-tap starts. */
+    val routines: List<Routine> = emptyList(),
 ) {
     fun isLocked(minutes: Int): Boolean = !entitlement.isPremium && TimerLimits.isPremiumDuration(minutes)
 }
@@ -70,6 +74,7 @@ class HomeViewModel @Inject constructor(
     private val player: MusicPlayer,
     journeyContent: JourneyContentRepository,
     private val entitlements: EntitlementRepository,
+    routines: RoutineRepository,
 ) : ViewModel() {
 
     private val zone: ZoneId = ZoneId.systemDefault()
@@ -104,6 +109,7 @@ class HomeViewModel @Inject constructor(
             continueListening = catalog?.let { continueListeningFrom(it, recent.firstOrNull()) },
         )
     }.combine(entitlements.entitlement) { state, current -> state.copy(entitlement = current) }
+        .combine(routines.routines) { state, saved -> state.copy(routines = saved.take(HOME_ROUTINES)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
 
     /** Selects a free duration. Premium durations are handled by the screen, which explains premium. */
@@ -169,6 +175,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private companion object {
+        const val HOME_ROUTINES = 3
         const val KEY_MINUTES = "selected_minutes"
     }
 }

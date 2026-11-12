@@ -11,6 +11,8 @@
 
     <string name="home_start_title">Start meditating</string>
     <string name="home_begin">Begin %1$d-minute meditation</string>
+    <string name="home_routines_label">Or start one of your routines</string>
+    <string name="home_routine_button">%1$s · %2$d min</string>
 
 
     <string name="home_continue_title">Continue listening</string>

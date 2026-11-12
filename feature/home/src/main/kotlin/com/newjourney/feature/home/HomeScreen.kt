@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -63,6 +64,7 @@ import com.newjourney.core.model.Category
 import com.newjourney.core.model.HomeCheckInMoods
 import com.newjourney.core.model.Mood
 import com.newjourney.core.model.PartOfDay
+import com.newjourney.core.model.Routine
 import com.newjourney.core.model.WeekProgress
 import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
@@ -76,6 +78,7 @@ internal fun HomeScreenRoute(
     onOpenTrack: (String) -> Unit,
     onOpenStage: (String) -> Unit,
     onMoodSelected: (Mood) -> Unit,
+    onStartRoutine: (Long) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -94,6 +97,7 @@ internal fun HomeScreenRoute(
             state.continueListening?.let { onOpenTrack(it.track.id) }
         },
         onMoodSelected = onMoodSelected,
+        onStartRoutine = onStartRoutine,
     )
 }
 
@@ -109,6 +113,7 @@ internal fun HomeScreen(
     onOpenCategory: (String) -> Unit,
     onContinueListening: () -> Unit,
     onMoodSelected: (Mood) -> Unit,
+    onStartRoutine: (Long) -> Unit = {},
 ) {
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
 
@@ -148,6 +153,9 @@ internal fun HomeScreen(
                     if (state.isLocked(minutes)) premiumSheetMinutes = minutes else onSelectDuration(minutes)
                 },
                 onBegin = onBeginMeditation,
+                onRoutine = { routine ->
+                    if (state.isLocked(routine.minutes)) premiumSheetMinutes = routine.minutes else onStartRoutine(routine.id)
+                },
             )
         }
         state.continueListening?.let { listening ->
@@ -225,7 +233,12 @@ private fun QuoteCard(text: String, author: String?, saved: Boolean, onToggleSav
 }
 
 @Composable
-private fun QuickStart(state: HomeUiState, onChipTapped: (Int) -> Unit, onBegin: () -> Unit) {
+private fun QuickStart(
+    state: HomeUiState,
+    onChipTapped: (Int) -> Unit,
+    onBegin: () -> Unit,
+    onRoutine: (Routine) -> Unit,
+) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SectionTitle(stringResource(R.string.home_start_title))
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -243,6 +256,26 @@ private fun QuickStart(state: HomeUiState, onChipTapped: (Int) -> Unit, onBegin:
             onClick = onBegin,
             leading = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
         )
+        if (state.routines.isNotEmpty()) {
+            Text(
+                stringResource(R.string.home_routines_label),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            state.routines.forEach { routine ->
+                SecondaryButton(
+                    text = stringResource(R.string.home_routine_button, routine.name, routine.minutes),
+                    onClick = { onRoutine(routine) },
+                    modifier = Modifier.fillMaxWidth(),
+                    leading = {
+                        Icon(
+                            if (state.isLocked(routine.minutes)) Icons.Outlined.Lock else Icons.Filled.PlayArrow,
+                            contentDescription = null,
+                        )
+                    },
+                )
+            }
+        }
     }
 }
 

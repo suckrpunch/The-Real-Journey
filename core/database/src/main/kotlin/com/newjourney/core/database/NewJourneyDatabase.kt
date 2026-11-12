@@ -49,6 +49,18 @@ internal data class PlaybackHistoryEntity(
     val positionMs: Long,
 )
 
+@Entity(tableName = "routine")
+internal data class RoutineEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val minutes: Int,
+    val startBell: Boolean,
+    val endBell: Boolean,
+    /** A [com.newjourney.core.model.BackgroundSound] name. */
+    val sound: String,
+    val createdAtEpochMs: Long,
+)
+
 @Dao
 internal interface MeditationSessionDao {
     @Insert
@@ -82,18 +94,40 @@ internal interface LibraryDao {
     fun recent(limit: Int): Flow<List<PlaybackHistoryEntity>>
 }
 
+@Dao
+internal interface RoutineDao {
+    @Query("SELECT * FROM routine ORDER BY createdAtEpochMs, id")
+    fun all(): Flow<List<RoutineEntity>>
+
+    @Query("SELECT * FROM routine WHERE id = :id")
+    suspend fun get(id: Long): RoutineEntity?
+
+    /** Returns the new row id, or -1 when an existing row was updated. */
+    @Upsert
+    suspend fun upsert(routine: RoutineEntity): Long
+
+    @Query("DELETE FROM routine WHERE id = :id")
+    suspend fun delete(id: Long)
+}
+
 /**
  * The app's main on-device database. Journal entries get their own encrypted database later,
  * so private writing is kept separate from session statistics.
  */
 @Database(
-    entities = [MeditationSessionEntity::class, FavoriteTrackEntity::class, PlaybackHistoryEntity::class],
-    version = 2,
+    entities = [
+        MeditationSessionEntity::class,
+        FavoriteTrackEntity::class,
+        PlaybackHistoryEntity::class,
+        RoutineEntity::class,
+    ],
+    version = 3,
     exportSchema = true,
 )
 internal abstract class NewJourneyDatabase : RoomDatabase() {
     abstract fun sessionDao(): MeditationSessionDao
     abstract fun libraryDao(): LibraryDao
+    abstract fun routineDao(): RoutineDao
 }
 
 /** Version 1 → 2: adds favourites and listening history, and the track of a session. Keeps all sessions. */
@@ -111,6 +145,17 @@ internal val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+/** Version 2 → 3: adds saved routines. Keeps everything else. */
+internal val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `routine` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`name` TEXT NOT NULL, `minutes` INTEGER NOT NULL, `startBell` INTEGER NOT NULL, " +
+                "`endBell` INTEGER NOT NULL, `sound` TEXT NOT NULL, `createdAtEpochMs` INTEGER NOT NULL)",
+        )
+    }
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 internal object DatabaseModule {
@@ -118,7 +163,7 @@ internal object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): NewJourneyDatabase =
         Room.databaseBuilder(context, NewJourneyDatabase::class.java, "new_journey.db")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
 
     @Provides
@@ -126,6 +171,9 @@ internal object DatabaseModule {
 
     @Provides
     fun provideLibraryDao(database: NewJourneyDatabase): LibraryDao = database.libraryDao()
+
+    @Provides
+    fun provideRoutineDao(database: NewJourneyDatabase): RoutineDao = database.routineDao()
 }
 
 @Module
@@ -136,4 +184,7 @@ internal abstract class RepositoryModule {
 
     @Binds
     abstract fun bindLibraryRepository(impl: RoomLibraryRepository): LibraryRepository
+
+    @Binds
+    abstract fun bindRoutineRepository(impl: RoomRoutineRepository): RoutineRepository
 }

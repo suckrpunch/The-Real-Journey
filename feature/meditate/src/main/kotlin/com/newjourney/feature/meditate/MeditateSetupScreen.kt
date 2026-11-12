@@ -43,6 +43,7 @@ import com.newjourney.core.model.BackgroundSound
 @Composable
 internal fun MeditateSetupRoute(
     onStartSession: (Int) -> Unit,
+    onStartRoutine: (Long) -> Unit,
     onReturnToSession: () -> Unit,
     viewModel: MeditateSetupViewModel = hiltViewModel(),
 ) {
@@ -55,6 +56,9 @@ internal fun MeditateSetupRoute(
         onSoundSelected = viewModel::setSound,
         onBegin = { onStartSession(state.selectedMinutes) },
         onReturnToSession = onReturnToSession,
+        onStartRoutine = onStartRoutine,
+        onSaveRoutine = viewModel::saveRoutine,
+        onRemoveRoutine = viewModel::deleteRoutine,
     )
 }
 
@@ -67,8 +71,13 @@ internal fun MeditateSetupScreen(
     onSoundSelected: (BackgroundSound) -> Unit,
     onBegin: () -> Unit,
     onReturnToSession: () -> Unit,
+    onStartRoutine: (Long) -> Unit = {},
+    onSaveRoutine: (String) -> Unit = {},
+    onRemoveRoutine: (Long) -> Unit = {},
 ) {
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
+    var showSaveRoutine by rememberSaveable { mutableStateOf(false) }
+    var routineToRemove by rememberSaveable { mutableStateOf<Long?>(null) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -83,6 +92,21 @@ internal fun MeditateSetupScreen(
                     Text(stringResource(R.string.setup_in_progress_title), style = MaterialTheme.typography.titleLarge)
                     PrimaryButton(text = stringResource(R.string.setup_return_to_session), onClick = onReturnToSession)
                 }
+            }
+        }
+
+        if (state.routines.isNotEmpty()) {
+            item {
+                Text(stringResource(R.string.routine_section_title), style = MaterialTheme.typography.titleLarge)
+            }
+            items(state.routines, key = { "routine-${it.id}" }) { routine ->
+                val locked = state.isLocked(routine.minutes)
+                RoutineCard(
+                    routine = routine,
+                    locked = locked,
+                    onBegin = { if (locked) premiumSheetMinutes = routine.minutes else onStartRoutine(routine.id) },
+                    onRemove = { routineToRemove = routine.id },
+                )
             }
         }
 
@@ -144,6 +168,31 @@ internal fun MeditateSetupScreen(
                 leading = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
             )
         }
+
+        item {
+            SaveRoutineRow(
+                canSave = state.canSaveRoutine,
+                hasRoutines = state.routines.isNotEmpty(),
+                onSave = { showSaveRoutine = true },
+            )
+        }
+    }
+
+    if (showSaveRoutine) {
+        SaveRoutineDialog(
+            summary = routineSummary(state.selectedMinutes, state.settings),
+            suggestion = suggestedRoutineName(state.selectedMinutes, state.settings),
+            onSave = onSaveRoutine,
+            onDismiss = { showSaveRoutine = false },
+        )
+    }
+
+    routineToRemove?.let { id -> state.routines.firstOrNull { it.id == id } }?.let { routine ->
+        RemoveRoutineDialog(
+            name = routine.name,
+            onConfirm = { onRemoveRoutine(routine.id) },
+            onDismiss = { routineToRemove = null },
+        )
     }
 
     premiumSheetMinutes?.let { minutes ->

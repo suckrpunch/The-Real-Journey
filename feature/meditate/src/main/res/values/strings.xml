@@ -14,6 +14,28 @@
     <string name="sound_rain">Rain</string>
     <string name="sound_forest">Forest</string>
 
+    <!-- Routines -->
+    <string name="routine_section_title">Your routines</string>
+    <string name="routine_summary">%1$d minutes · %2$s · %3$s</string>
+    <string name="routine_bells_both">Bells at start and end</string>
+    <string name="routine_bells_start">Bell at the start</string>
+    <string name="routine_bells_end">Bell at the end</string>
+    <string name="routine_bells_none">No bells</string>
+    <string name="routine_name_sound">%1$d minutes with %2$s</string>
+    <string name="routine_name_silence">%1$d minutes in silence</string>
+    <string name="routine_begin">Begin</string>
+    <string name="routine_remove">Remove</string>
+    <string name="routine_keep">Keep it</string>
+    <string name="routine_remove_title">Remove “%1$s”?</string>
+    <string name="routine_remove_body">The routine is removed from this list. Your past sessions stay in your progress.</string>
+    <string name="routine_hint">Like these choices? Save them as a routine and start them with one tap, here or on Home.</string>
+    <string name="routine_save_current">Save as a routine</string>
+    <string name="routine_save_title">Save as a routine</string>
+    <string name="routine_name_label">Name</string>
+    <string name="routine_save">Save</string>
+    <string name="routine_cancel">Cancel</string>
+    <string name="routine_full">You have %1$d routines, the most there is room for. Remove one to save a new one.</string>
+
     <!-- Running session -->
     <string name="session_status_running">Breathe gently</string>
     <string name="session_status_paused">Paused</string>
