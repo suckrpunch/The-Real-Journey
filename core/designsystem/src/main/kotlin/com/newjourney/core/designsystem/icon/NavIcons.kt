@@ -33,7 +33,8 @@ object NavIcons {
             }
             .build()
 
-    private const val HOUSE = "M4.5 10.2 L12 4 L19.5 10.2 V18.8 A1.7 1.7 0 0 1 17.8 20.5 H6.2 A1.7 1.7 0 0 1 4.5 18.8 Z"
+    // A house with an arched door, softly rounded at every corner.
+    private const val HOUSE = "M12 3.6 L20.4 9.6 V19.4 Q20.4 20.4 19.4 20.4 H15 V15.6 A3 3 0 0 0 9 15.6 V20.4 H4.6 Q3.6 20.4 3.6 19.4 V9.6 Z"
     private const val LENS = "M4 10.5 A6.5 6.5 0 1 0 17 10.5 A6.5 6.5 0 1 0 4 10.5 Z"
     private const val HANDLE = "M15.4 15.4 L20.5 20.5"
     private const val LOTUS_CENTER = "M12 4.5 C14.7 7.2 14.7 12.4 12 15.6 C9.3 12.4 9.3 7.2 12 4.5 Z"
@@ -55,7 +56,7 @@ object NavIcons {
             pathData = addPathNodes(HOUSE),
             fill = SolidColor(Color.Black),
             stroke = SolidColor(Color.Black),
-            strokeLineWidth = LINE_BOLD,
+            strokeLineWidth = 1.6f,
             strokeLineCap = StrokeCap.Round,
             strokeLineJoin = StrokeJoin.Round,
         )
