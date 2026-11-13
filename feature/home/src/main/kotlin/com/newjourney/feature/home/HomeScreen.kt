@@ -135,7 +135,7 @@ internal fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppHeader()
                 Greeting(state)
             }
@@ -222,10 +222,10 @@ private fun Greeting(state: HomeUiState) {
                     name,
                     style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onBackground,
-                    // Sits 3dp closer to the greeting; everything below moves up with it.
+                    // Sits 6dp closer to the greeting; everything below moves up with it.
                     modifier = Modifier.layout { measurable, constraints ->
                         val placeable = measurable.measure(constraints)
-                        val pull = 3.dp.roundToPx()
+                        val pull = 6.dp.roundToPx()
                         layout(placeable.width, placeable.height - pull) { placeable.place(0, -pull) }
                     },
                 )

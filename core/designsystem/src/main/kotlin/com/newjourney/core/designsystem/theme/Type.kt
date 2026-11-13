@@ -24,6 +24,9 @@ val NunitoSans = FontFamily(
     Font(R.font.nunito_sans_800, FontWeight.ExtraBold),
 )
 
+/** Nunito: the rounded sister of Nunito Sans, used semi-bold for the big headings. */
+val Nunito = FontFamily(Font(R.font.nunito_600, FontWeight.SemiBold))
+
 /** The quote of the day: Fraunces 24/32. */
 val QuoteTextStyle = TextStyle(fontFamily = Fraunces, fontWeight = FontWeight.Medium, fontSize = 24.sp, lineHeight = 32.sp)
 
@@ -37,12 +40,12 @@ val NavigationLabelStyle = TextStyle(fontFamily = NunitoSans, fontWeight = FontW
 internal val NewJourneyTypography = Typography(
     // The greeting on Home, the big timer.
     displayMedium = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.ExtraBold, fontSize = 52.sp, lineHeight = 60.sp),
-    displaySmall = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.ExtraBold, fontSize = 38.sp, lineHeight = 44.sp),
-    // Screen headings (Meditate, Journal, Profile …).
-    headlineLarge = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp, lineHeight = 40.sp),
-    headlineMedium = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.ExtraBold, fontSize = 28.sp, lineHeight = 36.sp),
+    displaySmall = TextStyle(fontFamily = Nunito, fontWeight = FontWeight.SemiBold, fontSize = 38.sp, lineHeight = 44.sp),
+    // Headings use rounded Nunito semi-bold. Screen headings (Meditate, Journal, Profile …).
+    headlineLarge = TextStyle(fontFamily = Nunito, fontWeight = FontWeight.SemiBold, fontSize = 32.sp, lineHeight = 40.sp),
+    headlineMedium = TextStyle(fontFamily = Nunito, fontWeight = FontWeight.SemiBold, fontSize = 28.sp, lineHeight = 36.sp),
     // Section headings (Start meditating, Today …).
-    headlineSmall = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.ExtraBold, fontSize = 28.sp, lineHeight = 34.sp),
+    headlineSmall = TextStyle(fontFamily = Nunito, fontWeight = FontWeight.SemiBold, fontSize = 28.sp, lineHeight = 34.sp),
     // Card titles.
     titleLarge = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.Bold, fontSize = 20.sp, lineHeight = 26.sp),
     titleMedium = TextStyle(fontFamily = NunitoSans, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 24.sp),
