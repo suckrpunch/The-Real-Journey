@@ -167,7 +167,7 @@ internal fun EntryCard(entry: JournalEntry, onClick: () -> Unit) {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Text(
-                        date.format(monthFormatter),
+                        date.format(monthFormatter).trimEnd('.').replaceFirstChar { it.titlecase(Locale.getDefault()) },
                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                         color = colors.onPrimaryContainer,
                     )
@@ -179,10 +179,9 @@ internal fun EntryCard(entry: JournalEntry, onClick: () -> Unit) {
                 if (preview.isNotEmpty()) {
                     Text(preview, style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    MoodLine(entry)
-                    Text(meta, style = MaterialTheme.typography.labelMedium, color = colors.onSurfaceVariant)
-                }
+                // Moods and the time each get their own line, so neither is squeezed on a narrow phone.
+                MoodLine(entry)
+                Text(meta, style = MaterialTheme.typography.labelMedium, color = colors.onSurfaceVariant)
             }
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = colors.onSurface)
         }

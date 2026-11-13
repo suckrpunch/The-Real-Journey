@@ -3,7 +3,7 @@ package com.newjourney.core.designsystem.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +31,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -39,9 +40,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.newjourney.core.designsystem.R
@@ -238,25 +240,57 @@ fun DurationChip(
         color = if (selected) selectedFill else unselectedFill,
         border = if (selected) BorderStroke(2.dp, colors.primary) else unselectedBorder,
     ) {
-        Box(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // The text is centred and sized to fit the chip, so "10 min" never wraps or loses its "min",
+        // whatever the phone's width or text-size setting.
+        BoxWithConstraints(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp, vertical = 8.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            val density = LocalDensity.current
+            fun fit(text: String, max: Float, min: Float): TextUnit {
+                // Nunito Sans averages about 0.56em per character at these weights.
+                val fitting = with(density) { maxWidth.toSp().value } / (text.length * 0.56f)
+                return fitting.coerceIn(min, max).sp
+            }
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 if (showTier) {
+                    val main = stringResource(R.string.duration_short, minutes)
+                    val tier = stringResource(if (premium) R.string.duration_tier_premium else R.string.duration_tier_free)
                     Text(
-                        stringResource(R.string.duration_short, minutes),
-                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 19.sp, lineHeight = 24.sp),
+                        main,
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = fit(main, 19f, 12f), lineHeight = 24.sp),
                         color = content,
+                        textAlign = TextAlign.Center,
                         maxLines = 1,
+                        softWrap = false,
                     )
                     Text(
-                        stringResource(if (premium) R.string.duration_tier_premium else R.string.duration_tier_free),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
+                        tier,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium, fontSize = fit(tier, 13f, 9f)),
                         color = secondary,
+                        textAlign = TextAlign.Center,
                         maxLines = 1,
+                        softWrap = false,
                     )
                 } else {
-                    Text("$minutes", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = content)
+                    Text(
+                        "$minutes",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold, fontSize = fit("$minutes", 20f, 14f)),
+                        color = content,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        softWrap = false,
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(stringResource(R.string.duration_min_short), style = MaterialTheme.typography.labelMedium, color = secondary)
+                        Text(
+                            stringResource(R.string.duration_min_short),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = secondary,
+                            maxLines = 1,
+                            softWrap = false,
+                        )
                         if (premium) {
                             Icon(
                                 Icons.Outlined.Lock,
