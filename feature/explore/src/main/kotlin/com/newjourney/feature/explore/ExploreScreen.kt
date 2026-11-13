@@ -214,7 +214,7 @@ private fun SearchBar(query: String, onQueryChange: (String) -> Unit, modifier: 
     val hint = stringResource(R.string.explore_search_hint)
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = colors.surfaceContainer,
+        color = colors.surfaceContainerHigh,
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(

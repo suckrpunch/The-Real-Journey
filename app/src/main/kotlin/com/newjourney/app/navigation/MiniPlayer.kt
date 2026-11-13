@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.app.R
-import com.newjourney.core.designsystem.component.isNightTheme
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.playback.MusicPlayer
 import com.newjourney.core.playback.NowPlaying
@@ -61,7 +61,6 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
     val openLabel = stringResource(R.string.mini_player_open, current.title)
     val toggleLabel = stringResource(if (current.isPlaying) R.string.mini_player_pause else R.string.mini_player_play)
     val colors = MaterialTheme.colorScheme
-    val night = isNightTheme()
 
     Surface(
         onClick = { onOpen(current.trackId) },
@@ -80,17 +79,17 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // By day a lighter green square with a white note; by night a navy square with a cream note.
+            // By day a soft green square with a white note; by night a navy square with a cream note.
             Surface(
                 shape = RoundedCornerShape(14.dp),
-                color = if (night) colors.onPrimary else colors.onPrimary.copy(alpha = 0.18f),
+                color = NewJourneyTheme.extraColors.playerArt,
                 modifier = Modifier.size(52.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         NavIcons.Music,
                         contentDescription = null,
-                        tint = if (night) colors.primary else colors.onPrimary,
+                        tint = NewJourneyTheme.extraColors.onPlayerArt,
                         modifier = Modifier.size(28.dp),
                     )
                 }
