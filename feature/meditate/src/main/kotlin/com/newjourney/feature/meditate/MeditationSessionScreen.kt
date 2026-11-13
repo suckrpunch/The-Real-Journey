@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.CropSquare
 import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +54,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,6 +63,7 @@ import com.newjourney.core.designsystem.component.ScreenPadding
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.milestoneTitle
+import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.Milestone
 import com.newjourney.feature.meditate.timer.TimerState
@@ -72,6 +75,7 @@ internal fun MeditationSessionRouteContent(
     onClose: () -> Unit,
     onOpenJournal: (sessionMinutes: Int) -> Unit,
     onOpenStage: (stage: String) -> Unit,
+    onGoHome: () -> Unit = onClose,
     viewModel: MeditationSessionViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -79,6 +83,7 @@ internal fun MeditationSessionRouteContent(
     val trackTitle by viewModel.trackTitle.collectAsStateWithLifecycle()
     val newMilestones by viewModel.newMilestones.collectAsStateWithLifecycle()
     val newStages by viewModel.newStages.collectAsStateWithLifecycle()
+    val currentRun by viewModel.currentRun.collectAsStateWithLifecycle()
 
     RequestNotificationPermissionOnce()
 
@@ -105,7 +110,11 @@ internal fun MeditationSessionRouteContent(
         onPause = viewModel::pause,
         onResume = viewModel::resume,
         onEnd = viewModel::endEarly,
-        onDone = viewModel::dismissFinished,
+        onDone = {
+            viewModel.dismissFinished()
+            onGoHome()
+        },
+        currentRun = currentRun,
         onOpenJournal = {
             val minutes = ((state as? TimerState.Finished)?.completedSeconds ?: 0) / 60
             viewModel.dismissFinished()
@@ -127,6 +136,7 @@ internal fun MeditationSessionScreen(
     onDone: () -> Unit,
     onOpenJournal: () -> Unit,
     onBack: () -> Unit = {},
+    currentRun: Int = 0,
 ) {
     Column(
         Modifier
@@ -139,7 +149,7 @@ internal fun MeditationSessionScreen(
     ) {
         when (state) {
             is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onBack, onPause, onResume, onEnd)
-            is TimerState.Finished -> Finished(state, newMilestones, newStages, onOpenStage, onDone, onOpenJournal)
+            is TimerState.Finished -> Finished(state, newMilestones, newStages, currentRun, onOpenStage, onDone, onOpenJournal)
             TimerState.Idle -> Spacer(Modifier.height(1.dp))
         }
     }
@@ -294,24 +304,53 @@ private fun Finished(
     state: TimerState.Finished,
     newMilestones: List<Milestone>,
     newStages: List<Pair<String, String>>,
+    currentRun: Int,
     onOpenStage: (String) -> Unit,
     onDone: () -> Unit,
     onOpenJournal: () -> Unit,
 ) {
     val minutes = state.completedSeconds / 60
-    Spacer(Modifier.height(24.dp))
-    BreathingCircle(moving = false, size = 160.dp)
-    Text(
-        stringResource(if (state.endedEarly) R.string.finished_title_early else R.string.finished_title),
-        style = MaterialTheme.typography.displaySmall,
-        textAlign = TextAlign.Center,
-    )
-    Text(
-        pluralStringResource(R.plurals.finished_minutes, minutes, minutes),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-    )
+    Spacer(Modifier.height(40.dp))
+    CompletionMark(Modifier.size(150.dp))
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            stringResource(if (state.endedEarly) R.string.finished_title_early else R.string.finished_title),
+            style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            if (state.endedEarly) {
+                pluralStringResource(R.plurals.finished_minutes, minutes, minutes)
+            } else {
+                stringResource(R.string.finished_completed, maxOf(minutes, 1))
+            },
+            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp, lineHeight = 28.sp),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 24.dp),
+        )
+    }
+    if (currentRun >= 1) {
+        SoftCard(padding = 22.dp) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                Icon(
+                    Icons.Outlined.LocalFireDepartment,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(36.dp),
+                )
+                Column {
+                    Text(
+                        pluralStringResource(R.plurals.finished_streak, currentRun, currentRun),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(stringResource(R.string.finished_keep_going), style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+    }
     newStages.forEach { (stageId, stageName) ->
         SoftCard(raised = true) {
             Text(stringResource(R.string.finished_stage_label), style = MaterialTheme.typography.titleMedium)
@@ -335,11 +374,16 @@ private fun Finished(
         }
     }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        PrimaryButton(text = stringResource(R.string.finished_done), onClick = onDone)
-        SecondaryButton(
+        PrimaryButton(
             text = stringResource(R.string.finished_journal),
             onClick = onOpenJournal,
+            leading = { Icon(NavIcons.Journal, contentDescription = null, modifier = Modifier.size(24.dp)) },
+        )
+        SecondaryButton(
+            text = stringResource(R.string.finished_home),
+            onClick = onDone,
             modifier = Modifier.fillMaxWidth(),
+            leading = { Icon(NavIcons.Home, contentDescription = null, modifier = Modifier.size(24.dp)) },
         )
     }
 }

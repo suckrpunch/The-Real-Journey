@@ -68,7 +68,13 @@
     <string name="finished_milestone">A new milestone</string>
     <string name="finished_stage_label">A new stage of your journey</string>
     <string name="finished_stage_read">Read its reflection</string>
-    <string name="finished_done">Done</string>
+    <string name="finished_home">Back to home</string>
+    <string name="finished_completed">You completed a %1$d-minute meditation.</string>
+    <plurals name="finished_streak">
+        <item quantity="one">%d day streak</item>
+        <item quantity="other">%d day streak</item>
+    </plurals>
+    <string name="finished_keep_going">Keep going!</string>
     <string name="finished_journal">Write in your journal</string>
 
     <!-- Notification -->

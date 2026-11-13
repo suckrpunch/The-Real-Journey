@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -61,6 +62,12 @@ class MeditationSessionViewModel @Inject constructor(
         val zone = ZoneId.systemDefault()
         ProgressStats.from(all, LocalDate.now(zone), zone).reachedBy(Instant.ofEpochMilli(finished.session.id))
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** Days in a row with at least one session, counting today, for the finish screen. */
+    val currentRun: StateFlow<Int> = sessions.sessionsSince(Instant.EPOCH).map { all ->
+        val zone = ZoneId.systemDefault()
+        ProgressStats.from(all, LocalDate.now(zone), zone).currentRun
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
     /** Journey stages reached by the session that just finished: (stage id, stage name). */
     val newStages: StateFlow<List<Pair<String, String>>> = combine(

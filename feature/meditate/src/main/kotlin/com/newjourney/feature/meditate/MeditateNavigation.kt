@@ -43,8 +43,15 @@ fun NavGraphBuilder.meditationSessionScreen(
     onOpenJournal: (sessionMinutes: Int) -> Unit,
     /** Opens a journey stage reached by the session that just ended. */
     onOpenStage: (stage: String) -> Unit,
+    /** "Back to home" on the finish screen. */
+    onGoHome: () -> Unit = onClose,
 ) {
     composable<MeditationSessionRoute> {
-        MeditationSessionRouteContent(onClose = onClose, onOpenJournal = onOpenJournal, onOpenStage = onOpenStage)
+        MeditationSessionRouteContent(
+            onClose = onClose,
+            onOpenJournal = onOpenJournal,
+            onOpenStage = onOpenStage,
+            onGoHome = onGoHome,
+        )
     }
 }

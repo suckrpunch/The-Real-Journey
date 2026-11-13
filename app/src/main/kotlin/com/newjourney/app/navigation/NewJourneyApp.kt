@@ -202,6 +202,12 @@ fun NewJourneyApp(
                         navController.popBackStack()
                     }
                 },
+                onGoHome = {
+                    if (navController.currentDestination?.hasRoute(MeditationSessionRoute::class) == true) {
+                        navController.popBackStack()
+                    }
+                    navController.navigateToTab(HomeRoute)
+                },
                 onOpenStage = { stage ->
                     // Like the journal: the finished timer makes way for the stage.
                     navController.navigate(StageRoute(stage)) {
