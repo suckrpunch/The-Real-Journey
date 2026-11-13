@@ -1,6 +1,7 @@
 package com.newjourney.feature.profile
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Insights
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.Route
@@ -31,12 +33,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,12 +52,12 @@ import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.catalog.JourneyContentRepository
 import com.newjourney.core.database.SessionRepository
 import com.newjourney.core.datastore.UserSettingsRepository
+import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.DurationChip
 import com.newjourney.core.designsystem.component.MinTouchTarget
-import com.newjourney.core.designsystem.component.SecondaryButton
-import com.newjourney.core.designsystem.component.ScreenTitle
 import com.newjourney.core.designsystem.component.ScreenPadding
-import com.newjourney.core.designsystem.component.AppHeader
+import com.newjourney.core.designsystem.component.ScreenTitle
+import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.milestoneTitle
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
@@ -62,6 +69,7 @@ import com.newjourney.core.model.ProgressStats
 import com.newjourney.core.model.ReminderSettings
 import com.newjourney.core.model.ThemeMode
 import com.newjourney.core.model.ThemePreference
+import com.newjourney.core.model.UserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -73,7 +81,6 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import com.newjourney.core.model.UserProfile
 import javax.inject.Inject
 
 internal data class ProfileUiState(
@@ -184,6 +191,7 @@ private fun AboutYouCard(profile: UserProfile, onEdit: () -> Unit) {
             text = stringResource(R.string.about_you_edit),
             onClick = onEdit,
             modifier = Modifier.fillMaxWidth(),
+            leading = { Icon(Icons.Outlined.Edit, contentDescription = null) },
         )
     }
 }
@@ -252,7 +260,11 @@ private fun ProgressSummary(stats: ProgressStats, onOpenProgress: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         } else {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
                 SummaryNumber(
                     value = formatMinutes(stats.totalMinutes, stringResource(R.string.unit_hour_short), stringResource(R.string.unit_minute_short)),
                     label = stringResource(R.string.stat_total_time),
@@ -286,9 +298,22 @@ private fun ProgressSummary(stats: ProgressStats, onOpenProgress: () -> Unit) {
 
 @Composable
 internal fun SummaryNumber(value: String, label: String, modifier: Modifier = Modifier) {
-    Column(modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(value, style = MaterialTheme.typography.headlineSmall)
-        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    // The number is large and its unit ("min", "h") smaller on the same line, so "13 min" never
+    // wraps. All three columns share the same top line, and the size shrinks to fit narrow phones.
+    BoxWithConstraints(modifier.semantics(mergeDescendants = true) {}) {
+        val big = with(LocalDensity.current) { maxWidth.toSp().value } / (value.length * 0.62f)
+        val numberSize = big.coerceIn(16f, 28f).sp
+        val unitSize = (numberSize.value * 0.6f).coerceAtLeast(13f).sp
+        val styled = buildAnnotatedString {
+            Regex("\\d+|\\D+").findAll(value).forEach { part ->
+                val isNumber = part.value.first().isDigit()
+                withStyle(SpanStyle(fontSize = if (isNumber) numberSize else unitSize)) { append(part.value) }
+            }
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(styled, style = MaterialTheme.typography.headlineSmall, maxLines = 1, softWrap = false)
+            Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 
