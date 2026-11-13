@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,13 +44,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -546,26 +549,40 @@ private fun MoodCheckIn(onMoodSelected: (Mood) -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(Modifier.height(4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Five equal tiles. Dot and word are centred in each tile, and the word shrinks a little
+        // on narrow phones (or with large text) so it always fits on one line.
+        // All five words share one size, set by the longest, so the row looks even.
+        val longest = HomeCheckInMoods.maxOf { stringResource(moodLabel(it)).length }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
             HomeCheckInMoods.forEach { mood ->
                 Surface(
                     onClick = { onMoodSelected(mood) },
                     shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline),
+                    color = MaterialTheme.colorScheme.background,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     modifier = Modifier.weight(1f).heightIn(min = 76.dp),
                 ) {
-                    Column(
-                        Modifier.padding(vertical = 12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Box(Modifier.size(22.dp).background(moodColor(mood), CircleShape))
-                        Text(
-                            stringResource(moodLabel(mood)),
-                            style = MaterialTheme.typography.labelMedium,
-                            maxLines = 1,
-                        )
+                    BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        val label = stringResource(moodLabel(mood))
+                        // Roughly 0.55em per letter for Nunito Sans; never larger than 14sp, never below 10sp.
+                        val fitting = with(LocalDensity.current) { (maxWidth - 8.dp).toSp() / (longest * 0.55f) }
+                        val fontSize = fitting.value.coerceIn(10f, 14f).sp
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp, vertical = 12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                        ) {
+                            Box(Modifier.size(22.dp).background(moodColor(mood), CircleShape))
+                            Text(
+                                label,
+                                style = MaterialTheme.typography.labelMedium.copy(fontSize = fontSize),
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                softWrap = false,
+                            )
+                        }
                     }
                 }
             }
