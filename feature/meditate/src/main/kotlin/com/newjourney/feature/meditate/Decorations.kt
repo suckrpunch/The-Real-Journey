@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
@@ -24,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import com.newjourney.core.designsystem.component.isNightTheme
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -120,47 +120,57 @@ private fun DrawScope.star(center: Offset, arm: Float, color: Color) {
     drawPath(path, color)
 }
 
-/** Two small pines with a little grass, in thin lines. */
+/**
+ * Two small pines with a few blades of grass, as in the approved design: thin outlines with a
+ * soft green fill by day, outlines only by night. Drawn on a 100 × 76 grid and scaled to fit.
+ */
 @Composable
 internal fun Pines(modifier: Modifier = Modifier) {
-    val color = MaterialTheme.colorScheme.primary
+    val line = MaterialTheme.colorScheme.primary
+    val fill = if (isNightTheme()) Color.Transparent else NewJourneyTheme.extraColors.breathMiddle
     Canvas(modifier) {
-        val w = size.width
-        val h = size.height
-        val stroke = Stroke(width = h * 0.022f, cap = StrokeCap.Round, join = StrokeJoin.Round)
-        pine(Offset(w * 0.40f, h * 0.10f), Size(w * 0.24f, h * 0.70f), color, stroke)
-        pine(Offset(w * 0.64f, h * 0.0f), Size(w * 0.30f, h * 0.82f), color, stroke)
-        grass(Offset(w * 0.12f, h * 0.9f), h * 0.12f, color, stroke)
-        grass(Offset(w * 0.94f, h * 0.88f), h * 0.12f, color, stroke)
+        val k = minOf(size.width / 100f, size.height / 76f)
+        val ox = (size.width - 100f * k) / 2f
+        val oy = size.height - 76f * k
+        fun p(x: Float, y: Float) = Offset(ox + x * k, oy + y * k)
+        val stroke = Stroke(width = 1.8f * k, cap = StrokeCap.Round, join = StrokeJoin.Round)
+        pine(::p, cx = 36f, top = 24f, w = 22f, h = 46f, line = line, fill = fill, stroke = stroke)
+        pine(::p, cx = 64f, top = 10f, w = 26f, h = 60f, line = line, fill = fill, stroke = stroke)
+        grass(::p, 12f, 72f, line, stroke.width)
+        grass(::p, 90f, 72f, line, stroke.width)
     }
 }
 
-private fun DrawScope.pine(top: Offset, box: Size, color: Color, stroke: Stroke) {
-    val cx = top.x + box.width / 2
-    val trunkBottom = top.y + box.height * 1.15f
-    val tiers = 3
-    val path = Path()
-    for (i in 0 until tiers) {
-        val tierTop = top.y + box.height * (i / (tiers + 0.6f))
-        val tierBottom = top.y + box.height * ((i + 1.6f) / (tiers + 0.6f))
-        val half = box.width / 2 * ((i + 1f) / tiers)
-        path.moveTo(cx, tierTop)
-        path.lineTo(cx - half, tierBottom)
-        path.lineTo(cx + half, tierBottom)
-        path.close()
+/** A pine of three tiers with a trunk running up through it. */
+private fun DrawScope.pine(
+    p: (Float, Float) -> Offset,
+    cx: Float,
+    top: Float,
+    w: Float,
+    h: Float,
+    line: Color,
+    fill: Color,
+    stroke: Stroke,
+) {
+    val tiers = listOf(0f to 0f, 0.24f to 0.3f, 0.1f to 0.3f, 0.38f to 0.58f, 0.13f to 0.58f, 0.5f to 0.86f)
+    val outline = Path()
+    tiers.forEachIndexed { i, (x, y) ->
+        val pt = p(cx + x * w, top + y * h)
+        if (i == 0) outline.moveTo(pt.x, pt.y) else outline.lineTo(pt.x, pt.y)
     }
-    drawPath(path, color, style = stroke)
-    drawLine(color, Offset(cx, top.y + box.height * 0.3f), Offset(cx, trunkBottom), strokeWidth = stroke.width, cap = StrokeCap.Round)
+    tiers.drop(1).reversed().forEach { (x, y) ->
+        val pt = p(cx - x * w, top + y * h)
+        outline.lineTo(pt.x, pt.y)
+    }
+    outline.close()
+    if (fill != Color.Transparent) drawPath(outline, fill)
+    drawPath(outline, line, style = stroke)
+    drawLine(line, p(cx, top + 0.32f * h), p(cx, top + h), strokeWidth = stroke.width, cap = StrokeCap.Round)
 }
 
-private fun DrawScope.grass(base: Offset, height: Float, color: Color, stroke: Stroke) {
-    listOf(-0.5f, 0f, 0.5f).forEach { lean ->
-        drawLine(
-            color,
-            Offset(base.x + lean * height * 0.4f, base.y - height * (if (lean == 0f) 1f else 0.75f)),
-            Offset(base.x + lean * height * 0.15f, base.y),
-            strokeWidth = stroke.width,
-            cap = StrokeCap.Round,
-        )
-    }
+/** Three blades of grass fanning upwards. */
+private fun DrawScope.grass(p: (Float, Float) -> Offset, x: Float, y: Float, color: Color, width: Float) {
+    drawLine(color, p(x - 1.6f, y), p(x - 4.2f, y - 5f), strokeWidth = width, cap = StrokeCap.Round)
+    drawLine(color, p(x, y), p(x, y - 7f), strokeWidth = width, cap = StrokeCap.Round)
+    drawLine(color, p(x + 1.6f, y), p(x + 4.2f, y - 5f), strokeWidth = width, cap = StrokeCap.Round)
 }

@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import com.newjourney.core.designsystem.R
@@ -39,11 +41,18 @@ fun milestoneTitle(milestone: Milestone): Int = when (milestone) {
 
 /** A full-width row the user can tap anywhere to switch something on or off. */
 @Composable
-fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun SwitchRow(
+    label: String,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    /** Compact rows (Meditate) are shorter; the whole row stays tappable. */
+    compact: Boolean = false,
+) {
     Row(
         modifier
             .fillMaxWidth()
-            .heightIn(min = MinTouchTarget)
+            .heightIn(min = if (compact) 40.dp else MinTouchTarget)
             .toggleable(value = checked, onValueChange = onChange, role = Role.Switch),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -53,6 +62,7 @@ fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit, modi
         Switch(
             checked = checked,
             onCheckedChange = null,
+            modifier = if (compact) Modifier.scale(0.85f) else Modifier,
             colors = SwitchDefaults.colors(
                 checkedTrackColor = MaterialTheme.colorScheme.primary,
                 checkedThumbColor = if (night) NightSwitchThumb else MaterialTheme.colorScheme.onPrimary,

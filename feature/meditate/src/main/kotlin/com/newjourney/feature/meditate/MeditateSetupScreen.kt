@@ -38,7 +38,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.DurationChip
-import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.ScreenPadding
@@ -91,10 +90,10 @@ internal fun MeditateSetupScreen(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 AppHeader()
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     ScreenTitle(
@@ -102,7 +101,7 @@ internal fun MeditateSetupScreen(
                         subtitle = stringResource(R.string.meditate_subtitle),
                         modifier = Modifier.weight(1f),
                     )
-                    SkyMark(Modifier.size(84.dp))
+                    SkyMark(Modifier.size(72.dp))
                 }
             }
         }
@@ -117,7 +116,7 @@ internal fun MeditateSetupScreen(
         }
 
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     stringResource(R.string.setup_length),
                     style = MaterialTheme.typography.headlineSmall,
@@ -144,22 +143,22 @@ internal fun MeditateSetupScreen(
         }
 
         item {
-            SoftCard {
+            SoftCard(padding = 16.dp, spacing = 0.dp) {
                 CardHeading(NavIcons.Bell, stringResource(R.string.setup_bells))
-                SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange)
-                SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange)
+                SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange, compact = true)
+                SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange, compact = true)
             }
         }
 
         item {
-            SoftCard {
+            SoftCard(padding = 16.dp, spacing = 4.dp) {
                 CardHeading(NavIcons.Music, stringResource(R.string.setup_sound))
                 Box {
                     Pines(
                         Modifier
                             .align(Alignment.BottomEnd)
                             .padding(end = 4.dp)
-                            .size(width = 96.dp, height = 72.dp),
+                            .size(width = 84.dp, height = 64.dp),
                     )
                     Column(Modifier.selectableGroup()) {
                         BackgroundSound.entries.forEach { sound ->
@@ -167,7 +166,7 @@ internal fun MeditateSetupScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .heightIn(min = MinTouchTarget)
+                                    .heightIn(min = 38.dp)
                                     .selectable(selected = selected, onClick = { onSoundSelected(sound) }, role = Role.RadioButton),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {

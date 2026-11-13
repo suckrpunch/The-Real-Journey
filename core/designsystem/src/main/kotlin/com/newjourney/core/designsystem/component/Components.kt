@@ -41,6 +41,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.newjourney.core.designsystem.R
@@ -119,6 +120,8 @@ fun SecondaryButton(
 fun SoftCard(
     modifier: Modifier = Modifier,
     raised: Boolean = false,
+    padding: Dp = 20.dp,
+    spacing: Dp = 12.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
@@ -126,7 +129,7 @@ fun SoftCard(
         shape = MaterialTheme.shapes.large,
         color = if (raised) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp), content = content)
+        Column(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(spacing), content = content)
     }
 }
 
