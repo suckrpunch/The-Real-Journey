@@ -5,13 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Article
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -24,8 +19,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -36,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.newjourney.app.R
 import com.newjourney.core.designsystem.component.LocalOpenPremium
 import com.newjourney.core.designsystem.component.LocalOpenReminders
+import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.designsystem.theme.NavigationLabelStyle
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.feature.explore.CategoryRoute
@@ -71,11 +69,11 @@ enum class TopLevelDestination(
     val selectedIcon: ImageVector,
     @StringRes val label: Int,
 ) {
-    HOME(HomeRoute, HomeRoute::class, Icons.Outlined.Home, Icons.Filled.Home, R.string.tab_home),
-    EXPLORE(ExploreRoute, ExploreRoute::class, Icons.Outlined.Search, Icons.Outlined.Search, R.string.tab_explore),
-    MEDITATE(MeditateRoute(), MeditateRoute::class, Icons.Outlined.Spa, Icons.Outlined.Spa, R.string.tab_meditate),
-    JOURNAL(JournalRoute, JournalRoute::class, Icons.AutoMirrored.Outlined.Article, Icons.AutoMirrored.Outlined.Article, R.string.tab_journal),
-    PROFILE(ProfileRoute, ProfileRoute::class, Icons.Outlined.Person, Icons.Outlined.Person, R.string.tab_profile),
+    HOME(HomeRoute, HomeRoute::class, NavIcons.Home, NavIcons.HomeFilled, R.string.tab_home),
+    EXPLORE(ExploreRoute, ExploreRoute::class, NavIcons.Explore, NavIcons.ExploreBold, R.string.tab_explore),
+    MEDITATE(MeditateRoute(), MeditateRoute::class, NavIcons.Meditate, NavIcons.MeditateBold, R.string.tab_meditate),
+    JOURNAL(JournalRoute, JournalRoute::class, NavIcons.Journal, NavIcons.JournalBold, R.string.tab_journal),
+    PROFILE(ProfileRoute, ProfileRoute::class, NavIcons.Profile, NavIcons.ProfileBold, R.string.tab_profile),
 }
 
 @Composable
@@ -130,19 +128,24 @@ fun NewJourneyApp(
                                 selected = selected,
                                 onClick = { navController.navigateToTab(destination.route) },
                                 icon = {
-                                    Icon(if (selected) destination.selectedIcon else destination.icon, contentDescription = null)
+                                    Icon(
+                                        if (selected) destination.selectedIcon else destination.icon,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp),
+                                    )
                                 },
                                 label = {
                                     Text(
                                         stringResource(destination.label),
-                                        style = NavigationLabelStyle,
+                                        // The selected tab reads bolder; no pill, as in the approved design.
+                                        style = if (selected) NavigationLabelStyle.copy(fontWeight = FontWeight.ExtraBold) else NavigationLabelStyle,
                                         maxLines = 1,
                                     )
                                 },
                                 alwaysShowLabel = true,
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = NewJourneyTheme.extraColors.navIndicator,
-                                    selectedIconColor = NewJourneyTheme.extraColors.onNavIndicator,
+                                    indicatorColor = Color.Transparent,
+                                    selectedIconColor = MaterialTheme.colorScheme.onBackground,
                                     selectedTextColor = MaterialTheme.colorScheme.onBackground,
                                     unselectedIconColor = NewJourneyTheme.extraColors.navInactive,
                                     unselectedTextColor = NewJourneyTheme.extraColors.navInactive,
