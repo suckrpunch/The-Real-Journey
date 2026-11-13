@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import com.newjourney.core.model.UserProfile
 import javax.inject.Inject
 
 internal data class ProfileUiState(
@@ -90,6 +91,10 @@ internal class ProfileViewModel @Inject constructor(
     journeyContent: JourneyContentRepository,
     entitlements: EntitlementRepository,
 ) : ViewModel() {
+
+    /** Name, age range and goals from the introduction. */
+    val userProfile: StateFlow<UserProfile> = settings.userProfile
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProfile())
 
     private val journeyExtras = combine(
         sessions.sessionsSince(Instant.EPOCH).map { JourneyProgress.from(it) },
@@ -134,9 +139,11 @@ internal fun ProfileRouteContent(
     onOpenReminders: () -> Unit,
     onOpenJourney: () -> Unit,
     onOpenPremium: () -> Unit,
+    onEditAboutYou: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val profile by viewModel.userProfile.collectAsStateWithLifecycle()
     Column(
         Modifier
             .fillMaxSize()
@@ -151,6 +158,28 @@ internal fun ProfileRouteContent(
         RemindersSummary(state.reminders, onOpenReminders)
         AppearanceCard(state.theme, viewModel::setThemeMode, viewModel::shiftSchedule)
         PremiumCard(state.isPremium, onOpenPremium)
+        AboutYouCard(profile, onEditAboutYou)
+    }
+}
+
+@Composable
+private fun AboutYouCard(profile: UserProfile, onEdit: () -> Unit) {
+    SoftCard {
+        Text(stringResource(R.string.about_you_title), style = MaterialTheme.typography.titleLarge)
+        Text(
+            profile.displayName?.let { stringResource(R.string.about_you_name, it) } ?: stringResource(R.string.about_you_no_name),
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        Text(
+            stringResource(R.string.about_you_private),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        SecondaryButton(
+            text = stringResource(R.string.about_you_edit),
+            onClick = onEdit,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

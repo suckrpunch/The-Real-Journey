@@ -4,6 +4,10 @@
     <string name="home_greeting_afternoon">Good afternoon</string>
     <string name="home_greeting_evening">Good evening</string>
     <string name="home_greeting_night">Peaceful night</string>
+    <string name="home_greeting_named">%1$s, %2$s</string>
+    <string name="home_picks_title">Picked for you</string>
+    <string name="home_picks_minutes">%1$d min</string>
+    <string name="home_picks_listen">Listen</string>
 
     <string name="home_quote_label">Today\'s quote</string>
     <string name="home_quote_save">Save</string>

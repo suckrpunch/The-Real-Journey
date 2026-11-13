@@ -2,6 +2,7 @@ package com.newjourney.feature.home
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -48,17 +50,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.DurationChip
+import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
-import com.newjourney.core.designsystem.component.moodColor
-import com.newjourney.core.designsystem.component.moodLabel
 import com.newjourney.core.designsystem.component.TrackArtwork
 import com.newjourney.core.designsystem.component.categoryIcon
+import com.newjourney.core.designsystem.component.moodColor
+import com.newjourney.core.designsystem.component.moodLabel
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.Category
 import com.newjourney.core.model.HomeCheckInMoods
@@ -98,6 +100,7 @@ internal fun HomeScreenRoute(
         },
         onMoodSelected = onMoodSelected,
         onStartRoutine = onStartRoutine,
+        onOpenPick = onOpenTrack,
     )
 }
 
@@ -114,6 +117,7 @@ internal fun HomeScreen(
     onContinueListening: () -> Unit,
     onMoodSelected: (Mood) -> Unit,
     onStartRoutine: (Long) -> Unit = {},
+    onOpenPick: (String) -> Unit = {},
 ) {
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
 
@@ -161,6 +165,9 @@ internal fun HomeScreen(
         state.continueListening?.let { listening ->
             item { ContinueListeningCard(listening, onContinue = onContinueListening) }
         }
+        if (state.picks.isNotEmpty()) {
+            item { PicksSection(picks = state.picks, onOpen = onOpenPick) }
+        }
         if (state.categories.isNotEmpty()) {
             item {
                 ExploreRow(
@@ -194,7 +201,47 @@ private fun Greeting(state: HomeUiState) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(stringResource(greeting), style = MaterialTheme.typography.displaySmall)
+        val greetingText = stringResource(greeting)
+        Text(
+            state.userName?.let { stringResource(R.string.home_greeting_named, greetingText, it) } ?: greetingText,
+            style = MaterialTheme.typography.displaySmall,
+        )
+    }
+}
+
+@Composable
+private fun PicksSection(picks: List<HomePick>, onOpen: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        SectionTitle(stringResource(R.string.home_picks_title))
+        picks.forEach { pick ->
+            Surface(
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.large)
+                    .clickable(onClickLabel = stringResource(R.string.home_picks_listen)) { onOpen(pick.trackId) },
+            ) {
+                Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    TrackArtwork(pick.colorHex, Modifier.size(56.dp).clip(RoundedCornerShape(14.dp)))
+                    Column(Modifier.weight(1f).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(pick.title, style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            listOf(pick.place, stringResource(R.string.home_picks_minutes, pick.minutes))
+                                .filter { it.isNotEmpty() }
+                                .joinToString(" · "),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Icon(
+                        if (pick.locked) Icons.Outlined.Lock else Icons.Filled.PlayArrow,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+        }
     }
 }
 

@@ -135,4 +135,9 @@
     <string name="premium_dev_title">Developer preview (test builds only)</string>
     <string name="premium_dev_body">Shows the app as a Premium member, without paying. This switch does not exist in the version on Google Play.</string>
     <string name="premium_dev_switch">Preview Premium</string>
+    <string name="about_you_title">About you</string>
+    <string name="about_you_name">We call you %1$s.</string>
+    <string name="about_you_no_name">You haven\'t added a name.</string>
+    <string name="about_you_private">Your name, age range and goals stay on this phone. They shape the suggestions on Home.</string>
+    <string name="about_you_edit">Change your answers</string>
 </resources>

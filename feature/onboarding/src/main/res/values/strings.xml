@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_cancel">Cancel</string>
+    <string name="onboarding_step">Step %1$d of %2$d</string>
+    <string name="onboarding_continue">Continue</string>
+    <string name="onboarding_skip_question">Skip this question</string>
+    <string name="onboarding_private">Everything you tell us stays on your phone. You can change it any time in Profile.</string>
+
+    <string name="onboarding_welcome_title">Welcome to New Journey</string>
+    <string name="onboarding_welcome_body">A quiet place to sit, breathe and listen. Three short questions help us suggest where to begin. Every question is optional.</string>
+    <string name="onboarding_welcome_begin">Let\'s begin</string>
+
+    <string name="onboarding_name_title">What may we call you?</string>
+    <string name="onboarding_name_body">We\'ll use it to greet you. A first name or nickname is perfect.</string>
+    <string name="onboarding_name_label">Your name</string>
+
+    <string name="onboarding_age_title">How old are you?</string>
+    <string name="onboarding_age_body">This helps us suggest a gentle length for your first session.</string>
+    <string name="onboarding_age_18_29">18 to 29</string>
+    <string name="onboarding_age_30_44">30 to 44</string>
+    <string name="onboarding_age_45_59">45 to 59</string>
+    <string name="onboarding_age_60_74">60 to 74</string>
+    <string name="onboarding_age_75_plus">75 or older</string>
+    <string name="onboarding_age_none">I\'d rather not say</string>
+
+    <string name="onboarding_goals_title">What brings you here?</string>
+    <string name="onboarding_goals_body">Choose as many as you like.</string>
+    <string name="onboarding_goal_sleep">Better sleep</string>
+    <string name="onboarding_goal_stress">Less stress</string>
+    <string name="onboarding_goal_peace">Peace of mind</string>
+    <string name="onboarding_goal_focus">Better focus</string>
+    <string name="onboarding_goal_deeper">Deeper meditation</string>
+    <string name="onboarding_goal_energy">Balance and energy</string>
+    <string name="onboarding_show_picks">Show my suggestions</string>
+
+    <string name="onboarding_picks_title">Picked for you</string>
+    <string name="onboarding_picks_title_named">Picked for you, %1$s</string>
+    <string name="onboarding_picks_body">A few pieces to start with. Tap one to listen. You\'ll find them again on Home.</string>
+    <string name="onboarding_pick_minutes">%1$d min</string>
+    <string name="onboarding_pick_premium">Included with Premium</string>
+    <string name="onboarding_pick_listen">Listen</string>
+    <string name="onboarding_first_title">Or try a first meditation</string>
+    <string name="onboarding_first_body">Just %1$d quiet minutes with a soft bell at the start and the end. You can lock your phone.</string>
+    <string name="onboarding_first_begin">Begin %1$d minutes</string>
+    <string name="onboarding_to_home">Go to Home</string>
+    <string name="onboarding_done">Done</string>
+</resources>

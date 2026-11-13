@@ -26,6 +26,8 @@ What works in this build:
 
 - **Routines** (Meditate tab, and up to three on Home): save the current length, bells and background sound under a name, then start it with one tap. Up to 10 routines; a routine with a Premium length asks for Premium just like the timer. Stored in the main database (version 3, migration keeps all sessions).
 
+- **Introduction** (first launch only, every question optional): name, age range and goals (better sleep, less stress, peace of mind, better focus, deeper meditation, balance and energy), then three suggested tracks and a gentle first session. The name greets on Home, the goals give "Picked for you" on Home, and Profile › About you changes the answers. Suggestions come from `Recommendations` in core/model, using only the catalog, so new music is included automatically.
+
 Not built yet: online catalog (dormant until a storage bucket is set), server-side purchase verification, offline downloads.
 
 ### Access code for Google Play reviewers

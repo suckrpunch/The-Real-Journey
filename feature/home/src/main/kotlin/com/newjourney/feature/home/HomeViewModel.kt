@@ -17,6 +17,8 @@ import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.JourneyProgress
 import com.newjourney.core.model.PartOfDay
+import com.newjourney.core.model.Recommendations
+import com.newjourney.core.model.Goal
 import com.newjourney.core.model.Routine
 import com.newjourney.core.model.Quote
 import com.newjourney.core.model.SampleQuotes
@@ -52,9 +54,23 @@ data class HomeUiState(
     val continueListening: ContinueListening? = null,
     /** The first few saved routines, as one-tap starts. */
     val routines: List<Routine> = emptyList(),
+    /** The name from the introduction, for the greeting. */
+    val userName: String? = null,
+    /** Suggestions from the goals chosen in the introduction; empty when no goals were chosen. */
+    val picks: List<HomePick> = emptyList(),
 ) {
     fun isLocked(minutes: Int): Boolean = !entitlement.isPremium && TimerLimits.isPremiumDuration(minutes)
 }
+
+/** A suggested track on Home, chosen from the listener's goals. */
+data class HomePick(
+    val trackId: String,
+    val title: String,
+    val place: String,
+    val colorHex: String?,
+    val minutes: Int,
+    val locked: Boolean,
+)
 
 /** The track the listener stopped part-way through, shown as "Continue listening". */
 data class ContinueListening(
@@ -110,6 +126,9 @@ class HomeViewModel @Inject constructor(
         )
     }.combine(entitlements.entitlement) { state, current -> state.copy(entitlement = current) }
         .combine(routines.routines) { state, saved -> state.copy(routines = saved.take(HOME_ROUTINES)) }
+        .combine(settings.userProfile) { state, profile ->
+            state.copy(userName = profile.displayName, picks = picksFor(profile.goals, state.entitlement.isPremium))
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
 
     /** Selects a free duration. Premium durations are handled by the screen, which explains premium. */
@@ -153,6 +172,23 @@ class HomeViewModel @Inject constructor(
             place = listOfNotNull(category?.name, sub?.name).joinToString(" · "),
             positionMs = recent.positionMs,
         )
+    }
+
+    private fun picksFor(goals: Set<Goal>, isPremium: Boolean): List<HomePick> {
+        if (goals.isEmpty()) return emptyList()
+        val catalog = catalogRepository.catalog.value ?: return emptyList()
+        return Recommendations.pick(catalog, goals, isPremium).map { track ->
+            val category = catalog.category(track.categoryId)
+            val sub = category?.subcategories?.firstOrNull { it.id == track.subcategoryId }
+            HomePick(
+                trackId = track.id,
+                title = track.title,
+                place = listOfNotNull(category?.name, sub?.name).joinToString(" · "),
+                colorHex = sub?.color,
+                minutes = ((track.durationMs + 59_999) / 60_000).toInt(),
+                locked = track.tier == TrackTier.PREMIUM && !isPremium,
+            )
+        }
     }
 
     fun toggleQuoteSaved() {

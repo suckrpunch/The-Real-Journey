@@ -21,12 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,6 +46,8 @@ import com.newjourney.feature.meditate.MeditateRoute
 import com.newjourney.feature.meditate.MeditationSessionRoute
 import com.newjourney.feature.meditate.meditateScreen
 import com.newjourney.feature.meditate.meditationSessionScreen
+import com.newjourney.feature.onboarding.OnboardingRoute
+import com.newjourney.feature.onboarding.onboardingScreen
 import com.newjourney.feature.profile.JourneyRoute
 import com.newjourney.feature.profile.PremiumRoute
 import com.newjourney.feature.profile.ProfileRoute
@@ -70,12 +72,19 @@ enum class TopLevelDestination(
 }
 
 @Composable
-fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
+fun NewJourneyApp(
+    /** True on the very first launch: the app opens with the introduction. */
+    startWithIntroduction: Boolean = false,
+    navController: NavHostController = rememberNavController(),
+) {
+    // Chosen once; finishing the introduction moves on to Home without rebuilding the app.
+    val startDestination: Any = remember { if (startWithIntroduction) OnboardingRoute() else HomeRoute }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
     // The running timer and journal writing are full screen: no tab bar, nothing else competing for attention.
     val showTabs = currentDestination?.hasRoute(MeditationSessionRoute::class) != true &&
-        currentDestination?.hasRoute(JournalEditorRoute::class) != true
+        currentDestination?.hasRoute(JournalEditorRoute::class) != true &&
+        currentDestination?.hasRoute(OnboardingRoute::class) != true
     val inLibrary = currentDestination?.hasRoute(CategoryRoute::class) == true ||
         currentDestination?.hasRoute(TrackRoute::class) == true
     val inProfile = listOf(ProgressRoute::class, RemindersRoute::class, JourneyRoute::class, StageRoute::class, PremiumRoute::class)
@@ -84,6 +93,16 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
     val openTrack: (String) -> Unit = { id -> navController.navigate(TrackRoute(id)) { launchSingleTop = true } }
     val openStage: (String) -> Unit = { stage -> navController.navigate(StageRoute(stage)) { launchSingleTop = true } }
     val openPremium: () -> Unit = { navController.navigate(PremiumRoute) { launchSingleTop = true } }
+    // From Profile the introduction just closes; on first launch it makes way for Home.
+    val finishIntroduction: () -> Unit = {
+        if (navController.currentDestination?.hasRoute(OnboardingRoute::class) == true) {
+            if (navController.previousBackStackEntry != null) {
+                navController.popBackStack()
+            } else {
+                navController.navigate(HomeRoute) { popUpTo<OnboardingRoute> { inclusive = true } }
+            }
+        }
+    }
 
     CompositionLocalProvider(LocalOpenPremium provides openPremium) {
     Scaffold(
@@ -120,12 +139,20 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = HomeRoute,
+            startDestination = startDestination,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding),
         ) {
+            onboardingScreen(
+                onFinished = finishIntroduction,
+                onOpenTrack = { id -> finishIntroduction(); openTrack(id) },
+                onStartMeditation = { minutes ->
+                    finishIntroduction()
+                    navController.navigate(MeditationSessionRoute(minutes))
+                },
+            )
             homeScreen(
                 onBeginMeditation = { minutes -> navController.navigate(MeditationSessionRoute(minutes)) },
                 onOpenExplore = { navController.navigateToTab(ExploreRoute) },
@@ -183,6 +210,7 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
                 onOpenJourney = { navController.navigate(JourneyRoute) },
                 onOpenStage = openStage,
                 onOpenPremium = openPremium,
+                onEditAboutYou = { navController.navigate(OnboardingRoute(editing = true)) { launchSingleTop = true } },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -196,7 +224,8 @@ fun NewJourneyApp(navController: NavHostController = rememberNavController()) {
  */
 private fun NavHostController.navigateToTab(route: Any, restore: Boolean = true) {
     navigate(route) {
-        popUpTo(graph.findStartDestination().id) { saveState = restore }
+        // Home is the base of every tab (also after the introduction, which was the first screen then).
+        popUpTo<HomeRoute> { saveState = restore }
         launchSingleTop = true
         restoreState = restore
     }

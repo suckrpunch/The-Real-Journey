@@ -7,11 +7,16 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -24,6 +29,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalTime
 import javax.inject.Inject
@@ -34,6 +40,11 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
     val themePreference: StateFlow<ThemePreference> = settings.themePreference
         .stateIn(viewModelScope, SharingStarted.Eagerly, ThemePreference())
+
+    /** Null while loading, so the first screen is chosen only once the answer is known. */
+    val introductionDone: StateFlow<Boolean?> = settings.introductionDone
+        .map<Boolean, Boolean?> { it }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }
 
 @AndroidEntryPoint
@@ -59,8 +70,14 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
 
+            val introductionDone by viewModel.introductionDone.collectAsStateWithLifecycle()
+
             NewJourneyTheme(nightTheme = night) {
-                NewJourneyApp()
+                when (val done = introductionDone) {
+                    // A plain background for the moment the settings load.
+                    null -> Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                    else -> NewJourneyApp(startWithIntroduction = !done)
+                }
             }
         }
     }

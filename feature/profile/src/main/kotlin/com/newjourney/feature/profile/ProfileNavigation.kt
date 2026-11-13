@@ -36,6 +36,7 @@ fun NavGraphBuilder.profileScreens(
     onOpenJourney: () -> Unit,
     onOpenStage: (stage: String) -> Unit,
     onOpenPremium: () -> Unit,
+    onEditAboutYou: () -> Unit,
     onBack: () -> Unit,
 ) {
     composable<ProfileRoute> {
@@ -44,6 +45,7 @@ fun NavGraphBuilder.profileScreens(
             onOpenReminders = onOpenReminders,
             onOpenJourney = onOpenJourney,
             onOpenPremium = onOpenPremium,
+            onEditAboutYou = onEditAboutYou,
         )
     }
     composable<JourneyRoute> {

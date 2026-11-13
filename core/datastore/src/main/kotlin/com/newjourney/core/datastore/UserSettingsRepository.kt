@@ -9,12 +9,15 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.newjourney.core.model.AgeRange
 import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.DailyGoal
+import com.newjourney.core.model.Goal
 import com.newjourney.core.model.ReminderSettings
 import com.newjourney.core.model.ThemeMode
 import com.newjourney.core.model.ThemePreference
 import com.newjourney.core.model.TimerSettings
+import com.newjourney.core.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -58,6 +61,14 @@ interface UserSettingsRepository {
     /** The review access code entered on this device, if any (for Google Play's app reviewers). */
     val reviewCode: Flow<String?>
     suspend fun setReviewCode(code: String?)
+
+    /** Name, age range and goals from the introduction. Only on this phone. */
+    val userProfile: Flow<UserProfile>
+    suspend fun setUserProfile(profile: UserProfile)
+
+    /** False until the introduction has been finished or skipped once. */
+    val introductionDone: Flow<Boolean>
+    suspend fun setIntroductionDone()
 
     /** Journey stages whose arrival the user has already seen, by stage name. */
     val seenJourneyStages: Flow<Set<String>>
@@ -179,6 +190,30 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         dataStore.edit { it[Keys.DEBUG_PREMIUM] = on }
     }
 
+    override val userProfile: Flow<UserProfile> = safeData.map { prefs ->
+        UserProfile(
+            name = prefs[Keys.PROFILE_NAME].orEmpty(),
+            ageRange = AgeRange.fromStored(prefs[Keys.PROFILE_AGE]),
+            goals = Goal.fromStored(prefs[Keys.PROFILE_GOALS].orEmpty()),
+        )
+    }
+
+    override suspend fun setUserProfile(profile: UserProfile) {
+        dataStore.edit { prefs ->
+            val name = UserProfile.cleanName(profile.name)
+            if (name.isEmpty()) prefs.remove(Keys.PROFILE_NAME) else prefs[Keys.PROFILE_NAME] = name
+            val age = profile.ageRange
+            if (age == null) prefs.remove(Keys.PROFILE_AGE) else prefs[Keys.PROFILE_AGE] = age.name
+            prefs[Keys.PROFILE_GOALS] = profile.goals.map { it.name }.toSet()
+        }
+    }
+
+    override val introductionDone: Flow<Boolean> = safeData.map { it[Keys.INTRO_DONE] ?: false }
+
+    override suspend fun setIntroductionDone() {
+        dataStore.edit { it[Keys.INTRO_DONE] = true }
+    }
+
     override val reviewCode: Flow<String?> = safeData.map { it[Keys.REVIEW_CODE] }
 
     override suspend fun setReviewCode(code: String?) {
@@ -195,6 +230,10 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         val CACHED_PREMIUM = booleanPreferencesKey("premium_cached")
         val DEBUG_PREMIUM = booleanPreferencesKey("premium_debug_preview")
         val REVIEW_CODE = stringPreferencesKey("premium_review_code")
+        val PROFILE_NAME = stringPreferencesKey("profile_name")
+        val PROFILE_AGE = stringPreferencesKey("profile_age_range")
+        val PROFILE_GOALS = stringSetPreferencesKey("profile_goals")
+        val INTRO_DONE = booleanPreferencesKey("introduction_done")
         val SEEN_STAGES = stringSetPreferencesKey("journey_seen_stages")
         val DAILY_GOAL = intPreferencesKey("daily_goal_minutes")
         val R_DAILY_ON = booleanPreferencesKey("reminder_daily_on")
