@@ -170,6 +170,7 @@ fun AppHeader(modifier: Modifier = Modifier) {
                     Icons.Outlined.Notifications,
                     contentDescription = stringResource(R.string.header_reminders),
                     tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.size(30.dp),
                 )
             }
         }

@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -217,7 +218,17 @@ private fun Greeting(state: HomeUiState) {
                 color = MaterialTheme.colorScheme.onBackground,
             )
             state.userName?.let { name ->
-                Text(name, style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.onBackground)
+                Text(
+                    name,
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    // Sits 3dp closer to the greeting; everything below moves up with it.
+                    modifier = Modifier.layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        val pull = 3.dp.roundToPx()
+                        layout(placeable.width, placeable.height - pull) { placeable.place(0, -pull) }
+                    },
+                )
             }
         }
         Text(
