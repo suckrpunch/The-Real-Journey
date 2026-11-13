@@ -7,6 +7,8 @@ import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -190,11 +192,31 @@ private fun Countdown(
             }
         }
     }
-    Text(
-        stringResource(if (running) R.string.session_status_running else R.string.session_status_paused),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.primary,
-    )
+    // One breath cycle drives both the circles and the words, so they always match.
+    val cycle = rememberBreathCycle(running)
+    val status = when {
+        !running -> R.string.session_status_paused
+        cycle == null -> R.string.session_status_running
+        else -> when (breathPhase(cycle)) {
+            // The short rest at the top keeps "Breathe in…", so the words change only twice a breath.
+            BreathPhase.IN, BreathPhase.HOLD -> R.string.session_breathe_in
+            BreathPhase.OUT -> R.string.session_breathe_out
+        }
+    }
+    // The words fade softly into each other; screen readers keep the calm "Breathe gently".
+    val spokenStatus = stringResource(if (running) R.string.session_status_running else R.string.session_status_paused)
+    Crossfade(
+        targetState = status,
+        animationSpec = tween(700),
+        label = "breathWords",
+        modifier = Modifier.semantics { contentDescription = spokenStatus },
+    ) { res ->
+        Text(
+            stringResource(res),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
+        )
+    }
     if (trackTitle != null) {
         Text(
             stringResource(R.string.session_with_track, trackTitle),
@@ -203,7 +225,7 @@ private fun Countdown(
             textAlign = TextAlign.Center,
         )
     }
-    BreathingCircle(moving = running, size = 260.dp)
+    BreathingCircle(moving = running, size = 260.dp, cycle = cycle)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = spoken },

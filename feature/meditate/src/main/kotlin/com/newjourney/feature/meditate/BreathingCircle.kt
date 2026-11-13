@@ -30,20 +30,13 @@ import com.newjourney.core.designsystem.theme.NewJourneyTheme
  * Everything stays still when [moving] is false or the phone's "Remove animations" setting is on.
  */
 @Composable
-internal fun BreathingCircle(moving: Boolean, modifier: Modifier = Modifier, size: Dp = 240.dp) {
-    val reduceMotion = rememberReduceMotion()
-    val cycle = if (moving && !reduceMotion) {
-        val transition = rememberInfiniteTransition(label = "breathing")
-        val t by transition.animateFloat(
-            initialValue = 0f,
-            targetValue = 1f,
-            animationSpec = infiniteRepeatable(tween(CYCLE_MS, easing = LinearEasing), RepeatMode.Restart),
-            label = "breathCycle",
-        )
-        t
-    } else {
-        null
-    }
+internal fun BreathingCircle(
+    moving: Boolean,
+    modifier: Modifier = Modifier,
+    size: Dp = 240.dp,
+    /** Share one cycle with the "Breathe in / out" words so they stay in step. */
+    cycle: Float? = rememberBreathCycle(moving),
+) {
     // 0 = fully out, 1 = fully in. Paused or still: a calm middle position.
     fun breath(lag: Float): Float = cycle?.let { breathAt((it - lag + 1f) % 1f) } ?: 0.55f
     val inner = breath(0f)
@@ -71,6 +64,33 @@ internal fun BreathingCircle(moving: Boolean, modifier: Modifier = Modifier, siz
                 .background(colors.breathInner, CircleShape),
         )
     }
+}
+
+/**
+ * Where we are in the breath, 0..1 over 11 seconds, or null when the breath should stand still
+ * (paused, or the phone's "Remove animations" setting is on).
+ */
+@Composable
+internal fun rememberBreathCycle(moving: Boolean): Float? {
+    val reduceMotion = rememberReduceMotion()
+    if (!moving || reduceMotion) return null
+    val transition = rememberInfiniteTransition(label = "breathing")
+    val t by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(CYCLE_MS, easing = LinearEasing), RepeatMode.Restart),
+        label = "breathCycle",
+    )
+    return t
+}
+
+internal enum class BreathPhase { IN, HOLD, OUT }
+
+/** The phase of the breath at point [cycle] of the cycle. */
+internal fun breathPhase(cycle: Float): BreathPhase = when {
+    cycle < IN_END -> BreathPhase.IN
+    cycle < HOLD_END -> BreathPhase.HOLD
+    else -> BreathPhase.OUT
 }
 
 private const val CYCLE_MS = 11_000
