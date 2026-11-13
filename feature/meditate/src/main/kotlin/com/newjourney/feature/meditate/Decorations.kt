@@ -1,7 +1,6 @@
 package com.newjourney.feature.meditate
 
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import com.newjourney.core.designsystem.component.isNightTheme
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import kotlin.math.cos
@@ -35,7 +33,8 @@ private val SunAmber = Color(0xFFF2A03D)
 
 /**
  * A sun by day, a crescent moon with a few stars by night, with a very slow, subtle animation:
- * the sun's rays turn gently and its core breathes; the moon floats a little and the stars twinkle.
+ * both float gently up and down in the same calm rhythm; the sun also breathes a little and
+ * the stars twinkle.
  * Purely decorative, so screen readers skip it.
  */
 @Composable
@@ -43,13 +42,6 @@ internal fun SkyMark(modifier: Modifier = Modifier) {
     val night = isNightTheme()
     val moonColor = MaterialTheme.colorScheme.primary
     val motion = rememberInfiniteTransition(label = "sky")
-    // One full turn of the rays every 60 seconds: you notice it only if you look.
-    val turn by motion.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(60_000, easing = LinearEasing)),
-        label = "turn",
-    )
     // A slow in-and-out breath, about four seconds each way.
     val breath by motion.animateFloat(
         initialValue = 0f,
@@ -65,29 +57,28 @@ internal fun SkyMark(modifier: Modifier = Modifier) {
     )
 
     Canvas(modifier) {
-        val c = Offset(size.width / 2, size.height / 2)
+        // Sun and moon share the same gentle float, up and down with the breath.
+        val float = size.minDimension * 0.025f * (breath - 0.5f) * 2f
+        val c = Offset(size.width / 2, size.height / 2 + float)
         if (!night) {
             val stroke = size.minDimension * 0.03f
-            val r = size.minDimension * 0.2f * (1f + 0.05f * breath)
+            val r = size.minDimension * 0.2f * (1f + 0.04f * breath)
             drawCircle(SunAmber, radius = r, center = c, style = Stroke(width = stroke))
-            rotate(turn, pivot = c) {
-                for (i in 0 until 8) {
-                    val a = Math.toRadians(i * 45.0 - 90).toFloat()
-                    val inner = size.minDimension * 0.31f
-                    val outer = size.minDimension * (0.42f + 0.02f * breath)
-                    drawLine(
-                        SunAmber,
-                        Offset(c.x + cos(a) * inner, c.y + sin(a) * inner),
-                        Offset(c.x + cos(a) * outer, c.y + sin(a) * outer),
-                        strokeWidth = stroke,
-                        cap = StrokeCap.Round,
-                    )
-                }
+            for (i in 0 until 8) {
+                val a = Math.toRadians(i * 45.0 - 90).toFloat()
+                val inner = size.minDimension * 0.31f
+                val outer = size.minDimension * (0.42f + 0.015f * breath)
+                drawLine(
+                    SunAmber,
+                    Offset(c.x + cos(a) * inner, c.y + sin(a) * inner),
+                    Offset(c.x + cos(a) * outer, c.y + sin(a) * outer),
+                    strokeWidth = stroke,
+                    cap = StrokeCap.Round,
+                )
             }
         } else {
             val r = size.minDimension * 0.24f
-            val float = size.minDimension * 0.025f * (breath - 0.5f) * 2f
-            val mc = Offset(c.x + size.minDimension * 0.05f, c.y + float)
+            val mc = Offset(c.x + size.minDimension * 0.05f, c.y)
             val moon = Path().apply { addOval(Rect(mc, r)) }
             val bite = Path().apply { addOval(Rect(Offset(mc.x - r * 0.55f, mc.y - r * 0.35f), r)) }
             val crescent = Path().apply { op(moon, bite, PathOperation.Difference) }
