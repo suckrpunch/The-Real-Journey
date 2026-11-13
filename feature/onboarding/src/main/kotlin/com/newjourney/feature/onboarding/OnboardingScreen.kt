@@ -297,7 +297,7 @@ private fun PickCard(pick: Pick, onClick: () -> Unit) {
             .clickable(onClickLabel = stringResource(R.string.onboarding_pick_listen), onClick = onClick),
     ) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            TrackArtwork(pick.colorHex, Modifier.size(64.dp).clip(RoundedCornerShape(16.dp)))
+            TrackArtwork(pick.colorHex, Modifier.size(64.dp).clip(RoundedCornerShape(16.dp)), coverId = pick.track.id)
             Column(Modifier.weight(1f).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(pick.track.title, style = MaterialTheme.typography.titleMedium)
                 Text(

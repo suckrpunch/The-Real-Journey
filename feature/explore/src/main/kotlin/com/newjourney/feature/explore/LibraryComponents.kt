@@ -69,7 +69,7 @@ internal fun TrackRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            TrackArtwork(colorHex, Modifier.size(64.dp).clip(MaterialTheme.shapes.medium))
+            TrackArtwork(colorHex, Modifier.size(64.dp).clip(MaterialTheme.shapes.medium), coverId = track.id)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(track.title, style = MaterialTheme.typography.titleMedium)
                 Text(

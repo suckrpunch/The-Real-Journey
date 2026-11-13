@@ -256,7 +256,7 @@ private fun PicksSection(picks: List<HomePick>, onOpen: (String) -> Unit) {
                     .clickable(onClickLabel = stringResource(R.string.home_picks_listen)) { onOpen(pick.trackId) },
             ) {
                 Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    TrackArtwork(pick.colorHex, Modifier.size(56.dp).clip(RoundedCornerShape(14.dp)))
+                    TrackArtwork(pick.colorHex, Modifier.size(56.dp).clip(RoundedCornerShape(14.dp)), coverId = pick.trackId)
                     Column(Modifier.weight(1f).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(pick.title, style = MaterialTheme.typography.titleMedium)
                         Text(
@@ -432,7 +432,7 @@ private fun ContinueListeningCard(item: ContinueListening, onContinue: () -> Uni
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                TrackArtwork(item.colorHex, Modifier.size(72.dp).clip(MaterialTheme.shapes.medium))
+                TrackArtwork(item.colorHex, Modifier.size(72.dp).clip(MaterialTheme.shapes.medium), coverId = item.track.id)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(item.track.title, style = MaterialTheme.typography.titleMedium)
                     Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)

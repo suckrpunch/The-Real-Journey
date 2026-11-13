@@ -39,10 +39,15 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.ui.draw.clip
+import com.newjourney.core.designsystem.component.CategoryCover
 
 internal data class SubcategorySection(val subcategory: Subcategory, val tracks: List<TrackItem>)
 
 internal data class CategoryUiState(
+    val id: String = "",
     val name: String = "",
     val description: String? = null,
     val sections: List<SubcategorySection> = emptyList(),
@@ -63,6 +68,7 @@ internal class CategoryViewModel @Inject constructor(
     val uiState: StateFlow<CategoryUiState> = catalogRepository.catalog.filterNotNull().map { catalog ->
         val category = catalog.category(categoryId)
         CategoryUiState(
+            id = categoryId,
             name = category?.name.orEmpty(),
             description = category?.description,
             sections = category?.subcategories.orEmpty().map { sub ->
@@ -89,6 +95,17 @@ internal fun CategoryRouteContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item { BackButton(onBack) }
+        if (state.id.isNotEmpty()) {
+            item(key = "cover") {
+                CategoryCover(
+                    state.id,
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2f)
+                        .clip(MaterialTheme.shapes.extraLarge),
+                )
+            }
+        }
         item { SectionTitle(state.name) }
         state.description?.let { description ->
             item {

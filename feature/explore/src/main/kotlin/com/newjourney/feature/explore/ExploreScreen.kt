@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -43,6 +44,7 @@ import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.database.LibraryRepository
 import com.newjourney.core.designsystem.component.AppHeader
+import com.newjourney.core.designsystem.component.CategoryCover
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.ScreenPadding
 import com.newjourney.core.designsystem.component.ScreenTitle
@@ -263,16 +265,22 @@ private fun CategoryRow(summary: CategorySummary, onClick: () -> Unit) {
         Row(
             Modifier
                 .heightIn(min = 58.dp)
-                .padding(start = 20.dp, end = 14.dp, top = 10.dp, bottom = 10.dp),
+                .padding(start = 10.dp, end = 14.dp, top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(18.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Icon(
-                categoryIcon(summary.category.icon),
-                contentDescription = null,
-                tint = colors.onSurface,
-                modifier = Modifier.size(28.dp),
-            )
+            // The category's cover, with its line icon as a stand-in if the cover is missing.
+            CategoryCover(
+                summary.category.id,
+                Modifier.size(44.dp).clip(RoundedCornerShape(12.dp)),
+            ) {
+                Icon(
+                    categoryIcon(summary.category.icon),
+                    contentDescription = null,
+                    tint = colors.onSurface,
+                    modifier = Modifier.size(28.dp).align(Alignment.Center),
+                )
+            }
             Text(
                 summary.category.name,
                 style = MaterialTheme.typography.titleMedium,

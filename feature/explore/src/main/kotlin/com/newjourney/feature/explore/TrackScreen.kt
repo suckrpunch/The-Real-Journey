@@ -83,6 +83,7 @@ internal fun TrackRouteContent(
                 .aspectRatio(1f)
                 .clip(MaterialTheme.shapes.extraLarge)
                 .align(Alignment.CenterHorizontally),
+            coverId = track.id,
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

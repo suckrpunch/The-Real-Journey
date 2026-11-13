@@ -1,5 +1,9 @@
 package com.newjourney.app.navigation
 
+import com.newjourney.core.designsystem.component.rememberCover
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,7 +112,10 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
                 color = NewJourneyTheme.extraColors.playerArt,
                 modifier = Modifier.size(52.dp),
             ) {
-                Box(contentAlignment = Alignment.Center) {
+                val cover = rememberCover(current.trackId)
+                if (cover != null) {
+                    Image(cover, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                } else Box(contentAlignment = Alignment.Center) {
                     Icon(
                         NavIcons.Music,
                         contentDescription = null,
