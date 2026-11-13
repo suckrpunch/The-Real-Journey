@@ -92,10 +92,10 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
             .semantics { contentDescription = appName },
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Box(
                 Modifier
-                    .size(176.dp)
+                    .size(140.dp)
                     .graphicsLayer {
                         alpha = disc.value
                         val s = 0.88f + 0.12f * disc.value
@@ -126,7 +126,7 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
                 appName,
                 fontFamily = NunitoSans,
                 fontWeight = FontWeight.Medium,
-                fontSize = 36.sp,
+                fontSize = 30.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.graphicsLayer {
                     alpha = name.value
