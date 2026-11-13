@@ -7,6 +7,10 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -15,13 +19,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.newjourney.app.navigation.NewJourneyApp
 import com.newjourney.core.datastore.UserSettingsRepository
+import com.newjourney.core.designsystem.component.LogoIntro
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.ThemePreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,11 +80,23 @@ class MainActivity : ComponentActivity() {
 
             val introductionDone by viewModel.introductionDone.collectAsStateWithLifecycle()
 
+            // The animated logo plays when the app is opened fresh, not after rotating the phone.
+            var showLogoIntro by rememberSaveable { mutableStateOf(savedInstanceState == null) }
+
             NewJourneyTheme(nightTheme = night) {
-                when (val done = introductionDone) {
-                    // A plain background for the moment the settings load.
-                    null -> Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
-                    else -> NewJourneyApp(startWithIntroduction = !done)
+                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                    // The app loads underneath while the logo plays, so it is ready when it fades away.
+                    when (val done = introductionDone) {
+                        null -> Unit
+                        else -> NewJourneyApp(startWithIntroduction = !done)
+                    }
+                    AnimatedVisibility(
+                        visible = showLogoIntro,
+                        enter = EnterTransition.None,
+                        exit = fadeOut(tween(500)),
+                    ) {
+                        LogoIntro(onFinished = { showLogoIntro = false })
+                    }
                 }
             }
         }
