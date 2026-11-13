@@ -24,14 +24,14 @@ internal val WarmStone = Color(0xFFD8D6C8)
 internal val WarmWhite = Color(0xFFFFF9F0)
 internal val InactiveGreen = Color(0xFF214B38)
 
-// Night — Midnight Calm
-internal val MidnightNavy = Color(0xFF0E1C30)
-internal val DeepNavy = Color(0xFF0B1829)
-internal val WarmCream = Color(0xFFFFF1DE)
-internal val SoftIvory = Color(0xFFF0EDE7)
-internal val MutedNavySlate = Color(0xFF222F44)
-internal val SoftSlateNavy = Color(0xFF28374B)
-internal val MutedNavy = Color(0xFF263248)
+// Night — Midnight Calm, a shade deeper, with near-white warm text so it reads easily in the dark
+internal val MidnightNavy = Color(0xFF09131F)
+internal val DeepNavy = Color(0xFF060E18)
+internal val WarmCream = Color(0xFFFFF8EE)
+internal val SoftIvory = Color(0xFFF7F5F1)
+internal val MutedNavySlate = Color(0xFF18243A)
+internal val SoftSlateNavy = Color(0xFF1F2D45)
+internal val MutedNavy = Color(0xFF1A2740)
 internal val MutedSlate = Color(0xFF586679)
 
 // Approved Muted Slate (#586679) is 2.9:1 on navy; borders that carry meaning (text fields,
@@ -135,8 +135,8 @@ internal val NightExtraColors = ExtraColors(
     navIndicator = WarmCream,
     onNavIndicator = MidnightNavy,
     navInactive = SoftIvory,
-    breathOuter = Color(0xFF1C2B40),
-    breathMiddle = Color(0xFF3E5068),
+    breathOuter = Color(0xFF142034),
+    breathMiddle = Color(0xFF35475F),
     breathInner = WarmCream,
 )
 
