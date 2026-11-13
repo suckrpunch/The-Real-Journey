@@ -6,11 +6,12 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.MenuBook
-import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.automirrored.outlined.Article
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.SelfImprovement
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -33,6 +35,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.newjourney.app.R
 import com.newjourney.core.designsystem.component.LocalOpenPremium
+import com.newjourney.core.designsystem.component.LocalOpenReminders
+import com.newjourney.core.designsystem.theme.NavigationLabelStyle
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.feature.explore.CategoryRoute
 import com.newjourney.feature.explore.ExploreRoute
 import com.newjourney.feature.explore.TrackRoute
@@ -51,9 +56,9 @@ import com.newjourney.feature.onboarding.onboardingScreen
 import com.newjourney.feature.profile.JourneyRoute
 import com.newjourney.feature.profile.PremiumRoute
 import com.newjourney.feature.profile.ProfileRoute
-import com.newjourney.feature.profile.StageRoute
 import com.newjourney.feature.profile.ProgressRoute
 import com.newjourney.feature.profile.RemindersRoute
+import com.newjourney.feature.profile.StageRoute
 import com.newjourney.feature.profile.profileScreens
 import kotlin.reflect.KClass
 
@@ -62,13 +67,15 @@ enum class TopLevelDestination(
     val route: Any,
     val routeClass: KClass<*>,
     val icon: ImageVector,
+    /** Shown when the tab is selected; the same outline icon unless a filled one reads better. */
+    val selectedIcon: ImageVector,
     @StringRes val label: Int,
 ) {
-    HOME(HomeRoute, HomeRoute::class, Icons.Outlined.Home, R.string.tab_home),
-    EXPLORE(ExploreRoute, ExploreRoute::class, Icons.Outlined.Explore, R.string.tab_explore),
-    MEDITATE(MeditateRoute(), MeditateRoute::class, Icons.Outlined.SelfImprovement, R.string.tab_meditate),
-    JOURNAL(JournalRoute, JournalRoute::class, Icons.AutoMirrored.Outlined.MenuBook, R.string.tab_journal),
-    PROFILE(ProfileRoute, ProfileRoute::class, Icons.Outlined.Person, R.string.tab_profile),
+    HOME(HomeRoute, HomeRoute::class, Icons.Outlined.Home, Icons.Filled.Home, R.string.tab_home),
+    EXPLORE(ExploreRoute, ExploreRoute::class, Icons.Outlined.Search, Icons.Outlined.Search, R.string.tab_explore),
+    MEDITATE(MeditateRoute(), MeditateRoute::class, Icons.Outlined.Spa, Icons.Outlined.Spa, R.string.tab_meditate),
+    JOURNAL(JournalRoute, JournalRoute::class, Icons.AutoMirrored.Outlined.Article, Icons.AutoMirrored.Outlined.Article, R.string.tab_journal),
+    PROFILE(ProfileRoute, ProfileRoute::class, Icons.Outlined.Person, Icons.Outlined.Person, R.string.tab_profile),
 }
 
 @Composable
@@ -104,14 +111,17 @@ fun NewJourneyApp(
         }
     }
 
-    CompositionLocalProvider(LocalOpenPremium provides openPremium) {
+    CompositionLocalProvider(
+        LocalOpenPremium provides openPremium,
+        LocalOpenReminders provides { navController.navigate(RemindersRoute) { launchSingleTop = true } },
+    ) {
     Scaffold(
         bottomBar = {
             if (showTabs) {
                 Column {
                     // The player screen has its own controls, so the mini player steps aside there.
                     if (!onTrackScreen) MiniPlayer(onOpen = openTrack)
-                    NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
+                    NavigationBar(containerColor = MaterialTheme.colorScheme.background, tonalElevation = 0.dp) {
                         TopLevelDestination.entries.forEach { destination ->
                             val selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.routeClass) } == true ||
                                 (destination == TopLevelDestination.EXPLORE && inLibrary) ||
@@ -119,15 +129,23 @@ fun NewJourneyApp(
                             NavigationBarItem(
                                 selected = selected,
                                 onClick = { navController.navigateToTab(destination.route) },
-                                icon = { Icon(destination.icon, contentDescription = null) },
-                                label = { Text(stringResource(destination.label), style = MaterialTheme.typography.labelMedium) },
+                                icon = {
+                                    Icon(if (selected) destination.selectedIcon else destination.icon, contentDescription = null)
+                                },
+                                label = {
+                                    Text(
+                                        stringResource(destination.label),
+                                        style = NavigationLabelStyle,
+                                        maxLines = 1,
+                                    )
+                                },
                                 alwaysShowLabel = true,
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    indicatorColor = NewJourneyTheme.extraColors.navIndicator,
+                                    selectedIconColor = NewJourneyTheme.extraColors.onNavIndicator,
+                                    selectedTextColor = MaterialTheme.colorScheme.onBackground,
+                                    unselectedIconColor = NewJourneyTheme.extraColors.navInactive,
+                                    unselectedTextColor = NewJourneyTheme.extraColors.navInactive,
                                 ),
                             )
                         }

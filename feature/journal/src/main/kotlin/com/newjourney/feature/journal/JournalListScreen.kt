@@ -1,5 +1,6 @@
 package com.newjourney.feature.journal
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,22 +16,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,8 +40,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.selected
@@ -49,9 +53,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.MinTouchTarget
+import com.newjourney.core.designsystem.component.PillShape
 import com.newjourney.core.designsystem.component.PrimaryButton
-import com.newjourney.core.designsystem.component.SectionTitle
+import com.newjourney.core.designsystem.component.ScreenPadding
+import com.newjourney.core.designsystem.component.ScreenTitle
 import com.newjourney.core.designsystem.component.moodColor
 import com.newjourney.core.model.JournalEntry
 import com.newjourney.core.model.calendarCells
@@ -92,25 +99,28 @@ internal fun JournalListScreen(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
+        contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { SectionTitle(stringResource(R.string.journal_title)) }
         item {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(Icons.Outlined.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(
-                    stringResource(R.string.journal_private_note),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AppHeader()
+                ScreenTitle(stringResource(R.string.journal_title))
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Icon(Icons.Outlined.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        stringResource(R.string.journal_private_note),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
             }
         }
         item {
             PrimaryButton(
                 text = stringResource(R.string.journal_write),
                 onClick = onWrite,
-                leading = { Icon(Icons.Filled.Edit, contentDescription = null) },
+                leading = { Icon(Icons.Outlined.Edit, contentDescription = null) },
             )
         }
 
@@ -138,23 +148,59 @@ internal fun JournalListScreen(
     }
 }
 
+/** List or Calendar: two halves of one pill; the chosen half is filled. */
 @Composable
 private fun ViewSwitch(view: JournalView, onChange: (JournalView) -> Unit) {
-    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-        SegmentedButton(
-            selected = view == JournalView.LIST,
-            onClick = { onChange(JournalView.LIST) },
-            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-            icon = { Icon(Icons.AutoMirrored.Outlined.List, contentDescription = null) },
-            modifier = Modifier.heightIn(min = MinTouchTarget),
-        ) { Text(stringResource(R.string.journal_view_list), style = MaterialTheme.typography.labelLarge) }
-        SegmentedButton(
-            selected = view == JournalView.CALENDAR,
-            onClick = { onChange(JournalView.CALENDAR) },
-            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-            icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
-            modifier = Modifier.heightIn(min = MinTouchTarget),
-        ) { Text(stringResource(R.string.journal_view_calendar), style = MaterialTheme.typography.labelLarge) }
+    Surface(
+        shape = PillShape,
+        color = MaterialTheme.colorScheme.background,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.fillMaxWidth().selectableGroup(),
+    ) {
+        Row {
+            ViewOption(
+                selected = view == JournalView.LIST,
+                icon = Icons.AutoMirrored.Outlined.List,
+                label = stringResource(R.string.journal_view_list),
+                onClick = { onChange(JournalView.LIST) },
+                modifier = Modifier.weight(1f),
+            )
+            ViewOption(
+                selected = view == JournalView.CALENDAR,
+                icon = Icons.Outlined.CalendarMonth,
+                label = stringResource(R.string.journal_view_calendar),
+                onClick = { onChange(JournalView.CALENDAR) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ViewOption(
+    selected: Boolean,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = MaterialTheme.colorScheme
+    Surface(
+        shape = PillShape,
+        color = if (selected) colors.secondaryContainer else Color.Transparent,
+        modifier = modifier
+            .heightIn(min = MinTouchTarget)
+            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton),
+    ) {
+        Row(
+            Modifier.padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val tint = if (selected) colors.onSecondaryContainer else colors.onBackground
+            Icon(icon, contentDescription = null, tint = tint)
+            Text(label, style = MaterialTheme.typography.labelLarge, color = tint, modifier = Modifier.padding(start = 10.dp))
+        }
     }
 }
 
@@ -169,8 +215,13 @@ private fun androidx.compose.foundation.lazy.LazyListScope.listItems(
             onValueChange = onQueryChange,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
+            shape = RoundedCornerShape(28.dp),
             textStyle = MaterialTheme.typography.bodyLarge,
-            label = { Text(stringResource(R.string.journal_search)) },
+            placeholder = { Text(stringResource(R.string.journal_search), style = MaterialTheme.typography.bodyLarge) },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+            ),
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
             trailingIcon = {
                 if (state.query.isNotEmpty()) {
@@ -202,7 +253,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.listItems(
 private fun DayHeader(date: LocalDate) {
     Text(
         dayLabel(date),
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.headlineSmall,
         modifier = Modifier
             .padding(top = 12.dp)
             .semantics { heading() },
@@ -240,8 +291,8 @@ private fun MonthCalendar(
     val today = LocalDate.now()
     val cells = remember(state.month) { calendarCells(state.month) }
 
-    Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainer) {
-        Column(Modifier.padding(horizontal = 4.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Surface(color = Color.Transparent) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             MonthStepper(
                 title = state.month.format(formatter).replaceFirstChar { it.titlecase(Locale.getDefault()) },
                 onPrevious = { onShiftMonth(-1) },
@@ -253,7 +304,7 @@ private fun MonthCalendar(
                     Text(
                         day.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f),
                     )
@@ -302,12 +353,12 @@ private fun DayCell(
     Surface(
         onClick = onClick,
         enabled = enabled,
-        shape = CircleShape,
-        color = if (isSelected) colors.primaryContainer else colors.surfaceContainer,
+        shape = RoundedCornerShape(12.dp),
+        color = if (isSelected) colors.secondaryContainer else Color.Transparent,
         modifier = Modifier
             .fillMaxSize()
-            .padding(1.dp)
-            .then(if (isToday && !isSelected) Modifier.border(1.5.dp, colors.primary, CircleShape) else Modifier)
+            .padding(2.dp)
+            .then(if (isToday && !isSelected) Modifier.border(1.5.dp, colors.primary, RoundedCornerShape(12.dp)) else Modifier)
             .semantics(mergeDescendants = true) {
                 contentDescription = spoken
                 selected = isSelected
@@ -320,10 +371,10 @@ private fun DayCell(
         ) {
             Text(
                 "${date.dayOfMonth}",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleSmall,
                 color = when {
-                    !enabled -> colors.onSurfaceVariant.copy(alpha = 0.5f)
-                    isSelected -> colors.onPrimaryContainer
+                    !enabled -> colors.onSurfaceVariant
+                    isSelected -> colors.onSecondaryContainer
                     else -> colors.onSurface
                 },
             )

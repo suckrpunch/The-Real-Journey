@@ -48,7 +48,9 @@ import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.designsystem.component.DurationChip
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.SecondaryButton
-import com.newjourney.core.designsystem.component.SectionTitle
+import com.newjourney.core.designsystem.component.ScreenTitle
+import com.newjourney.core.designsystem.component.ScreenPadding
+import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.milestoneTitle
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
@@ -148,10 +150,13 @@ internal fun ProfileRouteContent(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+            .padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        SectionTitle(stringResource(R.string.profile_title))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            AppHeader()
+            ScreenTitle(stringResource(R.string.profile_title))
+        }
         JourneyCard(state, onOpenJourney)
         state.stats?.let { ProgressSummary(it, onOpenProgress) }
         GoalCard(state.goalMinutes, viewModel::setGoal)

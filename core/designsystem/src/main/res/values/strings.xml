@@ -12,6 +12,12 @@
     <string name="duration_minutes">%1$d minutes</string>
     <string name="duration_minutes_premium">%1$d minutes, premium</string>
     <string name="duration_min_short">min</string>
+    <string name="duration_short">%1$d min</string>
+    <string name="duration_tier_free">Free</string>
+    <string name="duration_tier_premium">Premium</string>
+
+    <string name="logo_description">New Journey</string>
+    <string name="header_reminders">Reminders</string>
 
     <string name="premium_duration_title">%1$d minutes is part of Premium</string>
     <string name="premium_duration_body">Longer sessions open with Premium. Sessions of 5 and 10 minutes are always free.</string>

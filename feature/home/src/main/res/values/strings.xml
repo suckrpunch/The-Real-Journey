@@ -14,7 +14,8 @@
     <string name="home_quote_saved">Saved</string>
 
     <string name="home_start_title">Start meditating</string>
-    <string name="home_begin">Begin %1$d-minute meditation</string>
+    <string name="home_begin">Begin</string>
+    <string name="home_begin_description">Begin %1$d-minute meditation</string>
     <string name="home_routines_label">Or start one of your routines</string>
     <string name="home_routine_button">%1$s · %2$d min</string>
 

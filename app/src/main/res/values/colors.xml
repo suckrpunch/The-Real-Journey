@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="launch_background">#F6F1E7</color>
-    <color name="ic_launcher_background">#F6F1E7</color>
+    <color name="launch_background">#FBF4EB</color>
+    <!-- The cream behind the logo in the approved artwork. -->
+    <color name="ic_launcher_background">#FEF1D8</color>
 </resources>

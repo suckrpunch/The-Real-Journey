@@ -8,14 +8,14 @@
     <string name="journal_failed">Your journal could not be opened. Please close the app and try again.</string>
     <string name="journal_view_list">List</string>
     <string name="journal_view_calendar">Calendar</string>
-    <string name="journal_search">Search your journal</string>
+    <string name="journal_search">Search your journal…</string>
     <string name="journal_search_clear">Clear search</string>
     <string name="journal_search_none">Nothing found for “%1$s”.</string>
     <string name="journal_today">Today</string>
     <string name="journal_yesterday">Yesterday</string>
     <string name="journal_day_empty">No entries on this day.</string>
-    <string name="journal_month_previous">Earlier</string>
-    <string name="journal_month_next">Later</string>
+    <string name="journal_month_previous">Previous month</string>
+    <string name="journal_month_next">Next month</string>
     <string name="journal_after_session_short">after %1$d min meditation</string>
     <plurals name="journal_entry_count">
         <item quantity="one">%d entry</item>

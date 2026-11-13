@@ -6,91 +6,138 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-// Raw palette — the values from the design direction. Screens never use these directly;
-// they use MaterialTheme.colorScheme or NewJourneyTheme.extraColors.
+// The approved New Journey palette (Day: Warm Minimal, Night: Midnight Calm).
+// Screens never use these directly; they use MaterialTheme.colorScheme or NewJourneyTheme.extraColors.
 
-// Day
-internal val Cream = Color(0xFFF6F1E7)
-internal val WarmBeige = Color(0xFFEFE7D8)
-internal val Linen = Color(0xFFFFFDF8)
-internal val DeepForest = Color(0xFF3F5E4A)
-internal val Sage = Color(0xFFA8B8A0)
-internal val SageMist = Color(0xFFDDE5D6)
-internal val ForestInk = Color(0xFF2B4434)
-internal val Lavender = Color(0xFF9C8FB8)
-internal val WarmInk = Color(0xFF2B2A26)
-internal val WarmInkSecondary = Color(0xFF5E5A50)
-internal val SandOutline = Color(0xFFC9BFAC)
-internal val SandTrack = Color(0xFFE4DBCB)
-internal val MutedGold = Color(0xFFB08D57)
+// Day — Warm Minimal
+internal val WarmIvory = Color(0xFFFBF4EB)
+internal val DeepForestGreen = Color(0xFF06452A)
+internal val DarkForestGreen = Color(0xFF082F20)
 
-// Night
-internal val MidnightNavy = Color(0xFF121826)
-internal val DeepSlate = Color(0xFF1C2333)
-internal val CharcoalBlue = Color(0xFF252D40)
-internal val MutedLavender = Color(0xFFB9AEDC)
-internal val DuskViolet = Color(0xFF33335A)
-internal val MoonBlue = Color(0xFF8FA8C8)
-internal val WarmOffWhite = Color(0xFFE8E4DA)
-internal val WarmGrey = Color(0xFFA9A69E)
-internal val NightOutline = Color(0xFF3A4358)
-internal val NightTrack = Color(0xFF323B50)
-internal val SoftGold = Color(0xFFC9A66B)
+// Approved Muted Green (#58765F) is 4.2:1 on the sage cards; this barely darker shade keeps
+// the same look and passes WCAG AA (4.5:1) on every Day surface.
+internal val MutedGreen = Color(0xFF4F6A56)
+internal val WarmSageIvory = Color(0xFFECECDE)
+internal val PaleLinen = Color(0xFFF2EDDF)
+internal val PaleSage = Color(0xFFDCE9D7)
+internal val WarmStone = Color(0xFFD8D6C8)
+internal val WarmWhite = Color(0xFFFFF9F0)
+internal val InactiveGreen = Color(0xFF214B38)
+
+// Night — Midnight Calm
+internal val MidnightNavy = Color(0xFF0E1C30)
+internal val DeepNavy = Color(0xFF0B1829)
+internal val WarmCream = Color(0xFFFFF1DE)
+internal val SoftIvory = Color(0xFFF0EDE7)
+internal val MutedNavySlate = Color(0xFF222F44)
+internal val SoftSlateNavy = Color(0xFF28374B)
+internal val MutedNavy = Color(0xFF263248)
+internal val MutedSlate = Color(0xFF586679)
+
+// Approved Muted Slate (#586679) is 2.9:1 on navy; borders that carry meaning (text fields,
+// outlined buttons) use this lighter shade so they reach 3:1.
+internal val SlateOutline = Color(0xFF6A7A91)
 
 internal val DayColorScheme = lightColorScheme(
-    primary = DeepForest,
-    onPrimary = Linen,
-    primaryContainer = SageMist,
-    onPrimaryContainer = ForestInk,
-    secondary = Sage,
-    onSecondary = WarmInk,
-    tertiary = Lavender,
-    onTertiary = Linen,
-    background = Cream,
-    onBackground = WarmInk,
-    surface = Cream,
-    onSurface = WarmInk,
-    surfaceVariant = WarmBeige,
-    onSurfaceVariant = WarmInkSecondary,
-    surfaceContainerLowest = Linen,
-    surfaceContainerLow = Linen,
-    surfaceContainer = WarmBeige,
-    surfaceContainerHigh = WarmBeige,
-    outline = SandOutline,
-    outlineVariant = SandTrack,
+    primary = DeepForestGreen,
+    onPrimary = WarmWhite,
+    primaryContainer = PaleSage,
+    onPrimaryContainer = DarkForestGreen,
+    secondary = MutedGreen,
+    onSecondary = WarmWhite,
+    secondaryContainer = PaleSage,
+    onSecondaryContainer = DarkForestGreen,
+    tertiary = MutedGreen,
+    onTertiary = WarmWhite,
+    tertiaryContainer = PaleSage,
+    onTertiaryContainer = DarkForestGreen,
+    background = WarmIvory,
+    onBackground = DarkForestGreen,
+    surface = WarmIvory,
+    onSurface = DarkForestGreen,
+    surfaceVariant = PaleLinen,
+    onSurfaceVariant = MutedGreen,
+    surfaceContainerLowest = WarmIvory,
+    surfaceContainerLow = PaleLinen,
+    surfaceContainer = WarmSageIvory,
+    surfaceContainerHigh = WarmSageIvory,
+    surfaceContainerHighest = WarmSageIvory,
+    inverseSurface = DarkForestGreen,
+    inverseOnSurface = WarmIvory,
+    outline = MutedGreen,
+    outlineVariant = WarmStone,
 )
 
 internal val NightColorScheme = darkColorScheme(
-    primary = MutedLavender,
+    primary = WarmCream,
     onPrimary = MidnightNavy,
-    primaryContainer = DuskViolet,
-    onPrimaryContainer = WarmOffWhite,
-    secondary = MoonBlue,
+    primaryContainer = SoftSlateNavy,
+    onPrimaryContainer = WarmCream,
+    secondary = SoftIvory,
     onSecondary = MidnightNavy,
-    tertiary = MoonBlue,
+    secondaryContainer = MutedSlate,
+    onSecondaryContainer = WarmCream,
+    tertiary = SoftIvory,
     onTertiary = MidnightNavy,
+    tertiaryContainer = MutedSlate,
+    onTertiaryContainer = WarmCream,
     background = MidnightNavy,
-    onBackground = WarmOffWhite,
+    onBackground = WarmCream,
     surface = MidnightNavy,
-    onSurface = WarmOffWhite,
-    surfaceVariant = DeepSlate,
-    onSurfaceVariant = WarmGrey,
-    surfaceContainerLowest = DeepSlate,
-    surfaceContainerLow = DeepSlate,
-    surfaceContainer = DeepSlate,
-    surfaceContainerHigh = CharcoalBlue,
-    outline = NightOutline,
-    outlineVariant = NightTrack,
+    onSurface = WarmCream,
+    surfaceVariant = MutedNavy,
+    onSurfaceVariant = SoftIvory,
+    surfaceContainerLowest = DeepNavy,
+    surfaceContainerLow = MutedNavy,
+    surfaceContainer = MutedNavySlate,
+    surfaceContainerHigh = SoftSlateNavy,
+    surfaceContainerHighest = SoftSlateNavy,
+    inverseSurface = WarmCream,
+    inverseOnSurface = MidnightNavy,
+    outline = SlateOutline,
+    outlineVariant = MutedSlate,
 )
 
 /** Colours Material 3 has no slot for. */
 @Immutable
 data class ExtraColors(
+    /** Premium is shown with a lock and a label, never with a bright accent. */
     val premium: Color,
     val progressTrack: Color,
+    /** Unselected duration chips. */
+    val chip: Color,
+    /** The selected tab's pill and the icon on it. */
+    val navIndicator: Color,
+    val onNavIndicator: Color,
+    val navInactive: Color,
+    /** The breathing circle, outside to inside. */
+    val breathOuter: Color,
+    val breathMiddle: Color,
+    val breathInner: Color,
 )
 
-internal val DayExtraColors = ExtraColors(premium = MutedGold, progressTrack = SandTrack)
-internal val NightExtraColors = ExtraColors(premium = SoftGold, progressTrack = NightTrack)
+internal val DayExtraColors = ExtraColors(
+    premium = MutedGreen,
+    progressTrack = WarmStone,
+    chip = WarmSageIvory,
+    navIndicator = PaleSage,
+    onNavIndicator = DeepForestGreen,
+    navInactive = InactiveGreen,
+    breathOuter = Color(0xFFE3ECDD),
+    breathMiddle = Color(0xFFC9DBC5),
+    breathInner = Color(0xFF7FA186),
+)
+
+internal val NightExtraColors = ExtraColors(
+    premium = SoftIvory,
+    progressTrack = MutedNavy,
+    chip = MutedNavy,
+    navIndicator = WarmCream,
+    onNavIndicator = MidnightNavy,
+    navInactive = SoftIvory,
+    breathOuter = Color(0xFF1C2B40),
+    breathMiddle = Color(0xFF3E5068),
+    breathInner = WarmCream,
+)
 
 internal val LocalExtraColors = staticCompositionLocalOf { DayExtraColors }

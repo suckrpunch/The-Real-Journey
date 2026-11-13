@@ -1,6 +1,7 @@
 package com.newjourney.feature.explore
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,6 +31,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.database.LibraryRepository
+import com.newjourney.core.designsystem.component.AppHeader
+import com.newjourney.core.designsystem.component.ScreenPadding
+import com.newjourney.core.designsystem.component.ScreenTitle
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.categoryIcon
 import com.newjourney.core.model.Category
@@ -91,10 +98,15 @@ internal fun ExploreScreen(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item { SectionTitle(stringResource(R.string.explore_title)) }
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AppHeader()
+                ScreenTitle(stringResource(R.string.explore_title))
+            }
+        }
 
         if (state.favorites.isNotEmpty()) {
             item { SubTitle(stringResource(R.string.explore_favorites)) }
@@ -119,7 +131,7 @@ internal fun ExploreScreen(
 
 @Composable
 private fun SubTitle(text: String) {
-    Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 12.dp))
+    SectionTitle(text, Modifier.padding(top = 16.dp))
 }
 
 @Composable
@@ -131,17 +143,21 @@ private fun CategoryCard(summary: CategorySummary, onClick: () -> Unit) {
     ) {
         Row(
             Modifier
-                .heightIn(min = 88.dp)
-                .padding(20.dp),
+                .heightIn(min = 80.dp)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Icon(
-                categoryIcon(summary.category.icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp),
-            )
+            Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(48.dp)) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        categoryIcon(summary.category.icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(summary.category.name, style = MaterialTheme.typography.titleLarge)
                 Text(
@@ -154,6 +170,11 @@ private fun CategoryCard(summary: CategorySummary, onClick: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
         }
     }
 }

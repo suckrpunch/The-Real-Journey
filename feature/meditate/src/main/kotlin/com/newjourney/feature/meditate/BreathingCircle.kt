@@ -12,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -22,6 +21,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
 
 /**
  * A soft circle that grows over 4 seconds (breathe in) and settles over 6 seconds (breathe out).
@@ -50,18 +50,21 @@ internal fun BreathingCircle(moving: Boolean, modifier: Modifier = Modifier, siz
     } else {
         0.85f
     }
+    // Three calm, concentric circles: the outer ring stays still, the inner two breathe.
+    val colors = NewJourneyTheme.extraColors
     Box(modifier.size(size), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(size).background(colors.breathOuter, CircleShape))
         Box(
             Modifier
-                .size(size)
-                .scale(scale)
-                .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
+                .size(size * 0.7f)
+                .scale(0.8f + 0.2f * scale)
+                .background(colors.breathMiddle, CircleShape),
         )
         Box(
             Modifier
-                .size(size / 2)
-                .scale(scale)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.35f), CircleShape),
+                .size(size * 0.38f)
+                .scale(0.85f + 0.15f * scale)
+                .background(colors.breathInner, CircleShape),
         )
     }
 }

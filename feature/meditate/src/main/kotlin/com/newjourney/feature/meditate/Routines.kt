@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -161,6 +162,7 @@ internal fun SaveRoutineRow(canSave: Boolean, hasRoutines: Boolean, onSave: () -
                 text = stringResource(R.string.routine_save_current),
                 onClick = onSave,
                 modifier = Modifier.fillMaxWidth(),
+                leading = { Icon(Icons.Outlined.BookmarkBorder, contentDescription = null) },
             )
         } else {
             Text(

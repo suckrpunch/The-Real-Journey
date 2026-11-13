@@ -15,24 +15,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.newjourney.core.designsystem.component.MinTouchTarget
+import com.newjourney.core.designsystem.component.isNightTheme
 import com.newjourney.core.designsystem.component.moodColor
 import com.newjourney.core.designsystem.component.moodLabel
 import com.newjourney.core.model.JournalEntry
@@ -129,61 +132,86 @@ private fun MoodDot(mood: Mood) {
     }
 }
 
-/** One entry in a list: time, moods and the first lines of text. */
+/** One entry in a list: a date badge, the first line as a title, a preview, moods and time. */
 @Composable
 internal fun EntryCard(entry: JournalEntry, onClick: () -> Unit) {
+    val night = isNightTheme()
+    val colors = MaterialTheme.colorScheme
+    val date = entry.localDate()
+    val monthFormatter = remember { DateTimeFormatter.ofPattern("MMM", Locale.getDefault()) }
+    val lines = entry.text.trim().lines().map { it.trim() }.filter { it.isNotEmpty() }
+    val title = lines.firstOrNull()
+        ?: entry.mood?.let { stringResource(moodLabel(it)) }
+        ?: timeLabel(entry)
+    val preview = lines.drop(1).joinToString(" ")
+    val meta = buildList {
+        add(timeLabel(entry))
+        entry.sessionMinutes?.let { add(stringResource(R.string.journal_after_session_short, it)) }
+    }.joinToString(" · ")
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+        color = if (night) colors.surfaceContainer else colors.background,
+        border = if (night) null else BorderStroke(1.dp, colors.outlineVariant),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            val meta = buildList {
-                add(timeLabel(entry))
-                entry.sessionMinutes?.let { add(stringResource(R.string.journal_after_session_short, it)) }
-            }.joinToString(" · ")
-            Text(meta, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            MoodLine(entry)
-            if (entry.text.isNotBlank()) {
-                Text(
-                    entry.text.trim(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                )
+        Row(
+            Modifier.padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = colors.primaryContainer,
+                modifier = Modifier.size(width = 60.dp, height = 64.dp),
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    Text(
+                        date.format(monthFormatter),
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                        color = colors.onPrimaryContainer,
+                    )
+                    Text("${date.dayOfMonth}", style = MaterialTheme.typography.headlineSmall, color = colors.onPrimaryContainer)
+                }
             }
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (preview.isNotEmpty()) {
+                    Text(preview, style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MoodLine(entry)
+                    Text(meta, style = MaterialTheme.typography.labelMedium, color = colors.onSurfaceVariant)
+                }
+            }
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = colors.onSurface)
         }
     }
 }
 
-/** The month's name, with large labelled buttons underneath to move between months. */
+/** The month's name between two arrows, as in the approved calendar. */
 @Composable
 internal fun MonthStepper(title: String, onPrevious: () -> Unit, onNext: () -> Unit, nextEnabled: Boolean) {
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        IconButton(onClick = onPrevious, modifier = Modifier.size(MinTouchTarget)) {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = stringResource(R.string.journal_month_previous),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
         Text(
             title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(1f),
         )
-        Row(Modifier.fillMaxWidth()) {
-            TextButton(onClick = onPrevious, modifier = Modifier.weight(1f).heightIn(min = MinTouchTarget)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                Text(
-                    stringResource(R.string.journal_month_previous),
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(start = 6.dp),
-                )
-            }
-            TextButton(onClick = onNext, enabled = nextEnabled, modifier = Modifier.weight(1f).heightIn(min = MinTouchTarget)) {
-                Text(
-                    stringResource(R.string.journal_month_next),
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(end = 6.dp),
-                )
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
-            }
+        IconButton(onClick = onNext, enabled = nextEnabled, modifier = Modifier.size(MinTouchTarget)) {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(R.string.journal_month_next),
+                tint = if (nextEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+            )
         }
     }
 }

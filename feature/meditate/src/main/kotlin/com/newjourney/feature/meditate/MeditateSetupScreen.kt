@@ -1,6 +1,7 @@
 package com.newjourney.feature.meditate
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -15,6 +18,8 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -26,15 +31,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.DurationChip
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
+import com.newjourney.core.designsystem.component.ScreenPadding
+import com.newjourney.core.designsystem.component.ScreenTitle
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.SwitchRow
@@ -81,10 +92,22 @@ internal fun MeditateSetupScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(28.dp),
+        contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        item { SectionTitle(stringResource(R.string.meditate_title)) }
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                AppHeader()
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ScreenTitle(
+                        title = stringResource(R.string.meditate_title),
+                        subtitle = stringResource(R.string.meditate_subtitle),
+                        modifier = Modifier.weight(1f),
+                    )
+                    SkyMark(Modifier.size(84.dp))
+                }
+            }
+        }
 
         if (state.sessionInProgress) {
             item {
@@ -95,25 +118,14 @@ internal fun MeditateSetupScreen(
             }
         }
 
-        if (state.routines.isNotEmpty()) {
-            item {
-                Text(stringResource(R.string.routine_section_title), style = MaterialTheme.typography.titleLarge)
-            }
-            items(state.routines, key = { "routine-${it.id}" }) { routine ->
-                val locked = state.isLocked(routine.minutes)
-                RoutineCard(
-                    routine = routine,
-                    locked = locked,
-                    onBegin = { if (locked) premiumSheetMinutes = routine.minutes else onStartRoutine(routine.id) },
-                    onRemove = { routineToRemove = routine.id },
-                )
-            }
-        }
-
         item {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(stringResource(R.string.setup_length), style = MaterialTheme.typography.titleLarge)
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    stringResource(R.string.setup_length),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.semantics { heading() },
+                )
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(state.durations) { minutes ->
                         DurationChip(
                             minutes = minutes,
@@ -122,6 +134,7 @@ internal fun MeditateSetupScreen(
                             onClick = {
                                 if (state.isLocked(minutes)) premiumSheetMinutes = minutes else onSelectDuration(minutes)
                             },
+                            modifier = Modifier.width(60.dp),
                         )
                     }
                 }
@@ -130,7 +143,7 @@ internal fun MeditateSetupScreen(
 
         item {
             SoftCard {
-                Text(stringResource(R.string.setup_bells), style = MaterialTheme.typography.titleLarge)
+                CardHeading(Icons.Outlined.Notifications, stringResource(R.string.setup_bells))
                 SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange)
                 SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange)
             }
@@ -138,23 +151,31 @@ internal fun MeditateSetupScreen(
 
         item {
             SoftCard {
-                Text(stringResource(R.string.setup_sound), style = MaterialTheme.typography.titleLarge)
-                Column(Modifier.selectableGroup()) {
-                    BackgroundSound.entries.forEach { sound ->
-                        val selected = sound == state.settings.sound
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = MinTouchTarget)
-                                .selectable(selected = selected, onClick = { onSoundSelected(sound) }, role = Role.RadioButton),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(selected = selected, onClick = null)
-                            Text(
-                                stringResource(soundLabel(sound)),
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 16.dp),
-                            )
+                CardHeading(Icons.Outlined.MusicNote, stringResource(R.string.setup_sound))
+                Box {
+                    Pines(
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 4.dp)
+                            .size(width = 96.dp, height = 72.dp),
+                    )
+                    Column(Modifier.selectableGroup()) {
+                        BackgroundSound.entries.forEach { sound ->
+                            val selected = sound == state.settings.sound
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = MinTouchTarget)
+                                    .selectable(selected = selected, onClick = { onSoundSelected(sound) }, role = Role.RadioButton),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                RadioButton(selected = selected, onClick = null)
+                                Text(
+                                    stringResource(soundLabel(sound)),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(start = 16.dp),
+                                )
+                            }
                         }
                     }
                 }
@@ -175,6 +196,21 @@ internal fun MeditateSetupScreen(
                 hasRoutines = state.routines.isNotEmpty(),
                 onSave = { showSaveRoutine = true },
             )
+        }
+
+        if (state.routines.isNotEmpty()) {
+            item {
+                SectionTitle(stringResource(R.string.routine_section_title), Modifier.padding(top = 12.dp))
+            }
+            items(state.routines, key = { "routine-${it.id}" }) { routine ->
+                val locked = state.isLocked(routine.minutes)
+                RoutineCard(
+                    routine = routine,
+                    locked = locked,
+                    onBegin = { if (locked) premiumSheetMinutes = routine.minutes else onStartRoutine(routine.id) },
+                    onRemove = { routineToRemove = routine.id },
+                )
+            }
         }
     }
 
@@ -197,6 +233,15 @@ internal fun MeditateSetupScreen(
 
     premiumSheetMinutes?.let { minutes ->
         PremiumDurationSheet(minutes = minutes, onDismiss = { premiumSheetMinutes = null })
+    }
+}
+
+/** A card heading with a small icon in front, like "Bells" and "Background sound". */
+@Composable
+private fun CardHeading(icon: ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
     }
 }
 

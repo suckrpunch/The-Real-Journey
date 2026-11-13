@@ -8,23 +8,30 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.CropSquare
 import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -41,13 +48,14 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.PrimaryButton
+import com.newjourney.core.designsystem.component.ScreenPadding
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.milestoneTitle
@@ -91,6 +99,7 @@ internal fun MeditationSessionRouteContent(
             viewModel.dismissFinished()
             onOpenStage(stage)
         },
+        onBack = onClose,
         onPause = viewModel::pause,
         onResume = viewModel::resume,
         onEnd = viewModel::endEarly,
@@ -115,18 +124,19 @@ internal fun MeditationSessionScreen(
     onEnd: () -> Unit,
     onDone: () -> Unit,
     onOpenJournal: () -> Unit,
+    onBack: () -> Unit = {},
 ) {
     Column(
         Modifier
             .fillMaxSize()
             .safeDrawingPadding()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 32.dp),
+            .padding(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(28.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         when (state) {
-            is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onPause, onResume, onEnd)
+            is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onBack, onPause, onResume, onEnd)
             is TimerState.Finished -> Finished(state, newMilestones, newStages, onOpenStage, onDone, onOpenJournal)
             TimerState.Idle -> Spacer(Modifier.height(1.dp))
         }
@@ -137,6 +147,7 @@ internal fun MeditationSessionScreen(
 private fun Countdown(
     state: TimerState,
     trackTitle: String?,
+    onBack: () -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
@@ -154,13 +165,35 @@ private fun Countdown(
     }
     val totalSeconds = ((remainingMs + 999) / 1000).toInt()
     val minutesLeft = (totalSeconds + 59) / 60
-    val timeText = "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+    val timeText = "%02d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+    val sessionMinutes = when (state) {
+        is TimerState.Running -> state.session.minutes
+        is TimerState.Paused -> state.session.minutes
+        else -> 0
+    }
     val spoken = pluralStringResource(R.plurals.session_minutes_left, minutesLeft, minutesLeft)
 
+    // Back leaves the screen while the session keeps going (reopen it from the Meditate tab).
+    Row(Modifier.fillMaxWidth()) {
+        Surface(
+            onClick = onBack,
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            modifier = Modifier.size(48.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.session_back),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
     Text(
         stringResource(if (running) R.string.session_status_running else R.string.session_status_paused),
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.primary,
     )
     if (trackTitle != null) {
         Text(
@@ -170,30 +203,41 @@ private fun Countdown(
             textAlign = TextAlign.Center,
         )
     }
-    BreathingCircle(moving = running)
-    Text(
-        timeText,
-        style = MaterialTheme.typography.displaySmall.copy(fontSize = 64.sp, lineHeight = 72.sp),
-        modifier = Modifier.semantics { contentDescription = spoken },
-    )
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    BreathingCircle(moving = running, size = 260.dp)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = spoken },
+    ) {
+        Text(timeText, style = MaterialTheme.typography.displayMedium, color = MaterialTheme.colorScheme.primary)
+        if (sessionMinutes > 0) {
+            Text(
+                stringResource(R.string.session_of_total, "%02d:00".format(sessionMinutes)),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         if (running) {
             PrimaryButton(
                 text = stringResource(R.string.timer_pause),
                 onClick = onPause,
+                modifier = Modifier.weight(1f),
                 leading = { Icon(Icons.Filled.Pause, contentDescription = null) },
             )
         } else {
             PrimaryButton(
                 text = stringResource(R.string.timer_resume),
                 onClick = onResume,
+                modifier = Modifier.weight(1f),
                 leading = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
             )
         }
         SecondaryButton(
-            text = stringResource(R.string.session_end),
+            text = stringResource(R.string.timer_end),
             onClick = { confirmEnd = true },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(1f).heightIn(min = 64.dp),
+            leading = { Icon(Icons.Outlined.CropSquare, contentDescription = null) },
         )
     }
     Text(

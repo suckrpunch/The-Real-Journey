@@ -2,6 +2,7 @@
 <resources>
     <!-- Setup (Meditate tab) -->
     <string name="meditate_title">Meditate</string>
+    <string name="meditate_subtitle">Create your moment of calm</string>
     <string name="setup_in_progress_title">Your session is still going</string>
     <string name="setup_return_to_session">Return to your session</string>
     <string name="setup_length">Length</string>
@@ -43,7 +44,8 @@
     <string name="timer_pause">Pause</string>
     <string name="timer_resume">Resume</string>
     <string name="timer_end">End</string>
-    <string name="session_end">End session</string>
+    <string name="session_back">Back, the session keeps going</string>
+    <string name="session_of_total">of %1$s</string>
     <string name="session_screen_off_hint">You can lock your phone. The timer and sound keep going, and the bell will ring at the end.</string>
     <string name="session_end_confirm_title">End your session now?</string>
     <string name="session_end_confirm_body">That\'s completely fine. Any time you sat for a minute or more is still saved.</string>

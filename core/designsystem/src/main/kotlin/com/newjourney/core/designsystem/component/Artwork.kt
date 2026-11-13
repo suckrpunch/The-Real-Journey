@@ -10,7 +10,6 @@ import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material.icons.outlined.Waves
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -33,14 +32,15 @@ fun parseCatalogColor(hex: String?, fallback: Color): Color =
     runCatching { Color(android.graphics.Color.parseColor(hex)) }.getOrDefault(fallback)
 
 /**
- * Calm, abstract artwork for a track: a soft glow with quiet rings in the track's colour.
+ * Calm, abstract artwork for a track: a soft glow with quiet rings in the theme colour.
  * Used until the owner adds real artwork. Decorative, so screen readers skip it.
  */
 @Composable
 fun TrackArtwork(colorHex: String?, modifier: Modifier = Modifier) {
-    val fallback = MaterialTheme.colorScheme.primary
-    val surface = MaterialTheme.colorScheme.surfaceContainer
-    val color = remember(colorHex, fallback) { parseCatalogColor(colorHex, fallback) }
+    // The approved design keeps artwork monochrome: every track glows in the theme's own colour.
+    // [colorHex] stays in the signature so real artwork or colours can return later without changes.
+    val surface = MaterialTheme.colorScheme.surfaceContainerHigh
+    val color = MaterialTheme.colorScheme.primary
     Canvas(modifier) {
         val radius = size.minDimension / 2
         val center = Offset(size.width / 2, size.height / 2)

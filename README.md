@@ -28,6 +28,8 @@ What works in this build:
 
 - **Introduction** (first launch only, every question optional): name, age range and goals (better sleep, less stress, peace of mind, better focus, deeper meditation, balance and energy), then three suggested tracks and a gentle first session. The name greets on Home, the goals give "Picked for you" on Home, and Profile › About you changes the answers. Suggestions come from `Recommendations` in core/model, using only the catalog, so new music is included automatically.
 
+- **Visual identity** (version 0.11): Day "Warm Minimal" (warm ivory, deep forest green, sage) and Night "Midnight Calm" (midnight navy, warm cream). Nunito Sans for the interface, Fraunces only for the quote of the day and reflections. Pill buttons, 24dp cards, tonal surfaces instead of shadows. The New Journey logo (day and night versions, supplied artwork cut out without redrawing) sits top-left on the main screens with a reminders bell top-right. Tokens live in `core/designsystem/.../theme/Color.kt` and `Type.kt`. Two approved colours were nudged for WCAG AA: secondary text #58765F → #4F6A56 and the night outline #586679 → #6A7A91 (borders only). Store graphics are in `store/`.
+
 Not built yet: online catalog (dormant until a storage bucket is set), server-side purchase verification, offline downloads.
 
 ### Access code for Google Play reviewers

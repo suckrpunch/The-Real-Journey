@@ -22,9 +22,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -46,14 +46,18 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.DurationChip
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
+import com.newjourney.core.designsystem.component.ScreenPadding
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
@@ -62,11 +66,13 @@ import com.newjourney.core.designsystem.component.categoryIcon
 import com.newjourney.core.designsystem.component.moodColor
 import com.newjourney.core.designsystem.component.moodLabel
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
+import com.newjourney.core.designsystem.theme.QuoteTextStyle
 import com.newjourney.core.model.Category
 import com.newjourney.core.model.HomeCheckInMoods
 import com.newjourney.core.model.Mood
 import com.newjourney.core.model.PartOfDay
 import com.newjourney.core.model.Routine
+import com.newjourney.core.model.TimerLimits
 import com.newjourney.core.model.WeekProgress
 import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
@@ -123,10 +129,15 @@ internal fun HomeScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp),
+        contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
-        item { Greeting(state) }
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                AppHeader()
+                Greeting(state)
+            }
+        }
         newStage?.let { (stageId, stageName) ->
             item {
                 SoftCard(raised = true) {
@@ -188,23 +199,25 @@ internal fun HomeScreen(
 
 @Composable
 private fun Greeting(state: HomeUiState) {
-    val formatter = remember { DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.getDefault()) }
+    val formatter = remember { DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault()) }
     val greeting = when (state.partOfDay) {
         PartOfDay.MORNING -> R.string.home_greeting_morning
         PartOfDay.AFTERNOON -> R.string.home_greeting_afternoon
         PartOfDay.EVENING -> R.string.home_greeting_evening
         PartOfDay.NIGHT -> R.string.home_greeting_night
     }
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
-            state.date.format(formatter),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         val greetingText = stringResource(greeting)
         Text(
             state.userName?.let { stringResource(R.string.home_greeting_named, greetingText, it) } ?: greetingText,
             style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.semantics { heading() },
+        )
+        Text(
+            state.date.format(formatter),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -247,34 +260,43 @@ private fun PicksSection(picks: List<HomePick>, onOpen: (String) -> Unit) {
 
 @Composable
 private fun QuoteCard(text: String, author: String?, saved: Boolean, onToggleSaved: () -> Unit) {
-    SoftCard {
-        Text(
-            stringResource(R.string.home_quote_label).uppercase(),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(text, style = MaterialTheme.typography.headlineMedium)
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+    val quoteLabel = stringResource(R.string.home_quote_label)
+    Surface(
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(start = 24.dp, end = 12.dp, top = 24.dp, bottom = 8.dp)) {
             Text(
-                author.orEmpty(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f),
+                "\u201C$text\u201D",
+                style = QuoteTextStyle,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .semantics { contentDescription = "$quoteLabel: $text" + (author?.let { ", $it" } ?: "") },
             )
-            SecondaryButton(
-                text = stringResource(if (saved) R.string.home_quote_saved else R.string.home_quote_save),
-                onClick = onToggleSaved,
-                leading = {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    author?.let { "\u2014 $it" }.orEmpty(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = onToggleSaved, modifier = Modifier.heightIn(min = 48.dp)) {
                     Icon(
-                        if (saved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        if (saved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(22.dp),
                     )
-                },
-            )
+                    Text(
+                        stringResource(if (saved) R.string.home_quote_saved else R.string.home_quote_save),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(start = 6.dp),
+                    )
+                }
+            }
         }
     }
 }
@@ -288,20 +310,24 @@ private fun QuickStart(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SectionTitle(stringResource(R.string.home_start_title))
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        // Four chips fit across a phone; the longer lengths are a short scroll away.
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(state.durations) { minutes ->
                 DurationChip(
                     minutes = minutes,
                     selected = minutes == state.selectedMinutes,
-                    premium = state.isLocked(minutes),
+                    premium = TimerLimits.isPremiumDuration(minutes),
                     onClick = { onChipTapped(minutes) },
+                    showTier = true,
+                    modifier = Modifier.width(80.dp),
                 )
             }
         }
+        val beginDescription = stringResource(R.string.home_begin_description, state.selectedMinutes)
         PrimaryButton(
-            text = stringResource(R.string.home_begin, state.selectedMinutes),
+            text = stringResource(R.string.home_begin),
             onClick = onBegin,
-            leading = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
+            modifier = Modifier.semantics { contentDescription = beginDescription },
         )
         if (state.routines.isNotEmpty()) {
             Text(
@@ -365,18 +391,17 @@ private fun ContinueListeningCard(item: ContinueListening, onContinue: () -> Uni
         item.place.ifEmpty { null },
         pluralStringResource(R.plurals.home_continue_minutes_left, left.toInt(), left.toInt()),
     ).joinToString(" · ")
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    SoftCard {
         SectionTitle(stringResource(R.string.home_continue_title))
         Surface(
             onClick = onContinue,
             shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surfaceContainerLowest,
+            color = MaterialTheme.colorScheme.surfaceContainer,
             modifier = Modifier.semantics(mergeDescendants = true) {
                 contentDescription = item.track.title + ", " + subtitle
             },
         ) {
             Row(
-                Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
