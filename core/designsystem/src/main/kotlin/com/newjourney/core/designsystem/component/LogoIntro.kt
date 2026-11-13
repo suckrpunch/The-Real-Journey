@@ -92,7 +92,7 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
             .semantics { contentDescription = appName },
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Box(
                 Modifier
                     .size(140.dp)
