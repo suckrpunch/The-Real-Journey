@@ -147,7 +147,7 @@ fun NewJourneyLogo(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(if (isNightTheme()) R.drawable.logo_night else R.drawable.logo_day),
         contentDescription = stringResource(R.string.logo_description),
-        modifier = modifier.size(50.dp),
+        modifier = modifier.size(46.dp),
     )
 }
 

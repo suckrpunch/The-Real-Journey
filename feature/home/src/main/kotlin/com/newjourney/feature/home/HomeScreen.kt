@@ -222,10 +222,10 @@ private fun Greeting(state: HomeUiState) {
                     name,
                     style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onBackground,
-                    // Sits 10dp closer to the greeting; everything below moves up with it.
+                    // Sits 14dp closer to the greeting; everything below moves up with it.
                     modifier = Modifier.layout { measurable, constraints ->
                         val placeable = measurable.measure(constraints)
-                        val pull = 10.dp.roundToPx()
+                        val pull = 14.dp.roundToPx()
                         layout(placeable.width, placeable.height - pull) { placeable.place(0, -pull) }
                     },
                 )
