@@ -1,13 +1,6 @@
 package com.newjourney.core.designsystem.component
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bedtime
-import androidx.compose.material.icons.outlined.CenterFocusStrong
-import androidx.compose.material.icons.outlined.Healing
-import androidx.compose.material.icons.outlined.SelfImprovement
-import androidx.compose.material.icons.outlined.Spa
-import androidx.compose.material.icons.outlined.Waves
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,15 +9,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.newjourney.core.designsystem.icon.NavIcons
 
 /** The icon for a category, by the "icon" name in catalog.json. */
 fun categoryIcon(name: String): ImageVector = when (name) {
-    "chakras" -> Icons.Outlined.SelfImprovement
-    "sleep" -> Icons.Outlined.Bedtime
-    "relaxation" -> Icons.Outlined.Spa
-    "focus" -> Icons.Outlined.CenterFocusStrong
-    "deep" -> Icons.Outlined.Waves
-    else -> Icons.Outlined.Healing
+    "chakras" -> NavIcons.Lotus
+    "sleep" -> NavIcons.Moon
+    "relaxation" -> NavIcons.Waves
+    "focus" -> NavIcons.Target
+    "deep" -> NavIcons.Meditator
+    else -> NavIcons.Leaf
 }
 
 /** Reads "#RRGGBB" from the catalog; falls back to [fallback] when missing or invalid. */

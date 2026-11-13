@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore_title">Explore</string>
+    <string name="explore_subtitle">Find your moment of calm</string>
+    <string name="explore_search_hint">Search music, meditations…</string>
+    <string name="explore_search_none">Nothing found for “%1$s”. Try another word.</string>
+    <string name="explore_search_clear">Clear search</string>
     <string name="explore_favorites">Your favourites</string>
     <string name="explore_recent">Recently played</string>
-    <string name="explore_categories">Categories</string>
-    <string name="explore_coming_soon">Music coming soon</string>
-    <plurals name="explore_track_count">
-        <item quantity="one">%d track</item>
-        <item quantity="other">%d tracks</item>
-    </plurals>
 
     <string name="category_coming_soon">Music coming soon</string>
     <string name="back">Back</string>

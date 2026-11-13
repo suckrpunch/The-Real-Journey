@@ -1,17 +1,16 @@
 package com.newjourney.app.navigation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.FilledIconButton
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.app.R
+import com.newjourney.core.designsystem.component.isNightTheme
+import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.playback.MusicPlayer
 import com.newjourney.core.playback.NowPlaying
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,39 +49,80 @@ class MiniPlayerViewModel @Inject constructor(
     fun togglePlayPause() = player.togglePlayPause()
 }
 
-/** A slim bar above the tabs while music is loaded. Tap it to open the player. */
+/**
+ * A floating pill above the tabs while music is loaded: artwork square, title, and a play/pause
+ * button. In the primary colour, so it stands out calmly (forest green by day, cream by night).
+ * Tap it to open the player.
+ */
 @Composable
 fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel = hiltViewModel()) {
     val nowPlaying by viewModel.nowPlaying.collectAsStateWithLifecycle()
     val current = nowPlaying ?: return
     val openLabel = stringResource(R.string.mini_player_open, current.title)
     val toggleLabel = stringResource(if (current.isPlaying) R.string.mini_player_pause else R.string.mini_player_play)
+    val colors = MaterialTheme.colorScheme
+    val night = isNightTheme()
 
     Surface(
         onClick = { onOpen(current.trackId) },
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = RoundedCornerShape(24.dp),
+        color = colors.primary,
+        contentColor = colors.onPrimary,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 8.dp)
             .semantics { contentDescription = openLabel },
     ) {
         Row(
             Modifier
                 .heightIn(min = 72.dp)
-                .padding(horizontal = 20.dp, vertical = 8.dp),
+                .padding(start = 12.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Column(Modifier.weight(1f)) {
-                Text(current.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                current.subtitle?.let {
-                    Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+            // By day a lighter green square with a white note; by night a navy square with a cream note.
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = if (night) colors.onPrimary else colors.onPrimary.copy(alpha = 0.18f),
+                modifier = Modifier.size(52.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        NavIcons.Music,
+                        contentDescription = null,
+                        tint = if (night) colors.primary else colors.onPrimary,
+                        modifier = Modifier.size(28.dp),
+                    )
                 }
             }
-            FilledIconButton(
+            Column(Modifier.weight(1f)) {
+                Text(
+                    current.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colors.onPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                current.subtitle?.let {
+                    Text(
+                        it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colors.onPrimary.copy(alpha = 0.88f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+            IconButton(
                 onClick = viewModel::togglePlayPause,
                 modifier = Modifier.size(56.dp).semantics { contentDescription = toggleLabel },
             ) {
-                Icon(if (current.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow, contentDescription = null)
+                Icon(
+                    if (current.isPlaying) NavIcons.Pause else NavIcons.Play,
+                    contentDescription = null,
+                    tint = colors.onPrimary,
+                    modifier = Modifier.size(30.dp),
+                )
             }
         }
     }
