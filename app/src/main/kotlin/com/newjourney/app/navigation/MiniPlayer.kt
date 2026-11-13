@@ -53,7 +53,7 @@ class MiniPlayerViewModel @Inject constructor(
         val track = catalog?.track(playing.trackId)
         val durationMs = track?.durationMs ?: playing.durationMs
         TrackDetails(
-            category = track?.let { catalog.category(it.categoryId)?.name },
+            category = track?.let { catalog?.category(it.categoryId)?.name },
             minutes = if (durationMs > 0) ((durationMs + 30_000) / 60_000).toInt().coerceAtLeast(1) else null,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
