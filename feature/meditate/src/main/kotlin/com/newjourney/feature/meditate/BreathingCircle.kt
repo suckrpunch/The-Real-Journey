@@ -6,7 +6,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,52 +24,65 @@ import androidx.compose.ui.unit.dp
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 
 /**
- * A soft circle that grows over 4 seconds (breathe in) and settles over 6 seconds (breathe out).
- * It stays still when [moving] is false, or when the phone's "Remove animations" setting is on.
+ * Three concentric circles that breathe with you: they swell over 4 seconds (breathe in),
+ * rest for a moment at the top, and settle over 6 seconds (breathe out). The inner circle
+ * moves most and leads; the outer rings follow a fraction later, like a soft ripple.
+ * Everything stays still when [moving] is false or the phone's "Remove animations" setting is on.
  */
 @Composable
 internal fun BreathingCircle(moving: Boolean, modifier: Modifier = Modifier, size: Dp = 240.dp) {
     val reduceMotion = rememberReduceMotion()
-    val scale = if (moving && !reduceMotion) {
+    val cycle = if (moving && !reduceMotion) {
         val transition = rememberInfiniteTransition(label = "breathing")
-        val animated by transition.animateFloat(
-            initialValue = REST,
-            targetValue = REST,
-            animationSpec = infiniteRepeatable(
-                animation = keyframes {
-                    durationMillis = 10_000
-                    REST at 0 using FastOutSlowInEasing
-                    1.0f at 4_000 using FastOutSlowInEasing
-                    REST at 10_000 using LinearEasing
-                },
-                repeatMode = RepeatMode.Restart,
-            ),
-            label = "breathingScale",
+        val t by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(tween(CYCLE_MS, easing = LinearEasing), RepeatMode.Restart),
+            label = "breathCycle",
         )
-        animated
+        t
     } else {
-        0.85f
+        null
     }
-    // Three calm, concentric circles: the outer ring stays still, the inner two breathe.
+    // 0 = fully out, 1 = fully in. Paused or still: a calm middle position.
+    fun breath(lag: Float): Float = cycle?.let { breathAt((it - lag + 1f) % 1f) } ?: 0.55f
+    val inner = breath(0f)
+    val middle = breath(0.025f)
+    val outer = breath(0.05f)
+
     val colors = NewJourneyTheme.extraColors
     Box(modifier.size(size), contentAlignment = Alignment.Center) {
-        Box(Modifier.size(size).background(colors.breathOuter, CircleShape))
+        Box(
+            Modifier
+                .size(size)
+                .scale(0.9f + 0.1f * outer)
+                .background(colors.breathOuter, CircleShape),
+        )
         Box(
             Modifier
                 .size(size * 0.7f)
-                .scale(0.8f + 0.2f * scale)
+                .scale(0.74f + 0.26f * middle)
                 .background(colors.breathMiddle, CircleShape),
         )
         Box(
             Modifier
                 .size(size * 0.38f)
-                .scale(0.85f + 0.15f * scale)
+                .scale(0.66f + 0.34f * inner)
                 .background(colors.breathInner, CircleShape),
         )
     }
 }
 
-private const val REST = 0.7f
+private const val CYCLE_MS = 11_000
+private const val IN_END = 4f / 11f
+private const val HOLD_END = 5f / 11f
+
+/** Where the breath is at point [t] (0..1) of the cycle: in for 4 s, hold 1 s, out for 6 s. */
+private fun breathAt(t: Float): Float = when {
+    t < IN_END -> FastOutSlowInEasing.transform(t / IN_END)
+    t < HOLD_END -> 1f
+    else -> 1f - FastOutSlowInEasing.transform((t - HOLD_END) / (1f - HOLD_END))
+}
 
 @Composable
 private fun rememberReduceMotion(): Boolean {
