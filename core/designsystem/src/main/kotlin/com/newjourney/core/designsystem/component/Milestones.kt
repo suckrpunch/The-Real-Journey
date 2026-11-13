@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import com.newjourney.core.designsystem.R
 import com.newjourney.core.model.Milestone
@@ -46,6 +48,19 @@ fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit, modi
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = null)
+        // Day: green track with an ivory thumb. Night: cream track with a soft grey thumb.
+        val night = isNightTheme()
+        Switch(
+            checked = checked,
+            onCheckedChange = null,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                checkedThumbColor = if (night) NightSwitchThumb else MaterialTheme.colorScheme.onPrimary,
+                checkedBorderColor = MaterialTheme.colorScheme.primary,
+            ),
+        )
     }
 }
+
+/** The thumb of a switch that is on, by night: a soft grey on the cream track. */
+private val NightSwitchThumb = Color(0xFF8B959B)

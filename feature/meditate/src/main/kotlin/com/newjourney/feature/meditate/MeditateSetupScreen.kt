@@ -2,6 +2,7 @@ package com.newjourney.feature.meditate
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,10 +17,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.MusicNote
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -49,6 +46,7 @@ import com.newjourney.core.designsystem.component.ScreenTitle
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.SwitchRow
+import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.model.BackgroundSound
 
 @Composable
@@ -125,17 +123,21 @@ internal fun MeditateSetupScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.semantics { heading() },
                 )
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(state.durations) { minutes ->
-                        DurationChip(
-                            minutes = minutes,
-                            selected = minutes == state.selectedMinutes,
-                            premium = state.isLocked(minutes),
-                            onClick = {
-                                if (state.isLocked(minutes)) premiumSheetMinutes = minutes else onSelectDuration(minutes)
-                            },
-                            modifier = Modifier.width(60.dp),
-                        )
+                // Five lengths fill the width exactly, as in the approved design; longer ones are a swipe away.
+                BoxWithConstraints(Modifier.fillMaxWidth()) {
+                    val chipWidth = (maxWidth - 8.dp * 4) / 5
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(state.durations) { minutes ->
+                            DurationChip(
+                                minutes = minutes,
+                                selected = minutes == state.selectedMinutes,
+                                premium = state.isLocked(minutes),
+                                onClick = {
+                                    if (state.isLocked(minutes)) premiumSheetMinutes = minutes else onSelectDuration(minutes)
+                                },
+                                modifier = Modifier.width(chipWidth),
+                            )
+                        }
                     }
                 }
             }
@@ -143,7 +145,7 @@ internal fun MeditateSetupScreen(
 
         item {
             SoftCard {
-                CardHeading(Icons.Outlined.Notifications, stringResource(R.string.setup_bells))
+                CardHeading(NavIcons.Bell, stringResource(R.string.setup_bells))
                 SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange)
                 SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange)
             }
@@ -151,7 +153,7 @@ internal fun MeditateSetupScreen(
 
         item {
             SoftCard {
-                CardHeading(Icons.Outlined.MusicNote, stringResource(R.string.setup_sound))
+                CardHeading(NavIcons.Music, stringResource(R.string.setup_sound))
                 Box {
                     Pines(
                         Modifier
@@ -186,7 +188,7 @@ internal fun MeditateSetupScreen(
             PrimaryButton(
                 text = stringResource(R.string.setup_begin, state.selectedMinutes),
                 onClick = onBegin,
-                leading = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
+                leading = { Icon(NavIcons.Play, contentDescription = null, modifier = Modifier.size(22.dp)) },
             )
         }
 
@@ -240,7 +242,7 @@ internal fun MeditateSetupScreen(
 @Composable
 private fun CardHeading(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
         Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
     }
 }

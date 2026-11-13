@@ -207,8 +207,12 @@ fun DurationChip(
     modifier: Modifier = Modifier,
     showTier: Boolean = false,
 ) {
-    // Home (with tiers) marks the choice with an outline on the page colour; Meditate also tints it.
-    val selectedFill = if (showTier) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primaryContainer
+    // Home (with tiers) and the night theme mark the choice with an outline on the page colour;
+    // by day Meditate also tints it pale sage. Unselected Meditate chips by day are outlined.
+    val night = isNightTheme()
+    val selectedFill = if (showTier || night) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primaryContainer
+    val unselectedFill = if (!showTier && !night) MaterialTheme.colorScheme.background else NewJourneyTheme.extraColors.chip
+    val unselectedBorder = if (!showTier && !night) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null
     val colors = MaterialTheme.colorScheme
     val label = if (premium) {
         stringResource(R.string.duration_minutes_premium, minutes)
@@ -228,8 +232,8 @@ fun DurationChip(
                 role = Role.RadioButton
             },
         shape = RoundedCornerShape(18.dp),
-        color = if (selected) selectedFill else NewJourneyTheme.extraColors.chip,
-        border = if (selected) BorderStroke(2.dp, colors.primary) else null,
+        color = if (selected) selectedFill else unselectedFill,
+        border = if (selected) BorderStroke(2.dp, colors.primary) else unselectedBorder,
     ) {
         Box(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -247,7 +251,7 @@ fun DurationChip(
                         maxLines = 1,
                     )
                 } else {
-                    Text("$minutes", style = MaterialTheme.typography.labelLarge, color = content)
+                    Text("$minutes", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = content)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.duration_min_short), style = MaterialTheme.typography.labelMedium, color = secondary)
                         if (premium) {
