@@ -46,7 +46,14 @@ object NavIcons {
     private const val HEAD = "M8 8 A4 4 0 1 0 16 8 A4 4 0 1 0 8 8 Z"
     private const val SHOULDERS = "M4.5 20.5 C4.5 16.4 7.8 13.9 12 13.9 C16.2 13.9 19.5 16.4 19.5 20.5"
 
+    private const val BELL = "M6.2 16.8 V11.2 A5.8 5.8 0 0 1 17.8 11.2 V16.8 L19.3 18.3 H4.7 Z"
+    private const val BELL_CLAPPER = "M10 20.6 A2 2 0 0 0 14 20.6"
+    private const val BELL_TOP = "M12 3.6 V5.4"
+
     val Home: ImageVector = lineIcon("NavHome", LINE, HOUSE)
+
+    /** The reminders bell in screen headers, in the same thin line style as the tab icons. */
+    val Bell: ImageVector = lineIcon("HeaderBell", LINE, BELL, BELL_CLAPPER, BELL_TOP)
 
     /** The selected Home tab: a solid house with softly rounded corners. */
     val HomeFilled: ImageVector = ImageVector.Builder(

@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -45,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.newjourney.core.designsystem.R
+import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 
 /** Minimum touch size used across the app (Android's minimum is 48dp). */
@@ -147,7 +147,7 @@ fun NewJourneyLogo(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(if (isNightTheme()) R.drawable.logo_night else R.drawable.logo_day),
         contentDescription = stringResource(R.string.logo_description),
-        modifier = modifier.size(46.dp),
+        modifier = modifier.size(54.dp),
     )
 }
 
@@ -167,10 +167,10 @@ fun AppHeader(modifier: Modifier = Modifier) {
         if (openReminders != null) {
             IconButton(onClick = openReminders, modifier = Modifier.size(48.dp)) {
                 Icon(
-                    Icons.Outlined.Notifications,
+                    NavIcons.Bell,
                     contentDescription = stringResource(R.string.header_reminders),
                     tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.size(28.dp),
                 )
             }
         }
