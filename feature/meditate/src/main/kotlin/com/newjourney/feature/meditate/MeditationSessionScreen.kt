@@ -236,7 +236,7 @@ private fun Countdown(
         SecondaryButton(
             text = stringResource(R.string.timer_end),
             onClick = { confirmEnd = true },
-            modifier = Modifier.weight(1f).heightIn(min = 64.dp),
+            modifier = Modifier.weight(1f).heightIn(min = 56.dp),
             leading = { Icon(Icons.Outlined.CropSquare, contentDescription = null) },
         )
     }

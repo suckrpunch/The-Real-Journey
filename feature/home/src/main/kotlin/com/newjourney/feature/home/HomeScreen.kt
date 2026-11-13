@@ -50,6 +50,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.AppHeader
@@ -130,10 +131,10 @@ internal fun HomeScreen(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(28.dp),
+        verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 AppHeader()
                 Greeting(state)
             }
@@ -206,17 +207,22 @@ private fun Greeting(state: HomeUiState) {
         PartOfDay.EVENING -> R.string.home_greeting_evening
         PartOfDay.NIGHT -> R.string.home_greeting_night
     }
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+    // "Good morning," with the name on the line below, then the date. Indented a little, like the cards' text.
+    Column(Modifier.padding(start = 4.dp)) {
         val greetingText = stringResource(greeting)
-        Text(
-            state.userName?.let { stringResource(R.string.home_greeting_named, greetingText, it) } ?: greetingText,
-            style = MaterialTheme.typography.displaySmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.semantics { heading() },
-        )
+        Column(Modifier.semantics(mergeDescendants = true) { heading() }) {
+            Text(
+                state.userName?.let { stringResource(R.string.home_greeting_comma, greetingText) } ?: greetingText,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            state.userName?.let { name ->
+                Text(name, style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.onBackground)
+            }
+        }
         Text(
             state.date.format(formatter),
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium, fontSize = 19.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -266,13 +272,13 @@ private fun QuoteCard(text: String, author: String?, saved: Boolean, onToggleSav
         color = MaterialTheme.colorScheme.surfaceContainer,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Column(Modifier.padding(start = 24.dp, end = 12.dp, top = 24.dp, bottom = 8.dp)) {
+        Column(Modifier.padding(start = 20.dp, end = 10.dp, top = 22.dp, bottom = 6.dp)) {
             Text(
                 "\u201C$text\u201D",
                 style = QuoteTextStyle,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
-                    .padding(end = 12.dp)
+                    .padding(end = 10.dp, bottom = 10.dp)
                     .semantics { contentDescription = "$quoteLabel: $text" + (author?.let { ", $it" } ?: "") },
             )
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -291,7 +297,7 @@ private fun QuoteCard(text: String, author: String?, saved: Boolean, onToggleSav
                     )
                     Text(
                         stringResource(if (saved) R.string.home_quote_saved else R.string.home_quote_save),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold, fontSize = 15.sp),
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 6.dp),
                     )
@@ -301,6 +307,9 @@ private fun QuoteCard(text: String, author: String?, saved: Boolean, onToggleSav
     }
 }
 
+/** The four lengths on Home, as in the approved design. */
+private val HomeDurations = listOf(5, 10, 15, 30)
+
 @Composable
 private fun QuickStart(
     state: HomeUiState,
@@ -308,18 +317,18 @@ private fun QuickStart(
     onBegin: () -> Unit,
     onRoutine: (Routine) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        SectionTitle(stringResource(R.string.home_start_title))
-        // Four chips fit across a phone; the longer lengths are a short scroll away.
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(state.durations) { minutes ->
+    Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+        SectionTitle(stringResource(R.string.home_start_title), Modifier.padding(start = 4.dp))
+        // Four lengths across the width, as in the approved design; every length is on the Meditate tab.
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+            HomeDurations.forEach { minutes ->
                 DurationChip(
                     minutes = minutes,
                     selected = minutes == state.selectedMinutes,
                     premium = TimerLimits.isPremiumDuration(minutes),
                     onClick = { onChipTapped(minutes) },
                     showTier = true,
-                    modifier = Modifier.width(80.dp),
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -327,7 +336,7 @@ private fun QuickStart(
         PrimaryButton(
             text = stringResource(R.string.home_begin),
             onClick = onBegin,
-            modifier = Modifier.semantics { contentDescription = beginDescription },
+            modifier = Modifier.padding(top = 4.dp).semantics { contentDescription = beginDescription },
         )
         if (state.routines.isNotEmpty()) {
             Text(
@@ -392,7 +401,11 @@ private fun ContinueListeningCard(item: ContinueListening, onContinue: () -> Uni
         pluralStringResource(R.plurals.home_continue_minutes_left, left.toInt(), left.toInt()),
     ).joinToString(" · ")
     SoftCard {
-        SectionTitle(stringResource(R.string.home_continue_title))
+        Text(
+            stringResource(R.string.home_continue_title),
+            style = MaterialTheme.typography.headlineSmall.copy(fontSize = 23.sp, lineHeight = 30.sp),
+            modifier = Modifier.semantics { heading() },
+        )
         Surface(
             onClick = onContinue,
             shape = MaterialTheme.shapes.large,

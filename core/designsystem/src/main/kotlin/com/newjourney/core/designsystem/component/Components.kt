@@ -41,7 +41,9 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.newjourney.core.designsystem.R
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 
@@ -49,7 +51,7 @@ import com.newjourney.core.designsystem.theme.NewJourneyTheme
 val MinTouchTarget = 56.dp
 
 /** Horizontal margin of every screen. */
-val ScreenPadding = 20.dp
+val ScreenPadding = 16.dp
 
 /** Main and secondary buttons are full pills. */
 val PillShape = RoundedCornerShape(32.dp)
@@ -61,7 +63,7 @@ val LocalOpenReminders = staticCompositionLocalOf<(() -> Unit)?> { null }
 @Composable
 fun isNightTheme(): Boolean = MaterialTheme.colorScheme.background.luminance() < 0.5f
 
-/** The main action on a screen: a full-width pill, 64dp tall, always with a text label. */
+/** The main action on a screen: a full-width pill, 56dp tall, always with a text label. */
 @Composable
 fun PrimaryButton(
     text: String,
@@ -71,7 +73,7 @@ fun PrimaryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth().heightIn(min = 64.dp),
+        modifier = modifier.fillMaxWidth().heightIn(min = 56.dp),
         shape = PillShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -145,7 +147,7 @@ fun NewJourneyLogo(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(if (isNightTheme()) R.drawable.logo_night else R.drawable.logo_day),
         contentDescription = stringResource(R.string.logo_description),
-        modifier = modifier.size(48.dp),
+        modifier = modifier.size(46.dp),
     )
 }
 
@@ -204,18 +206,20 @@ fun DurationChip(
     modifier: Modifier = Modifier,
     showTier: Boolean = false,
 ) {
+    // Home (with tiers) marks the choice with an outline on the page colour; Meditate also tints it.
+    val selectedFill = if (showTier) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primaryContainer
     val colors = MaterialTheme.colorScheme
     val label = if (premium) {
         stringResource(R.string.duration_minutes_premium, minutes)
     } else {
         stringResource(R.string.duration_minutes, minutes)
     }
-    val content = if (selected) colors.onPrimaryContainer else colors.onSurface
-    val secondary = if (selected) colors.onPrimaryContainer else colors.onSurfaceVariant
+    val content = if (selected && !showTier) colors.onPrimaryContainer else colors.onSurface
+    val secondary = if (selected && !showTier) colors.onPrimaryContainer else colors.onSurfaceVariant
     Surface(
         onClick = onClick,
         modifier = modifier
-            .heightIn(min = 64.dp)
+            .heightIn(min = if (showTier) 76.dp else 64.dp)
             .widthIn(min = 56.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = label
@@ -223,7 +227,7 @@ fun DurationChip(
                 role = Role.RadioButton
             },
         shape = RoundedCornerShape(18.dp),
-        color = if (selected) colors.primaryContainer else NewJourneyTheme.extraColors.chip,
+        color = if (selected) selectedFill else NewJourneyTheme.extraColors.chip,
         border = if (selected) BorderStroke(2.dp, colors.primary) else null,
     ) {
         Box(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
@@ -231,13 +235,13 @@ fun DurationChip(
                 if (showTier) {
                     Text(
                         stringResource(R.string.duration_short, minutes),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 19.sp, lineHeight = 24.sp),
                         color = content,
                         maxLines = 1,
                     )
                     Text(
                         stringResource(if (premium) R.string.duration_tier_premium else R.string.duration_tier_free),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
                         color = secondary,
                         maxLines = 1,
                     )
