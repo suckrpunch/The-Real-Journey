@@ -48,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -311,8 +312,18 @@ private fun Finished(
 ) {
     val minutes = state.completedSeconds / 60
     Spacer(Modifier.height(40.dp))
-    CompletionMark(Modifier.size(150.dp))
+    // The mark sits as close to "Well done" as the line below it does (8dp): the empty space
+    // under the circle inside the drawing is trimmed off.
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        CompletionMark(
+            Modifier
+                .size(150.dp)
+                .layout { measurable, constraints ->
+                    val placeable = measurable.measure(constraints)
+                    val trim = (placeable.height * 0.18f).toInt()
+                    layout(placeable.width, placeable.height - trim) { placeable.place(0, 0) }
+                },
+        )
         Text(
             stringResource(if (state.endedEarly) R.string.finished_title_early else R.string.finished_title),
             style = MaterialTheme.typography.displaySmall,
