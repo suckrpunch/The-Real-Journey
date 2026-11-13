@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="launch_background">#FCF4EA</color>
-    <!-- The cream behind the logo in the approved artwork. -->
-    <color name="ic_launcher_background">#FEF1D8</color>
+    <!-- The green behind the app icon artwork. -->
+    <color name="ic_launcher_background">#094D26</color>
 </resources>
