@@ -26,20 +26,37 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import com.newjourney.app.R
-import com.newjourney.core.designsystem.theme.NewJourneyTheme
+import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.designsystem.icon.NavIcons
+import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.playback.MusicPlayer
 import com.newjourney.core.playback.NowPlaying
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class MiniPlayerViewModel @Inject constructor(
     private val player: MusicPlayer,
+    catalogRepository: CatalogRepository,
 ) : ViewModel() {
     val nowPlaying: StateFlow<NowPlaying?> = player.nowPlaying
+
+    /** The playing track's category and length, for the line under its title ("Relaxation · 10 min"). */
+    val details: StateFlow<TrackDetails?> = combine(player.nowPlaying, catalogRepository.catalog) { playing, catalog ->
+        playing ?: return@combine null
+        val track = catalog?.track(playing.trackId)
+        val durationMs = track?.durationMs ?: playing.durationMs
+        TrackDetails(
+            category = track?.let { catalog.category(it.categoryId)?.name },
+            minutes = if (durationMs > 0) ((durationMs + 30_000) / 60_000).toInt().coerceAtLeast(1) else null,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     init {
         // Connect at start-up so music that is already playing shows here straight away.
@@ -49,6 +66,9 @@ class MiniPlayerViewModel @Inject constructor(
     fun togglePlayPause() = player.togglePlayPause()
 }
 
+/** Category name and length in minutes; either may be unknown. */
+data class TrackDetails(val category: String?, val minutes: Int?)
+
 /**
  * A floating pill above the tabs while music is loaded: artwork square, title, and a play/pause
  * button. In the primary colour, so it stands out calmly (forest green by day, cream by night).
@@ -57,7 +77,10 @@ class MiniPlayerViewModel @Inject constructor(
 @Composable
 fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel = hiltViewModel()) {
     val nowPlaying by viewModel.nowPlaying.collectAsStateWithLifecycle()
+    val details by viewModel.details.collectAsStateWithLifecycle()
     val current = nowPlaying ?: return
+    val minutesText = details?.minutes?.let { stringResource(R.string.mini_player_minutes, it) }
+    val detailLine = listOfNotNull(details?.category, minutesText).joinToString(" · ").ifEmpty { current.subtitle.orEmpty() }
     val openLabel = stringResource(R.string.mini_player_open, current.title)
     val toggleLabel = stringResource(if (current.isPlaying) R.string.mini_player_pause else R.string.mini_player_play)
     val colors = MaterialTheme.colorScheme
@@ -102,7 +125,7 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                current.subtitle?.let {
+                detailLine.takeIf { it.isNotEmpty() }?.let {
                     Text(
                         it,
                         style = MaterialTheme.typography.bodyMedium,

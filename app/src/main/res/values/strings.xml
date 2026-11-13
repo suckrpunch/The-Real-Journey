@@ -12,4 +12,5 @@
     <string name="mini_player_open">Now playing: %1$s. Open the player</string>
     <string name="mini_player_play">Play</string>
     <string name="mini_player_pause">Pause</string>
+    <string name="mini_player_minutes">%1$d min</string>
 </resources>
