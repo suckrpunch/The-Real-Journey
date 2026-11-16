@@ -52,7 +52,6 @@ import com.newjourney.core.designsystem.component.PremiumDurationSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
-import com.newjourney.core.designsystem.component.TrackArtwork
 import kotlinx.coroutines.delay
 
 @Composable
@@ -75,15 +74,16 @@ internal fun TrackRouteContent(
         BackButton(onBack)
         if (track == null) return@Column
 
-        TrackArtwork(
-            state.colorHex,
-            Modifier
+        LivingArtwork(
+            coverId = track.id,
+            colorHex = state.colorHex,
+            playing = state.isCurrent && state.isPlaying,
+            modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 360.dp)
                 .aspectRatio(1f)
                 .clip(MaterialTheme.shapes.extraLarge)
                 .align(Alignment.CenterHorizontally),
-            coverId = track.id,
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
