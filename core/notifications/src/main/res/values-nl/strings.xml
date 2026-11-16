@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminder_channel_name">Zachte herinneringen</string>
+    <string name="reminder_channel_description">Je dagelijkse en avondherinneringen, het weekoverzicht en af en toe een lief berichtje.</string>
+    <string name="reminder_daily_title">Een rustig moment voor jou</string>
+    <string name="reminder_daily_body">Een paar minuten stilte liggen klaar, wanneer jij er klaar voor bent.</string>
+    <string name="reminder_evening_title">Tijd om tot rust te komen</string>
+    <string name="reminder_evening_body">Laat de dag tot rust komen met een kalm nummer of een korte meditatie voor het slapen.</string>
+    <string name="reminder_weekly_title">Jouw week</string>
+    <plurals name="reminder_weekly_days">
+        <item quantity="one">Je hebt deze week op %d dag gemediteerd,</item>
+        <item quantity="other">Je hebt deze week op %d dagen gemediteerd,</item>
+    </plurals>
+    <plurals name="reminder_weekly_minutes">
+        <item quantity="one">%d minuut in totaal. Goed gedaan.</item>
+        <item quantity="other">%d minuten in totaal. Goed gedaan.</item>
+    </plurals>
+    <string name="reminder_return_title">We zijn er wanneer jij er klaar voor bent</string>
+    <string name="reminder_return_body">Zelfs één rustige minuut is een mooie plek om opnieuw te beginnen.</string>
+</resources>

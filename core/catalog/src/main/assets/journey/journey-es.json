@@ -1,0 +1,53 @@
+{
+  "note": "The Journey Within (es). Same ids and colours as journey.json.",
+  "stages": [
+    {
+      "id": "AWAKENING",
+      "name": "El Despertar",
+      "tagline": "Donde empieza todo viaje",
+      "color": "#D2AE6E",
+      "reflection": "Te sentaste y te quedaste. Así empieza todo viaje interior: no con un gran salto, sino con un momento de calma en el que eliges estar aquí.\n\nTodavía no hace falta que nada cambie. Simplemente date cuenta de que has venido.",
+      "opens": "El camino está abierto. Cada meditación, sea cual sea su duración, es un paso en él."
+    },
+    {
+      "id": "FOUNDATION",
+      "name": "Los Cimientos",
+      "tagline": "Siete momentos de quietud",
+      "color": "#8FA37E",
+      "reflection": "Una casa se sostiene sobre lo que no se ve. Siete veces has vuelto a la quietud, y algo firme está tomando forma bajo la superficie.\n\nNo hace falta medirlo. Las raíces crecen en la oscuridad, a su propio ritmo.",
+      "opens": "Una práctica constante. Cada sesión y cada pista gratuitas son tuyas para siempre."
+    },
+    {
+      "id": "INNER_BALANCE",
+      "name": "El Equilibrio Interior",
+      "tagline": "Encontrar el centro en calma",
+      "color": "#6E9A8E",
+      "reflection": "La vida sigue en movimiento: días llenos, noches inquietas, alegría y preocupación lado a lado. El equilibrio no es quedarse perfectamente quieto. Es conocer el camino de vuelta a tu centro.\n\nVeinte veces has encontrado ese camino. Se va volviendo familiar.",
+      "opens": "Con Premium: sesiones más largas y toda la biblioteca musical, para que el equilibrio se haga más profundo."
+    },
+    {
+      "id": "PATH_OF_AWARENESS",
+      "name": "El Camino de la Conciencia",
+      "tagline": "Ver con claridad, con suavidad",
+      "color": "#6F93B8",
+      "reflection": "Con la práctica, el espacio entre lo que ocurre y cómo respondes se hace un poco más amplio. En ese espacio hay lugar para darte cuenta, suavizar y elegir.\n\nCincuenta meditaciones han abierto este camino. Recórrelo con curiosidad más que con esfuerzo.",
+      "opens": "Con Premium: sesiones de hasta una hora y todas las colecciones por explorar."
+    },
+    {
+      "id": "DEEPER_SELF",
+      "name": "El Ser Profundo",
+      "tagline": "Bajo la superficie",
+      "color": "#6C6AA8",
+      "reflection": "Bajo la corriente de pensamientos hay un tú más tranquilo, que siempre ha estado ahí. Cien veces lo has escuchado.\n\nNo tienes que encontrar nada. Solo sigue escuchando.",
+      "opens": "Con Premium: sesiones largas y la música más profunda de la biblioteca."
+    },
+    {
+      "id": "INNER_SANCTUARY",
+      "name": "El Santuario Interior",
+      "tagline": "Un lugar al que siempre puedes volver",
+      "color": "#9A86C2",
+      "reflection": "Doscientas meditaciones. Lo que empezó como una práctica se ha convertido en un lugar: un santuario dentro de ti que ningún día ajetreado te puede quitar.\n\nEl viaje no termina aquí. Simplemente se vuelve tuyo, para recorrerlo tanto como quieras.",
+      "opens": "Con Premium: todo el santuario, cada duración y cada colección, y música nueva en cuanto llegue."
+    }
+  ]
+}

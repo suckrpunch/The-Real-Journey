@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explore_title">Explorar</string>
+    <string name="explore_subtitle">Encuentra tu momento de calma</string>
+    <string name="explore_search_hint">Buscar música, meditaciones…</string>
+    <string name="explore_search_none">No se encontró nada para «%1$s». Prueba otra palabra.</string>
+    <string name="explore_search_clear">Borrar búsqueda</string>
+    <string name="explore_favorites">Tus favoritos</string>
+    <string name="explore_recent">Escuchado recientemente</string>
+    <string name="category_coming_soon">Música disponible pronto</string>
+    <string name="back">Atrás</string>
+    <string name="track_minutes_spoken">%1$d minutos</string>
+    <string name="track_favorite_save">Añadir a favoritos</string>
+    <string name="track_favorite_saved">En tus favoritos</string>
+    <string name="track_play">Reproducir</string>
+    <string name="track_pause">Pausar</string>
+    <string name="track_next">Pista siguiente</string>
+    <string name="track_previous">Pista anterior, o volver al principio</string>
+    <string name="track_progress_spoken">%1$s de %2$s</string>
+    <string name="track_meditate_title">Medita con esta pista</string>
+    <string name="track_meditate_body">La música sigue sin cortes el tiempo que elijas; después se desvanece y suena la campana.</string>
+    <string name="track_meditate_begin">Meditar %1$d minutos</string>
+    <string name="track_offline_title">Esta pista no se puede reproducir ahora</string>
+    <string name="track_offline_body">La primera vez se descarga de internet. Revisa tu conexión y toca Reproducir para intentarlo de nuevo. Una vez escuchada, también suena sin conexión.</string>
+</resources>

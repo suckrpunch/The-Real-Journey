@@ -21,6 +21,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,6 +42,9 @@ interface CatalogRepository {
 
     /** Fetches the online catalog again. Returns true if a new one was loaded. */
     suspend fun refresh(): Boolean
+
+    /** Shows category names in [language] (a tag such as "nl"); called when the app's language changes. */
+    fun useLanguage(language: String)
 }
 
 @Singleton
@@ -55,11 +59,26 @@ internal class OnlineCatalogRepository @Inject constructor(
     private val _catalog = MutableStateFlow<Catalog?>(null)
     override val catalog: StateFlow<Catalog?> = _catalog.asStateFlow()
 
+    /** The catalog as loaded (in English), and the language it is shown in. */
+    @Volatile private var raw: Catalog? = null
+    @Volatile private var language: String = Locale.getDefault().language
+
     init {
         scope.launch {
-            _catalog.value = loadSavedOnline() ?: loadBundled()
+            publish(loadSavedOnline() ?: loadBundled())
             refresh()
         }
+    }
+
+    override fun useLanguage(language: String) {
+        if (language == this.language) return
+        this.language = language
+        raw?.let(::publish)
+    }
+
+    private fun publish(loaded: Catalog) {
+        raw = loaded
+        _catalog.value = CatalogNames.localize(loaded, language)
     }
 
     override suspend fun get(): Catalog = catalog.filterNotNull().first()
@@ -76,7 +95,7 @@ internal class OnlineCatalogRepository @Inject constructor(
         if (parsed.tracks.isEmpty()) return@withContext false
         savedCopy.parentFile?.mkdirs()
         savedCopy.writeText(text)
-        _catalog.value = parsed
+        publish(parsed)
         true
     }
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminder_channel_name">Recordatorios suaves</string>
+    <string name="reminder_channel_description">Tus recordatorios diarios y de la noche, el resumen semanal y, de vez en cuando, una nota amable.</string>
+    <string name="reminder_daily_title">Un momento de calma para ti</string>
+    <string name="reminder_daily_body">Unos minutos de quietud te esperan, cuando estés listo.</string>
+    <string name="reminder_evening_title">Hora de relajarse</string>
+    <string name="reminder_evening_body">Deja que el día se calme con una pista tranquila o una meditación corta antes de dormir.</string>
+    <string name="reminder_weekly_title">Tu semana</string>
+    <plurals name="reminder_weekly_days">
+        <item quantity="one">Esta semana meditaste %d día,</item>
+        <item quantity="many">Esta semana meditaste %d días,</item>
+        <item quantity="other">Esta semana meditaste %d días,</item>
+    </plurals>
+    <plurals name="reminder_weekly_minutes">
+        <item quantity="one">%d minuto en total. Muy bien.</item>
+        <item quantity="many">%d minutos en total. Muy bien.</item>
+        <item quantity="other">%d minutos en total. Muy bien.</item>
+    </plurals>
+    <string name="reminder_return_title">Aquí estamos cuando estés listo</string>
+    <string name="reminder_return_body">Incluso un minuto de calma es un buen lugar para volver a empezar.</string>
+</resources>

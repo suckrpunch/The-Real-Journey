@@ -5,14 +5,18 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-/** Background sound played during a timer session. All three are free. */
-enum class BackgroundSound { SILENCE, RAIN, FOREST }
+/** Background sound played during a timer session. All are free. */
+enum class BackgroundSound { SILENCE, RAIN, FOREST, BEACH }
+
+/** Which bell rings at the start and end of a session. */
+enum class BellSound { SINGING_BOWL, TIBETAN }
 
 /** The user's timer choices, remembered between sessions. */
 data class TimerSettings(
     val startBell: Boolean = true,
     val endBell: Boolean = true,
     val sound: BackgroundSound = BackgroundSound.SILENCE,
+    val bell: BellSound = BellSound.SINGING_BOWL,
 )
 
 enum class SessionKind(val storedName: String) {

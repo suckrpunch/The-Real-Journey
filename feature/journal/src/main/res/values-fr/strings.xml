@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Journal</string>
+    <string name="journal_private_note">Rien que pour vous. Chiffré et conservé uniquement sur ce téléphone.</string>
+    <string name="journal_write">Écrire dans votre journal</string>
+    <string name="journal_empty">Votre journal est vide pour l\'instant. Écrivez quelques mots quand vous le souhaitez ; il n\'y a ni bonne ni mauvaise réponse.</string>
+    <string name="journal_failed">Votre journal n\'a pas pu être ouvert. Fermez l\'application et réessayez.</string>
+    <string name="journal_view_list">Liste</string>
+    <string name="journal_view_calendar">Calendrier</string>
+    <string name="journal_search">Rechercher dans votre journal…</string>
+    <string name="journal_search_clear">Effacer la recherche</string>
+    <string name="journal_search_none">Aucun résultat pour « %1$s ».</string>
+    <string name="journal_today">Aujourd\'hui</string>
+    <string name="journal_yesterday">Hier</string>
+    <string name="journal_day_empty">Aucune note ce jour-là.</string>
+    <string name="journal_month_previous">Mois précédent</string>
+    <string name="journal_month_next">Mois suivant</string>
+    <string name="journal_after_session_short">après %1$d min de méditation</string>
+    <plurals name="journal_entry_count">
+        <item quantity="one">%d note</item>
+        <item quantity="many">%d notes</item>
+        <item quantity="other">%d notes</item>
+    </plurals>
+    <string name="journal_back">Retour</string>
+    <string name="journal_new_entry">Nouvelle note</string>
+    <string name="journal_after_session">Après votre méditation de %1$d minutes</string>
+    <string name="journal_mood_now">Comment vous sentez-vous ?</string>
+    <string name="journal_mood_before">Comment vous sentiez-vous avant de méditer ?</string>
+    <string name="journal_mood_after">Et comment vous sentez-vous maintenant ?</string>
+    <string name="journal_add_before">Ajouter comment vous vous sentiez avant de méditer</string>
+    <string name="journal_thoughts">Vos pensées</string>
+    <string name="journal_thoughts_hint">Tout ce qui vous vient à l\'esprit…</string>
+    <string name="journal_save">Enregistrer</string>
+    <string name="journal_discard">Ne pas enregistrer</string>
+    <string name="journal_unsaved_title">Enregistrer votre note ?</string>
+    <string name="journal_unsaved_body">Vous avez écrit quelque chose qui n\'est pas encore enregistré.</string>
+    <string name="journal_delete">Supprimer la note</string>
+    <string name="journal_delete_title">Supprimer cette note ?</string>
+    <string name="journal_delete_body">Elle sera définitivement retirée de votre journal.</string>
+    <string name="journal_delete_yes">Supprimer</string>
+    <string name="journal_delete_no">La garder</string>
+</resources>

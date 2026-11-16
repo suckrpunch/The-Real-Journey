@@ -10,6 +10,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -44,12 +45,16 @@ class JourneyContentRepository @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val mutex = Mutex()
-    private var cached: Map<JourneyStage, StageContent>? = null
+    private val cached = mutableMapOf<String, Map<JourneyStage, StageContent>>()
 
+    /** The words in the app's language: journey-<language>.json when there is one, else English. */
     suspend fun content(): Map<JourneyStage, StageContent> = mutex.withLock {
-        cached ?: withContext(Dispatchers.IO) {
-            val text = context.assets.open("journey/journey.json").bufferedReader().use { it.readText() }
+        val language = Locale.getDefault().language
+        cached[language] ?: withContext(Dispatchers.IO) {
+            val translated = "journey/journey-$language.json"
+            val path = if (context.assets.list("journey").orEmpty().contains("journey-$language.json")) translated else "journey/journey.json"
+            val text = context.assets.open(path).bufferedReader().use { it.readText() }
             JourneyContentParser.parse(text)
-        }.also { cached = it }
+        }.also { cached[language] = it }
     }
 }

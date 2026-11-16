@@ -1,0 +1,53 @@
+{
+  "note": "The Journey Within (fr). Same ids and colours as journey.json.",
+  "stages": [
+    {
+      "id": "AWAKENING",
+      "name": "L'Éveil",
+      "tagline": "Là où tout voyage commence",
+      "color": "#D2AE6E",
+      "reflection": "Vous vous êtes assis, et vous êtes resté. C'est ainsi que commence tout voyage intérieur : non par un grand saut, mais par un instant de calme où l'on choisit d'être là.\n\nRien n'a besoin de changer pour l'instant. Remarquez simplement que vous êtes venu.",
+      "opens": "Le chemin est ouvert. Chaque méditation, quelle que soit sa durée, est un pas de plus."
+    },
+    {
+      "id": "FOUNDATION",
+      "name": "Les Fondations",
+      "tagline": "Sept moments de calme",
+      "color": "#8FA37E",
+      "reflection": "Une maison repose sur ce que l'on ne voit pas. Sept fois, vous êtes revenu au calme, et quelque chose de stable prend forme sous la surface.\n\nInutile de le mesurer. Les racines grandissent dans l'obscurité, à leur propre rythme.",
+      "opens": "Une pratique régulière. Chaque séance et chaque morceau gratuits restent à vous, pour toujours."
+    },
+    {
+      "id": "INNER_BALANCE",
+      "name": "L'Équilibre intérieur",
+      "tagline": "Trouver le centre paisible",
+      "color": "#6E9A8E",
+      "reflection": "La vie continue d'avancer : journées chargées, nuits agitées, joies et soucis côte à côte. L'équilibre, ce n'est pas rester parfaitement immobile. C'est connaître le chemin qui ramène à son centre.\n\nVingt fois, vous avez trouvé ce chemin. Il vous devient familier.",
+      "opens": "Avec Premium : des séances plus longues et toute la bibliothèque musicale, pour laisser l'équilibre s'approfondir."
+    },
+    {
+      "id": "PATH_OF_AWARENESS",
+      "name": "Le Chemin de la conscience",
+      "tagline": "Voir clairement, avec douceur",
+      "color": "#6F93B8",
+      "reflection": "Avec la pratique, l'espace entre ce qui arrive et votre réaction s'élargit un peu. Dans cet espace, il y a de la place pour remarquer, adoucir et choisir.\n\nCinquante méditations ont ouvert ce chemin. Parcourez-le avec curiosité plutôt qu'avec effort.",
+      "opens": "Avec Premium : des séances jusqu'à une heure, et toutes les collections à explorer."
+    },
+    {
+      "id": "DEEPER_SELF",
+      "name": "Le Soi profond",
+      "tagline": "Sous la surface",
+      "color": "#6C6AA8",
+      "reflection": "Sous le flot des pensées, il existe un vous plus calme, présent depuis toujours. Cent fois, vous l'avez écouté.\n\nVous n'avez rien à trouver. Continuez simplement à écouter.",
+      "opens": "Avec Premium : de longues séances et la musique la plus profonde de la bibliothèque."
+    },
+    {
+      "id": "INNER_SANCTUARY",
+      "name": "Le Sanctuaire intérieur",
+      "tagline": "Un lieu où revenir, toujours",
+      "color": "#9A86C2",
+      "reflection": "Deux cents méditations. Ce qui a commencé comme une pratique est devenu un lieu : un sanctuaire en vous qu'aucune journée chargée ne peut vous enlever.\n\nLe voyage ne s'arrête pas ici. Il devient simplement le vôtre, à parcourir aussi longtemps que vous le souhaitez.",
+      "opens": "Avec Premium : tout le sanctuaire, chaque durée et chaque collection, et la nouvelle musique dès son arrivée."
+    }
+  ]
+}

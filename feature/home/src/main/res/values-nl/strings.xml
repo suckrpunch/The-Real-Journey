@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_greeting_morning">Goedemorgen</string>
+    <string name="home_greeting_afternoon">Goedemiddag</string>
+    <string name="home_greeting_evening">Goedenavond</string>
+    <string name="home_greeting_night">Fijne nacht</string>
+    <string name="home_greeting_comma">%1$s,</string>
+    <string name="home_picks_title">Voor jou gekozen</string>
+    <string name="home_picks_minutes">%1$d min</string>
+    <string name="home_picks_listen">Luisteren</string>
+    <string name="home_quote_label">Citaat van vandaag</string>
+    <string name="home_quote_save">Bewaren</string>
+    <string name="home_quote_saved">Bewaard</string>
+    <string name="home_start_title">Begin met mediteren</string>
+    <string name="home_begin">Beginnen</string>
+    <string name="home_begin_description">Begin een meditatie van %1$d minuten</string>
+    <string name="home_routines_label">Of start een van je routines</string>
+    <string name="home_routine_button">%1$s · %2$d min</string>
+    <string name="home_continue_title">Verder luisteren</string>
+    <plurals name="home_continue_minutes_left">
+        <item quantity="one">nog %d minuut</item>
+        <item quantity="other">nog %d minuten</item>
+    </plurals>
+    <string name="home_explore_title">Ontdekken</string>
+    <string name="home_explore_see_all">Alles bekijken</string>
+    <string name="home_today_title">Vandaag</string>
+    <string name="home_today_ring_description">Vandaag %1$d van %2$d minuten gemediteerd</string>
+    <string name="home_today_minutes">%1$d van %2$d minuten</string>
+    <string name="home_today_not_yet">Een paar rustige minuten, wanneer het jou uitkomt.</string>
+    <string name="home_today_almost">Een korte sessie maakt je doel van vandaag compleet.</string>
+    <string name="home_today_goal_reached">Je doel van vandaag is gehaald. Goed gedaan.</string>
+    <string name="home_week_day_done">%1$s, gemediteerd</string>
+    <string name="home_week_day_open">%1$s</string>
+    <plurals name="home_week_days">
+        <item quantity="one">Je hebt deze week %d dag gemediteerd</item>
+        <item quantity="other">Je hebt deze week %d dagen gemediteerd</item>
+    </plurals>
+    <string name="home_mood_title">Hoe voel je je?</string>
+    <string name="home_mood_subtitle">Tik er een aan om een dagboekbericht te beginnen.</string>
+    <string name="home_new_stage">Je hebt een nieuwe fase van je reis bereikt</string>
+    <string name="home_new_stage_read">Lees de reflectie</string>
+</resources>

@@ -21,7 +21,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.datastore.AppLanguage
 import com.newjourney.core.model.BackgroundSound
+import com.newjourney.core.model.BellSound
 import com.newjourney.core.model.TimerSettings
 import com.newjourney.core.playback.LoopingTrackPlayer
 import com.newjourney.feature.meditate.R
@@ -42,6 +44,11 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class MeditationService : Service() {
+
+    /** The session notification uses the app's chosen language (Android 12 and older). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
 
     @Inject lateinit var timer: MeditationTimer
     @Inject lateinit var catalog: CatalogRepository
@@ -123,7 +130,10 @@ class MeditationService : Service() {
                     finishing = true
                     showNotification(state)
                     scope.launch {
-                        finishAudio(ringEndBell = !state.endedEarly && state.session.settings.endBell)
+                        finishAudio(
+                            ringEndBell = !state.endedEarly && state.session.settings.endBell,
+                            bell = state.session.settings.bell,
+                        )
                         // A new session may have started while the bell rang; keep running for it.
                         val now = timer.state.value
                         if (now !is TimerState.Running && now !is TimerState.Paused) shutDown()
@@ -142,7 +152,7 @@ class MeditationService : Service() {
     // ---- Sound ----
 
     private fun beginAudio(settings: TimerSettings, trackId: String?) {
-        if (settings.startBell) playBell()
+        if (settings.startBell) playBell(settings.bell)
         if (trackId != null) {
             beginMusic(trackId)
             return
@@ -182,7 +192,7 @@ class MeditationService : Service() {
         fadeTo(player, 1f, RESUME_FADE_MS)
     }
 
-    private suspend fun finishAudio(ringEndBell: Boolean) {
+    private suspend fun finishAudio(ringEndBell: Boolean, bell: BellSound) {
         musicJob?.cancel()
         musicPlayer?.let { player ->
             player.fadeOut(MUSIC_FADE_OUT_MS).join()
@@ -194,7 +204,7 @@ class MeditationService : Service() {
             player.stop()
         }
         if (ringEndBell) {
-            playBell()
+            playBell(bell)
             delay(BELL_RING_OUT_MS)
         }
     }
@@ -206,18 +216,25 @@ class MeditationService : Service() {
             .setWakeMode(C.WAKE_MODE_LOCAL)
             .build()
 
-    private fun bell(): ExoPlayer = bellPlayer ?: ExoPlayer.Builder(this)
-        // The bell does not take audio focus, so it never interrupts the background sound.
-        .setAudioAttributes(mediaAttributes(), false)
-        .build()
-        .also {
-            it.setMediaItem(MediaItem.fromUri(rawUri(R.raw.bell)))
-            it.prepare()
-            bellPlayer = it
-        }
+    /** The bell that is loaded in [bellPlayer]. */
+    private var loadedBell: BellSound? = null
 
-    private fun playBell() {
-        val player = bell()
+    private fun bell(sound: BellSound): ExoPlayer {
+        val player = bellPlayer ?: ExoPlayer.Builder(this)
+            // The bell does not take audio focus, so it never interrupts the background sound.
+            .setAudioAttributes(mediaAttributes(), false)
+            .build()
+            .also { bellPlayer = it }
+        if (loadedBell != sound) {
+            player.setMediaItem(MediaItem.fromUri(rawUri(bellResource(sound))))
+            player.prepare()
+            loadedBell = sound
+        }
+        return player
+    }
+
+    private fun playBell(sound: BellSound) {
+        val player = bell(sound)
         player.seekTo(0)
         player.play()
     }
@@ -240,10 +257,17 @@ class MeditationService : Service() {
         .build()
 
     @RawRes
+    private fun bellResource(sound: BellSound): Int = when (sound) {
+        BellSound.SINGING_BOWL -> R.raw.bell
+        BellSound.TIBETAN -> R.raw.bell_tibetan
+    }
+
+    @RawRes
     private fun soundResource(sound: BackgroundSound): Int? = when (sound) {
         BackgroundSound.SILENCE -> null
         BackgroundSound.RAIN -> R.raw.rain
         BackgroundSound.FOREST -> R.raw.forest
+        BackgroundSound.BEACH -> R.raw.beach
     }
 
     private fun rawUri(@RawRes res: Int): Uri = Uri.parse("android.resource://$packageName/$res")
@@ -341,6 +365,7 @@ class MeditationService : Service() {
         backgroundPlayer = null
         bellPlayer?.release()
         bellPlayer = null
+        loadedBell = null
         releaseWakeLock()
         currentSessionId = null
         finishing = false
@@ -372,8 +397,8 @@ class MeditationService : Service() {
         /** Music gets a longer, gentler fade at the end of a session. */
         private const val MUSIC_FADE_OUT_MS = 6_000L
         private const val FADE_STEP_MS = 50L
-        /** The bell recording is about 7.3 seconds; this lets it ring out fully. */
-        private const val BELL_RING_OUT_MS = 8_000L
+        /** The bells are about 7.3 and 8.1 seconds long; this lets either ring out fully. */
+        private const val BELL_RING_OUT_MS = 9_000L
         private const val WAKE_LOCK_MARGIN_MS = 60_000L
 
         internal fun startIntent(context: Context): Intent =

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explore_title">Entdecken</string>
+    <string name="explore_subtitle">Finde deinen Moment der Ruhe</string>
+    <string name="explore_search_hint">Musik, Meditationen suchen…</string>
+    <string name="explore_search_none">Nichts gefunden für „%1$s“. Versuche ein anderes Wort.</string>
+    <string name="explore_search_clear">Suche löschen</string>
+    <string name="explore_favorites">Deine Favoriten</string>
+    <string name="explore_recent">Zuletzt gehört</string>
+    <string name="category_coming_soon">Musik folgt bald</string>
+    <string name="back">Zurück</string>
+    <string name="track_minutes_spoken">%1$d Minuten</string>
+    <string name="track_favorite_save">Zu Favoriten hinzufügen</string>
+    <string name="track_favorite_saved">In deinen Favoriten</string>
+    <string name="track_play">Abspielen</string>
+    <string name="track_pause">Pausieren</string>
+    <string name="track_next">Nächster Titel</string>
+    <string name="track_previous">Vorheriger Titel oder zurück zum Anfang</string>
+    <string name="track_progress_spoken">%1$s von %2$s</string>
+    <string name="track_meditate_title">Mit diesem Titel meditieren</string>
+    <string name="track_meditate_body">Die Musik läuft nahtlos so lange weiter, wie du möchtest, klingt dann aus und die Glocke ertönt.</string>
+    <string name="track_meditate_begin">%1$d Minuten meditieren</string>
+    <string name="track_offline_title">Dieser Titel kann gerade nicht abgespielt werden</string>
+    <string name="track_offline_body">Beim ersten Mal kommt er aus dem Internet. Prüfe deine Verbindung und tippe dann auf Abspielen, um es erneut zu versuchen. Danach läuft er auch offline.</string>
+</resources>

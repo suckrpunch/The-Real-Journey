@@ -1,6 +1,8 @@
 package com.newjourney.app
 
 import android.app.Application
+import android.content.Context
+import com.newjourney.core.datastore.AppLanguage
 import com.newjourney.core.notifications.ReminderScheduler
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +15,11 @@ import javax.inject.Inject
 class NewJourneyApplication : Application() {
 
     @Inject lateinit var reminders: ReminderScheduler
+
+    /** Notifications and reminders use the chosen language too (Android 12 and older). */
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(AppLanguage.wrap(base))
+    }
 
     override fun onCreate() {
         super.onCreate()

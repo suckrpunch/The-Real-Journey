@@ -1,5 +1,6 @@
 package com.newjourney.app
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,6 +29,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.newjourney.app.navigation.NewJourneyApp
+import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.datastore.AppLanguage
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.designsystem.component.LogoIntro
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
@@ -60,8 +63,17 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
 
+    /** On Android 12 and older, opens the app in the language chosen on the Profile page. */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
+
+    @Inject lateinit var catalog: CatalogRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // The screen opens again after a language change; category names follow it.
+        catalog.useLanguage(resources.configuration.locales[0].language)
         enableEdgeToEdge()
 
         setContent {

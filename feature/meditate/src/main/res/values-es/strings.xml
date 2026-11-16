@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="meditate_title">Meditar</string>
+    <string name="meditate_subtitle">Crea tu momento de calma</string>
+    <string name="setup_in_progress_title">Tu sesión sigue en marcha</string>
+    <string name="setup_return_to_session">Volver a tu sesión</string>
+    <string name="setup_length">Duración</string>
+    <string name="setup_bells">Campanas</string>
+    <string name="setup_start_bell">Campana al inicio</string>
+    <string name="setup_end_bell">Campana al final</string>
+    <string name="setup_sound">Sonido de fondo</string>
+    <string name="setup_begin">Empezar meditación de %1$d minutos</string>
+    <string name="sound_silence">Silencio</string>
+    <string name="sound_rain">Lluvia</string>
+    <string name="sound_forest">Bosque</string>
+    <string name="sound_beach">Playa</string>
+    <string name="setup_bell_sound">Sonido de la campana</string>
+    <string name="bell_classic">Campana clásica</string>
+    <string name="bell_tibetan">Campana tibetana</string>
+    <string name="routine_section_title">Tus rutinas</string>
+    <string name="routine_summary">%1$d minutos · %2$s · %3$s</string>
+    <string name="routine_bells_both">Campana al inicio y al final</string>
+    <string name="routine_bells_start">Campana al inicio</string>
+    <string name="routine_bells_end">Campana al final</string>
+    <string name="routine_bells_none">Sin campanas</string>
+    <string name="routine_name_sound">%1$d minutos con %2$s</string>
+    <string name="routine_name_silence">%1$d minutos en silencio</string>
+    <string name="routine_begin">Empezar</string>
+    <string name="routine_remove">Quitar</string>
+    <string name="routine_keep">Conservarla</string>
+    <string name="routine_remove_title">¿Quitar «%1$s»?</string>
+    <string name="routine_remove_body">La rutina se quita de esta lista. Tus sesiones anteriores siguen en tu progreso.</string>
+    <string name="routine_hint">¿Te gustan estas opciones? Guárdalas como rutina y empiézala con un toque, aquí o en Inicio.</string>
+    <string name="routine_save_current">Guardar como rutina</string>
+    <string name="routine_save_title">Guardar como rutina</string>
+    <string name="routine_name_label">Nombre</string>
+    <string name="routine_save">Guardar</string>
+    <string name="routine_cancel">Cancelar</string>
+    <string name="routine_full">Tienes %1$d rutinas, el máximo posible. Quita una para guardar otra nueva.</string>
+    <string name="session_status_running">Respira con suavidad</string>
+    <string name="session_status_paused">En pausa</string>
+    <string name="session_breathe_in">Inspira…</string>
+    <string name="session_breathe_out">Espira…</string>
+    <string name="session_with_track">Con %1$s</string>
+    <string name="timer_pause">Pausar</string>
+    <string name="timer_resume">Reanudar</string>
+    <string name="timer_end">Terminar</string>
+    <string name="session_back">Atrás, la sesión continúa</string>
+    <string name="session_of_total">de %1$s</string>
+    <string name="session_screen_off_hint">Puedes bloquear el teléfono. El temporizador y el sonido siguen, y la campana sonará al final.</string>
+    <string name="session_end_confirm_title">¿Terminar tu sesión ahora?</string>
+    <string name="session_end_confirm_body">No pasa nada. Cada minuto o más que hayas meditado se guarda igualmente.</string>
+    <string name="session_end_confirm_yes">Terminar sesión</string>
+    <string name="session_end_confirm_no">Seguir</string>
+    <plurals name="session_minutes_left">
+        <item quantity="one">queda %d minuto</item>
+        <item quantity="many">quedan %d minutos</item>
+        <item quantity="other">quedan %d minutos</item>
+    </plurals>
+    <string name="finished_title">Muy bien</string>
+    <string name="finished_title_early">Gracias por meditar</string>
+    <plurals name="finished_minutes">
+        <item quantity="one">Has meditado %d minuto.</item>
+        <item quantity="many">Has meditado %d minutos.</item>
+        <item quantity="other">Has meditado %d minutos.</item>
+    </plurals>
+    <string name="finished_milestone">Un nuevo logro</string>
+    <string name="finished_stage_label">Una nueva etapa de tu viaje</string>
+    <string name="finished_stage_read">Lee su reflexión</string>
+    <string name="finished_home">Volver al inicio</string>
+    <string name="finished_completed">Has completado una meditación de %1$d minutos.</string>
+    <plurals name="finished_streak">
+        <item quantity="one">%d día seguido</item>
+        <item quantity="many">%d días seguidos</item>
+        <item quantity="other">%d días seguidos</item>
+    </plurals>
+    <string name="finished_keep_going">¡Sigue así!</string>
+    <string name="finished_journal">Escribe en tu diario</string>
+    <string name="notification_channel_name">Meditación en curso</string>
+    <string name="notification_channel_description">Muestra tu temporizador con Pausar y Terminar mientras meditas.</string>
+    <string name="notification_title">Meditando</string>
+    <string name="notification_finishing">Tu sesión está terminando</string>
+    <plurals name="notification_minutes_left">
+        <item quantity="one">queda %d minuto</item>
+        <item quantity="many">quedan %d minutos</item>
+        <item quantity="other">quedan %d minutos</item>
+    </plurals>
+    <plurals name="notification_paused">
+        <item quantity="one">En pausa · queda %d minuto</item>
+        <item quantity="many">En pausa · quedan %d minutos</item>
+        <item quantity="other">En pausa · quedan %d minutos</item>
+    </plurals>
+</resources>

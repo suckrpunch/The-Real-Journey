@@ -1,0 +1,53 @@
+{
+  "note": "The Journey Within (de). Same ids and colours as journey.json.",
+  "stages": [
+    {
+      "id": "AWAKENING",
+      "name": "Das Erwachen",
+      "tagline": "Wo jede Reise beginnt",
+      "color": "#D2AE6E",
+      "reflection": "Du hast dich hingesetzt, und du bist geblieben. So beginnt jede Reise nach innen: nicht mit einem großen Sprung, sondern mit einem stillen Moment, in dem du dich entscheidest, hier zu sein.\n\nNoch muss nichts anders sein. Nimm einfach wahr, dass du gekommen bist.",
+      "opens": "Der Weg ist offen. Jede Meditation, gleich wie lang, ist ein Schritt auf ihm."
+    },
+    {
+      "id": "FOUNDATION",
+      "name": "Das Fundament",
+      "tagline": "Sieben Momente der Stille",
+      "color": "#8FA37E",
+      "reflection": "Ein Haus steht auf dem, was man nicht sieht. Siebenmal bist du zur Stille zurückgekehrt, und unter der Oberfläche nimmt etwas Festes Gestalt an.\n\nDu musst es nicht messen. Wurzeln wachsen im Dunkeln, in ihrem eigenen Tempo.",
+      "opens": "Eine beständige Praxis. Jede kostenlose Sitzung und jeder kostenlose Titel bleibt immer deiner."
+    },
+    {
+      "id": "INNER_BALANCE",
+      "name": "Die innere Balance",
+      "tagline": "Die stille Mitte finden",
+      "color": "#6E9A8E",
+      "reflection": "Das Leben bleibt in Bewegung: volle Tage, unruhige Nächte, Freude und Sorge nebeneinander. Balance heißt nicht, vollkommen stillzustehen. Sie heißt, den Weg zurück zu deiner Mitte zu kennen.\n\nZwanzigmal hast du diesen Weg gefunden. Er wird dir vertraut.",
+      "opens": "Mit Premium: längere Sitzungen und die ganze Musikbibliothek, damit sich die Balance vertiefen kann."
+    },
+    {
+      "id": "PATH_OF_AWARENESS",
+      "name": "Der Weg der Achtsamkeit",
+      "tagline": "Klar sehen, sanft",
+      "color": "#6F93B8",
+      "reflection": "Mit der Übung wird der Raum zwischen dem, was geschieht, und deiner Reaktion ein wenig weiter. In diesem Raum ist Platz zum Wahrnehmen, zum Weicherwerden und zum Wählen.\n\nFünfzig Meditationen haben diesen Weg geöffnet. Geh ihn mit Neugier statt mit Anstrengung.",
+      "opens": "Mit Premium: Sitzungen bis zu einer Stunde und jede Sammlung zum Entdecken."
+    },
+    {
+      "id": "DEEPER_SELF",
+      "name": "Das tiefere Selbst",
+      "tagline": "Unter der Oberfläche",
+      "color": "#6C6AA8",
+      "reflection": "Unter dem Strom der Gedanken gibt es ein stilleres Du, das schon immer da war. Hundertmal hast du darauf gelauscht.\n\nDu musst nichts finden. Lausche einfach weiter.",
+      "opens": "Mit Premium: lange Sitzungen und die tiefste Musik der Bibliothek."
+    },
+    {
+      "id": "INNER_SANCTUARY",
+      "name": "Das innere Heiligtum",
+      "tagline": "Ein Ort, zu dem du immer zurückkehren kannst",
+      "color": "#9A86C2",
+      "reflection": "Zweihundert Meditationen. Was als Übung begann, ist zu einem Ort geworden: ein Heiligtum in dir, das dir kein voller Tag nehmen kann.\n\nDie Reise endet hier nicht. Sie gehört nun einfach dir, so lange du möchtest.",
+      "opens": "Mit Premium: das ganze Heiligtum, jede Dauer und jede Sammlung, und neue Musik, sobald sie erscheint."
+    }
+  ]
+}

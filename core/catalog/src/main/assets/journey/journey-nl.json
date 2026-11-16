@@ -1,0 +1,53 @@
+{
+  "note": "The Journey Within (nl). Same ids and colours as journey.json.",
+  "stages": [
+    {
+      "id": "AWAKENING",
+      "name": "Het Ontwaken",
+      "tagline": "Waar elke reis begint",
+      "color": "#D2AE6E",
+      "reflection": "Je ging zitten, en je bleef. Zo begint elke reis naar binnen: niet met een grote sprong, maar met één rustig moment waarin je kiest om hier te zijn.\n\nEr hoeft nog niets anders te zijn. Merk gewoon op dat je gekomen bent.",
+      "opens": "Het pad is open. Elke meditatie, van welke duur ook, is een stap op dat pad."
+    },
+    {
+      "id": "FOUNDATION",
+      "name": "Het Fundament",
+      "tagline": "Zeven momenten van stilte",
+      "color": "#8FA37E",
+      "reflection": "Een huis staat op wat je niet ziet. Zeven keer ben je teruggekeerd naar de stilte, en onder de oppervlakte krijgt iets stevigs vorm.\n\nJe hoeft het niet te meten. Wortels groeien in het donker, in hun eigen tempo.",
+      "opens": "Een vaste oefening. Elke gratis sessie en elk gratis nummer blijft altijd van jou."
+    },
+    {
+      "id": "INNER_BALANCE",
+      "name": "De Innerlijke Balans",
+      "tagline": "Het stille midden vinden",
+      "color": "#6E9A8E",
+      "reflection": "Het leven blijft bewegen: drukke dagen, onrustige nachten, vreugde en zorgen naast elkaar. Balans is niet volmaakt stilstaan. Het is de weg terug naar je midden kennen.\n\nTwintig keer heb je die weg gevonden. Hij wordt vertrouwd.",
+      "opens": "Met Premium: langere sessies en de hele muziekbibliotheek, zodat de balans kan verdiepen."
+    },
+    {
+      "id": "PATH_OF_AWARENESS",
+      "name": "Het Pad van Bewustzijn",
+      "tagline": "Helder zien, met zachtheid",
+      "color": "#6F93B8",
+      "reflection": "Met oefening wordt de ruimte tussen wat er gebeurt en hoe je reageert een beetje groter. In die ruimte is plaats om op te merken, te verzachten en te kiezen.\n\nVijftig meditaties hebben dit pad geopend. Bewandel het met nieuwsgierigheid in plaats van inspanning.",
+      "opens": "Met Premium: sessies tot een uur, en elke collectie om te ontdekken."
+    },
+    {
+      "id": "DEEPER_SELF",
+      "name": "Het Diepere Zelf",
+      "tagline": "Onder de oppervlakte",
+      "color": "#6C6AA8",
+      "reflection": "Onder de stroom van gedachten is een stillere jij, die er altijd al was. Honderd keer heb je ernaar geluisterd.\n\nJe hoeft niets te vinden. Blijf alleen luisteren.",
+      "opens": "Met Premium: lange sessies en de diepste muziek uit de bibliotheek."
+    },
+    {
+      "id": "INNER_SANCTUARY",
+      "name": "Het Innerlijke Heiligdom",
+      "tagline": "Een plek waar je altijd kunt terugkeren",
+      "color": "#9A86C2",
+      "reflection": "Tweehonderd meditaties. Wat begon als een oefening is een plek geworden: een heiligdom in jezelf dat geen drukke dag je kan afnemen.\n\nDe reis eindigt hier niet. Hij wordt gewoon van jou, om in rond te dwalen zo lang als je wilt.",
+      "opens": "Met Premium: het hele heiligdom, elke duur en elke collectie, en nieuwe muziek zodra die verschijnt."
+    }
+  ]
+}

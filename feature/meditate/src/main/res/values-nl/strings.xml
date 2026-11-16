@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="meditate_title">Mediteren</string>
+    <string name="meditate_subtitle">Creëer jouw moment van rust</string>
+    <string name="setup_in_progress_title">Je sessie loopt nog</string>
+    <string name="setup_return_to_session">Terug naar je sessie</string>
+    <string name="setup_length">Duur</string>
+    <string name="setup_bells">Bellen</string>
+    <string name="setup_start_bell">Bel aan het begin</string>
+    <string name="setup_end_bell">Bel aan het einde</string>
+    <string name="setup_sound">Achtergrondgeluid</string>
+    <string name="setup_begin">Begin meditatie van %1$d minuten</string>
+    <string name="sound_silence">Stilte</string>
+    <string name="sound_rain">Regen</string>
+    <string name="sound_forest">Bos</string>
+    <string name="sound_beach">Strand</string>
+    <string name="setup_bell_sound">Belgeluid</string>
+    <string name="bell_classic">Klassieke bel</string>
+    <string name="bell_tibetan">Tibetaanse bel</string>
+    <string name="routine_section_title">Jouw routines</string>
+    <string name="routine_summary">%1$d minuten · %2$s · %3$s</string>
+    <string name="routine_bells_both">Bel aan begin en einde</string>
+    <string name="routine_bells_start">Bel aan het begin</string>
+    <string name="routine_bells_end">Bel aan het einde</string>
+    <string name="routine_bells_none">Geen bellen</string>
+    <string name="routine_name_sound">%1$d minuten met %2$s</string>
+    <string name="routine_name_silence">%1$d minuten in stilte</string>
+    <string name="routine_begin">Beginnen</string>
+    <string name="routine_remove">Verwijderen</string>
+    <string name="routine_keep">Bewaren</string>
+    <string name="routine_remove_title">“%1$s” verwijderen?</string>
+    <string name="routine_remove_body">De routine verdwijnt uit deze lijst. Je eerdere sessies blijven in je voortgang staan.</string>
+    <string name="routine_hint">Bevallen deze keuzes? Bewaar ze als routine en start ze met één tik, hier of op Home.</string>
+    <string name="routine_save_current">Bewaar als routine</string>
+    <string name="routine_save_title">Bewaar als routine</string>
+    <string name="routine_name_label">Naam</string>
+    <string name="routine_save">Opslaan</string>
+    <string name="routine_cancel">Annuleren</string>
+    <string name="routine_full">Je hebt %1$d routines, het maximum. Verwijder er een om een nieuwe op te slaan.</string>
+    <string name="session_status_running">Adem rustig</string>
+    <string name="session_status_paused">Gepauzeerd</string>
+    <string name="session_breathe_in">Adem in…</string>
+    <string name="session_breathe_out">Adem uit…</string>
+    <string name="session_with_track">Met %1$s</string>
+    <string name="timer_pause">Pauzeren</string>
+    <string name="timer_resume">Hervatten</string>
+    <string name="timer_end">Stoppen</string>
+    <string name="session_back">Terug, de sessie loopt door</string>
+    <string name="session_of_total">van %1$s</string>
+    <string name="session_screen_off_hint">Je kunt je telefoon vergrendelen. De timer en het geluid lopen door, en aan het einde klinkt de bel.</string>
+    <string name="session_end_confirm_title">Je sessie nu stoppen?</string>
+    <string name="session_end_confirm_body">Dat is helemaal goed. Elke minuut of meer die je zat, wordt bewaard.</string>
+    <string name="session_end_confirm_yes">Sessie stoppen</string>
+    <string name="session_end_confirm_no">Doorgaan</string>
+    <plurals name="session_minutes_left">
+        <item quantity="one">nog %d minuut</item>
+        <item quantity="other">nog %d minuten</item>
+    </plurals>
+    <string name="finished_title">Goed gedaan</string>
+    <string name="finished_title_early">Dank je voor het zitten</string>
+    <plurals name="finished_minutes">
+        <item quantity="one">Je hebt %d minuut gemediteerd.</item>
+        <item quantity="other">Je hebt %d minuten gemediteerd.</item>
+    </plurals>
+    <string name="finished_milestone">Een nieuwe mijlpaal</string>
+    <string name="finished_stage_label">Een nieuwe fase van je reis</string>
+    <string name="finished_stage_read">Lees de reflectie</string>
+    <string name="finished_home">Terug naar home</string>
+    <string name="finished_completed">Je hebt een meditatie van %1$d minuten voltooid.</string>
+    <plurals name="finished_streak">
+        <item quantity="one">%d dag op rij</item>
+        <item quantity="other">%d dagen op rij</item>
+    </plurals>
+    <string name="finished_keep_going">Ga zo door!</string>
+    <string name="finished_journal">Schrijf in je dagboek</string>
+    <string name="notification_channel_name">Meditatie bezig</string>
+    <string name="notification_channel_description">Toont je timer met Pauzeren en Stoppen terwijl je mediteert.</string>
+    <string name="notification_title">Aan het mediteren</string>
+    <string name="notification_finishing">Je sessie loopt af</string>
+    <plurals name="notification_minutes_left">
+        <item quantity="one">nog %d minuut</item>
+        <item quantity="other">nog %d minuten</item>
+    </plurals>
+    <plurals name="notification_paused">
+        <item quantity="one">Gepauzeerd · nog %d minuut</item>
+        <item quantity="other">Gepauzeerd · nog %d minuten</item>
+    </plurals>
+</resources>

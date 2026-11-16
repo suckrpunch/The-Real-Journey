@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_greeting_morning">Buenos días</string>
+    <string name="home_greeting_afternoon">Buenas tardes</string>
+    <string name="home_greeting_evening">Buenas tardes</string>
+    <string name="home_greeting_night">Buenas noches</string>
+    <string name="home_greeting_comma">%1$s,</string>
+    <string name="home_picks_title">Elegido para ti</string>
+    <string name="home_picks_minutes">%1$d min</string>
+    <string name="home_picks_listen">Escuchar</string>
+    <string name="home_quote_label">Frase del día</string>
+    <string name="home_quote_save">Guardar</string>
+    <string name="home_quote_saved">Guardada</string>
+    <string name="home_start_title">Empieza a meditar</string>
+    <string name="home_begin">Empezar</string>
+    <string name="home_begin_description">Empezar una meditación de %1$d minutos</string>
+    <string name="home_routines_label">O empieza una de tus rutinas</string>
+    <string name="home_routine_button">%1$s · %2$d min</string>
+    <string name="home_continue_title">Seguir escuchando</string>
+    <plurals name="home_continue_minutes_left">
+        <item quantity="one">queda %d minuto</item>
+        <item quantity="many">quedan %d minutos</item>
+        <item quantity="other">quedan %d minutos</item>
+    </plurals>
+    <string name="home_explore_title">Explorar</string>
+    <string name="home_explore_see_all">Ver todo</string>
+    <string name="home_today_title">Hoy</string>
+    <string name="home_today_ring_description">%1$d de %2$d minutos meditados hoy</string>
+    <string name="home_today_minutes">%1$d de %2$d minutos</string>
+    <string name="home_today_not_yet">Unos minutos de calma, cuando te venga bien.</string>
+    <string name="home_today_almost">Una sesión corta completaría tu objetivo de hoy.</string>
+    <string name="home_today_goal_reached">Has cumplido tu objetivo de hoy. Muy bien.</string>
+    <string name="home_week_day_done">%1$s, meditado</string>
+    <string name="home_week_day_open">%1$s</string>
+    <plurals name="home_week_days">
+        <item quantity="one">Esta semana meditaste %d día</item>
+        <item quantity="many">Esta semana meditaste %d días</item>
+        <item quantity="other">Esta semana meditaste %d días</item>
+    </plurals>
+    <string name="home_mood_title">¿Cómo te sientes?</string>
+    <string name="home_mood_subtitle">Toca uno para empezar una entrada en tu diario.</string>
+    <string name="home_new_stage">Has llegado a una nueva etapa de tu viaje</string>
+    <string name="home_new_stage_read">Lee su reflexión</string>
+</resources>

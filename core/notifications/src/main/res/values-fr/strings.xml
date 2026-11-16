@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminder_channel_name">Rappels en douceur</string>
+    <string name="reminder_channel_description">Vos rappels du jour et du soir, le bilan de la semaine et, de temps en temps, un mot bienveillant.</string>
+    <string name="reminder_daily_title">Un moment de calme pour vous</string>
+    <string name="reminder_daily_body">Quelques minutes de calme vous attendent, dès que vous êtes prêt.</string>
+    <string name="reminder_evening_title">L\'heure de se détendre</string>
+    <string name="reminder_evening_body">Laissez la journée se poser avec un morceau apaisant ou une courte méditation avant de dormir.</string>
+    <string name="reminder_weekly_title">Votre semaine</string>
+    <plurals name="reminder_weekly_days">
+        <item quantity="one">Vous avez médité %d jour cette semaine,</item>
+        <item quantity="many">Vous avez médité %d jours cette semaine,</item>
+        <item quantity="other">Vous avez médité %d jours cette semaine,</item>
+    </plurals>
+    <plurals name="reminder_weekly_minutes">
+        <item quantity="one">%d minute au total. Bravo.</item>
+        <item quantity="many">%d minutes au total. Bravo.</item>
+        <item quantity="other">%d minutes au total. Bravo.</item>
+    </plurals>
+    <string name="reminder_return_title">Nous sommes là quand vous êtes prêt</string>
+    <string name="reminder_return_body">Une seule minute de calme est déjà un bon point de départ.</string>
+</resources>

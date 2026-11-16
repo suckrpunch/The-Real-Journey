@@ -14,6 +14,10 @@
     <string name="sound_silence">Silence</string>
     <string name="sound_rain">Rain</string>
     <string name="sound_forest">Forest</string>
+    <string name="sound_beach">Beach</string>
+    <string name="setup_bell_sound">Bell sound</string>
+    <string name="bell_classic">Classic bell</string>
+    <string name="bell_tibetan">Tibetan bell</string>
 
     <!-- Routines -->
     <string name="routine_section_title">Your routines</string>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mood_peaceful">Vredig</string>
+    <string name="mood_happy">Blij</string>
+    <string name="mood_motivated">Gemotiveerd</string>
+    <string name="mood_calm">Kalm</string>
+    <string name="mood_tired">Moe</string>
+    <string name="mood_stressed">Gestrest</string>
+    <string name="mood_anxious">Angstig</string>
+    <string name="mood_sad">Verdrietig</string>
+    <string name="duration_minutes">%1$d minuten</string>
+    <string name="duration_minutes_premium">%1$d minuten, premium</string>
+    <string name="duration_min_short">min</string>
+    <string name="duration_short">%1$d min</string>
+    <string name="duration_tier_free">Gratis</string>
+    <string name="duration_tier_premium">Premium</string>
+    <string name="logo_description">New Journey</string>
+    <string name="header_reminders">Herinneringen</string>
+    <string name="premium_duration_title">%1$d minuten hoort bij Premium</string>
+    <string name="premium_duration_body">Langere sessies zijn er met Premium. Sessies van 5 en 10 minuten zijn altijd gratis.</string>
+    <string name="premium_duration_ok">Oké</string>
+    <string name="premium_track_title">Dit nummer hoort bij Premium</string>
+    <string name="premium_track_body">Premium opent de hele muziekbibliotheek. Elk gratis nummer blijft gratis.</string>
+    <string name="premium_label">Premium</string>
+    <string name="premium_discover">Ontdek Premium</string>
+    <string name="premium_not_now">Niet nu</string>
+    <string name="milestone_first_session">Je eerste meditatie</string>
+    <string name="milestone_days_3">3 dagen oefenen</string>
+    <string name="milestone_first_hour">Je eerste uur stilte</string>
+    <string name="milestone_days_7">7 dagen oefenen</string>
+    <string name="milestone_sessions_10">10 meditaties</string>
+    <string name="milestone_hours_5">5 uur stilte</string>
+    <string name="milestone_sessions_25">25 meditaties</string>
+    <string name="milestone_days_30">30 dagen oefenen</string>
+    <string name="milestone_hours_10">10 uur stilte</string>
+    <string name="milestone_sessions_50">50 meditaties</string>
+    <string name="milestone_hours_25">25 uur stilte</string>
+    <string name="milestone_days_100">100 dagen oefenen</string>
+    <string name="milestone_sessions_100">100 meditaties</string>
+    <string name="milestone_hours_50">50 uur stilte</string>
+    <string name="milestone_days_365">365 dagen oefenen</string>
+</resources>

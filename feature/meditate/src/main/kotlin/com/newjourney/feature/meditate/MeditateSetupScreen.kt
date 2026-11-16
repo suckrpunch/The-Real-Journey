@@ -47,6 +47,7 @@ import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.SwitchRow
 import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.model.BackgroundSound
+import com.newjourney.core.model.BellSound
 
 @Composable
 internal fun MeditateSetupRoute(
@@ -62,6 +63,7 @@ internal fun MeditateSetupRoute(
         onStartBellChange = viewModel::setStartBell,
         onEndBellChange = viewModel::setEndBell,
         onSoundSelected = viewModel::setSound,
+        onBellSelected = viewModel::setBell,
         onBegin = { onStartSession(state.selectedMinutes) },
         onReturnToSession = onReturnToSession,
         onStartRoutine = onStartRoutine,
@@ -77,6 +79,7 @@ internal fun MeditateSetupScreen(
     onStartBellChange: (Boolean) -> Unit,
     onEndBellChange: (Boolean) -> Unit,
     onSoundSelected: (BackgroundSound) -> Unit,
+    onBellSelected: (BellSound) -> Unit = {},
     onBegin: () -> Unit,
     onReturnToSession: () -> Unit,
     onStartRoutine: (Long) -> Unit = {},
@@ -147,6 +150,7 @@ internal fun MeditateSetupScreen(
                 CardHeading(NavIcons.Bell, stringResource(R.string.setup_bells))
                 SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange, compact = true)
                 SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange, compact = true)
+                BellChoice(state.settings.bell, onBellSelected, Modifier.padding(top = 8.dp))
             }
         }
 
@@ -250,4 +254,5 @@ internal fun soundLabel(sound: BackgroundSound): Int = when (sound) {
     BackgroundSound.SILENCE -> R.string.sound_silence
     BackgroundSound.RAIN -> R.string.sound_rain
     BackgroundSound.FOREST -> R.string.sound_forest
+    BackgroundSound.BEACH -> R.string.sound_beach
 }

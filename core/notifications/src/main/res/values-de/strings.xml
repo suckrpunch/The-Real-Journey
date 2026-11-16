@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reminder_channel_name">Sanfte Erinnerungen</string>
+    <string name="reminder_channel_description">Deine täglichen und abendlichen Erinnerungen, der Wochenrückblick und ab und zu ein freundlicher Gruß.</string>
+    <string name="reminder_daily_title">Ein ruhiger Moment für dich</string>
+    <string name="reminder_daily_body">Ein paar Minuten Stille warten auf dich, wann immer du so weit bist.</string>
+    <string name="reminder_evening_title">Zeit zum Abschalten</string>
+    <string name="reminder_evening_body">Lass den Tag mit einem ruhigen Titel oder einer kurzen Meditation vor dem Schlafen ausklingen.</string>
+    <string name="reminder_weekly_title">Deine Woche</string>
+    <plurals name="reminder_weekly_days">
+        <item quantity="one">Du hast diese Woche an %d Tag meditiert,</item>
+        <item quantity="other">Du hast diese Woche an %d Tagen meditiert,</item>
+    </plurals>
+    <plurals name="reminder_weekly_minutes">
+        <item quantity="one">%d Minute insgesamt. Gut gemacht.</item>
+        <item quantity="other">%d Minuten insgesamt. Gut gemacht.</item>
+    </plurals>
+    <string name="reminder_return_title">Wir sind da, wenn du bereit bist</string>
+    <string name="reminder_return_body">Schon eine stille Minute ist ein guter Ort, um neu zu beginnen.</string>
+</resources>

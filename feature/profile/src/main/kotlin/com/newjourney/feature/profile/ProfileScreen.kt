@@ -169,6 +169,7 @@ internal fun ProfileRouteContent(
         GoalCard(state.goalMinutes, viewModel::setGoal)
         RemindersSummary(state.reminders, onOpenReminders)
         AppearanceCard(state.theme, viewModel::setThemeMode, viewModel::shiftSchedule)
+        LanguageCard()
         PremiumCard(state.isPremium, onOpenPremium)
         AboutYouCard(profile, onEditAboutYou)
     }

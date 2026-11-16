@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explore_title">Ontdekken</string>
+    <string name="explore_subtitle">Vind jouw moment van rust</string>
+    <string name="explore_search_hint">Zoek muziek, meditaties…</string>
+    <string name="explore_search_none">Niets gevonden voor “%1$s”. Probeer een ander woord.</string>
+    <string name="explore_search_clear">Zoekopdracht wissen</string>
+    <string name="explore_favorites">Jouw favorieten</string>
+    <string name="explore_recent">Onlangs beluisterd</string>
+    <string name="category_coming_soon">Muziek volgt binnenkort</string>
+    <string name="back">Terug</string>
+    <string name="track_minutes_spoken">%1$d minuten</string>
+    <string name="track_favorite_save">Toevoegen aan favorieten</string>
+    <string name="track_favorite_saved">In je favorieten</string>
+    <string name="track_play">Afspelen</string>
+    <string name="track_pause">Pauzeren</string>
+    <string name="track_next">Volgend nummer</string>
+    <string name="track_previous">Vorig nummer, of terug naar het begin</string>
+    <string name="track_progress_spoken">%1$s van %2$s</string>
+    <string name="track_meditate_title">Mediteer met dit nummer</string>
+    <string name="track_meditate_body">De muziek speelt naadloos door zo lang als jij kiest, vervaagt dan en de bel klinkt.</string>
+    <string name="track_meditate_begin">Mediteer %1$d minuten</string>
+    <string name="track_offline_title">Dit nummer kan nu niet spelen</string>
+    <string name="track_offline_body">De eerste keer komt het van internet. Controleer je verbinding en tik dan op Afspelen om het opnieuw te proberen. Daarna speelt het ook offline.</string>
+</resources>

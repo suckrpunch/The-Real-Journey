@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mood_peaceful">Paisible</string>
+    <string name="mood_happy">Heureux</string>
+    <string name="mood_motivated">Motivé</string>
+    <string name="mood_calm">Calme</string>
+    <string name="mood_tired">Fatigué</string>
+    <string name="mood_stressed">Stressé</string>
+    <string name="mood_anxious">Anxieux</string>
+    <string name="mood_sad">Triste</string>
+    <string name="duration_minutes">%1$d minutes</string>
+    <string name="duration_minutes_premium">%1$d minutes, Premium</string>
+    <string name="duration_min_short">min</string>
+    <string name="duration_short">%1$d min</string>
+    <string name="duration_tier_free">Gratuit</string>
+    <string name="duration_tier_premium">Premium</string>
+    <string name="logo_description">New Journey</string>
+    <string name="header_reminders">Rappels</string>
+    <string name="premium_duration_title">%1$d minutes font partie de Premium</string>
+    <string name="premium_duration_body">Les séances plus longues s\'ouvrent avec Premium. Les séances de 5 et 10 minutes restent toujours gratuites.</string>
+    <string name="premium_duration_ok">D\'accord</string>
+    <string name="premium_track_title">Ce morceau fait partie de Premium</string>
+    <string name="premium_track_body">Premium ouvre toute la bibliothèque musicale. Chaque morceau gratuit le reste.</string>
+    <string name="premium_label">Premium</string>
+    <string name="premium_discover">Découvrir Premium</string>
+    <string name="premium_not_now">Pas maintenant</string>
+    <string name="milestone_first_session">Votre première méditation</string>
+    <string name="milestone_days_3">3 jours de pratique</string>
+    <string name="milestone_first_hour">Votre première heure de calme</string>
+    <string name="milestone_days_7">7 jours de pratique</string>
+    <string name="milestone_sessions_10">10 méditations</string>
+    <string name="milestone_hours_5">5 heures de calme</string>
+    <string name="milestone_sessions_25">25 méditations</string>
+    <string name="milestone_days_30">30 jours de pratique</string>
+    <string name="milestone_hours_10">10 heures de calme</string>
+    <string name="milestone_sessions_50">50 méditations</string>
+    <string name="milestone_hours_25">25 heures de calme</string>
+    <string name="milestone_days_100">100 jours de pratique</string>
+    <string name="milestone_sessions_100">100 méditations</string>
+    <string name="milestone_hours_50">50 heures de calme</string>
+    <string name="milestone_days_365">365 jours de pratique</string>
+</resources>

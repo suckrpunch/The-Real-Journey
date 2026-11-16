@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Dagboek</string>
+    <string name="journal_private_note">Alleen voor jou. Versleuteld en alleen op deze telefoon bewaard.</string>
+    <string name="journal_write">Schrijf in je dagboek</string>
+    <string name="journal_empty">Je dagboek is nog leeg. Schrijf een paar woorden wanneer je wilt; er is geen goed of fout.</string>
+    <string name="journal_failed">Je dagboek kon niet worden geopend. Sluit de app en probeer het opnieuw.</string>
+    <string name="journal_view_list">Lijst</string>
+    <string name="journal_view_calendar">Kalender</string>
+    <string name="journal_search">Zoek in je dagboek…</string>
+    <string name="journal_search_clear">Zoekopdracht wissen</string>
+    <string name="journal_search_none">Niets gevonden voor “%1$s”.</string>
+    <string name="journal_today">Vandaag</string>
+    <string name="journal_yesterday">Gisteren</string>
+    <string name="journal_day_empty">Geen berichten op deze dag.</string>
+    <string name="journal_month_previous">Vorige maand</string>
+    <string name="journal_month_next">Volgende maand</string>
+    <string name="journal_after_session_short">na %1$d min meditatie</string>
+    <plurals name="journal_entry_count">
+        <item quantity="one">%d bericht</item>
+        <item quantity="other">%d berichten</item>
+    </plurals>
+    <string name="journal_back">Terug</string>
+    <string name="journal_new_entry">Nieuw bericht</string>
+    <string name="journal_after_session">Na je meditatie van %1$d minuten</string>
+    <string name="journal_mood_now">Hoe voel je je?</string>
+    <string name="journal_mood_before">Hoe voelde je je voor het mediteren?</string>
+    <string name="journal_mood_after">En hoe voel je je nu?</string>
+    <string name="journal_add_before">Voeg toe hoe je je voor het mediteren voelde</string>
+    <string name="journal_thoughts">Je gedachten</string>
+    <string name="journal_thoughts_hint">Wat er ook in je opkomt…</string>
+    <string name="journal_save">Opslaan</string>
+    <string name="journal_discard">Niet opslaan</string>
+    <string name="journal_unsaved_title">Je bericht opslaan?</string>
+    <string name="journal_unsaved_body">Je hebt iets geschreven dat nog niet is opgeslagen.</string>
+    <string name="journal_delete">Bericht verwijderen</string>
+    <string name="journal_delete_title">Dit bericht verwijderen?</string>
+    <string name="journal_delete_body">Het wordt voorgoed uit je dagboek verwijderd.</string>
+    <string name="journal_delete_yes">Verwijderen</string>
+    <string name="journal_delete_no">Bewaren</string>
+</resources>

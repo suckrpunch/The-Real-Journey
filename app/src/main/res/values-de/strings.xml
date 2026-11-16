@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">New Journey</string>
+    <string name="tab_home">Start</string>
+    <string name="tab_explore">Entdecken</string>
+    <string name="tab_meditate">Meditieren</string>
+    <string name="tab_journal">Tagebuch</string>
+    <string name="tab_profile">Profil</string>
+    <string name="mini_player_open">Läuft gerade: %1$s. Player öffnen</string>
+    <string name="mini_player_play">Abspielen</string>
+    <string name="mini_player_pause">Pausieren</string>
+    <string name="mini_player_minutes">%1$d min</string>
+</resources>

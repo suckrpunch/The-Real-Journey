@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Tagebuch</string>
+    <string name="journal_private_note">Nur für dich. Verschlüsselt und nur auf diesem Handy gespeichert.</string>
+    <string name="journal_write">In dein Tagebuch schreiben</string>
+    <string name="journal_empty">Dein Tagebuch ist noch leer. Schreib ein paar Worte, wann immer du möchtest; es gibt kein Richtig oder Falsch.</string>
+    <string name="journal_failed">Dein Tagebuch konnte nicht geöffnet werden. Bitte schließe die App und versuche es erneut.</string>
+    <string name="journal_view_list">Liste</string>
+    <string name="journal_view_calendar">Kalender</string>
+    <string name="journal_search">Tagebuch durchsuchen…</string>
+    <string name="journal_search_clear">Suche löschen</string>
+    <string name="journal_search_none">Nichts gefunden für „%1$s“.</string>
+    <string name="journal_today">Heute</string>
+    <string name="journal_yesterday">Gestern</string>
+    <string name="journal_day_empty">Keine Einträge an diesem Tag.</string>
+    <string name="journal_month_previous">Vorheriger Monat</string>
+    <string name="journal_month_next">Nächster Monat</string>
+    <string name="journal_after_session_short">nach %1$d Min. Meditation</string>
+    <plurals name="journal_entry_count">
+        <item quantity="one">%d Eintrag</item>
+        <item quantity="other">%d Einträge</item>
+    </plurals>
+    <string name="journal_back">Zurück</string>
+    <string name="journal_new_entry">Neuer Eintrag</string>
+    <string name="journal_after_session">Nach deiner %1$d-minütigen Meditation</string>
+    <string name="journal_mood_now">Wie fühlst du dich?</string>
+    <string name="journal_mood_before">Wie hast du dich vor dem Meditieren gefühlt?</string>
+    <string name="journal_mood_after">Und wie fühlst du dich jetzt?</string>
+    <string name="journal_add_before">Hinzufügen, wie du dich vor dem Meditieren gefühlt hast</string>
+    <string name="journal_thoughts">Deine Gedanken</string>
+    <string name="journal_thoughts_hint">Was dir gerade durch den Kopf geht…</string>
+    <string name="journal_save">Speichern</string>
+    <string name="journal_discard">Nicht speichern</string>
+    <string name="journal_unsaved_title">Eintrag speichern?</string>
+    <string name="journal_unsaved_body">Du hast etwas geschrieben, das noch nicht gespeichert ist.</string>
+    <string name="journal_delete">Eintrag löschen</string>
+    <string name="journal_delete_title">Diesen Eintrag löschen?</string>
+    <string name="journal_delete_body">Er wird endgültig aus deinem Tagebuch entfernt.</string>
+    <string name="journal_delete_yes">Löschen</string>
+    <string name="journal_delete_no">Behalten</string>
+</resources>

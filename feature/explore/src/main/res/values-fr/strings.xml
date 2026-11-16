@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explore_title">Explorer</string>
+    <string name="explore_subtitle">Trouvez votre moment de calme</string>
+    <string name="explore_search_hint">Chercher musique, méditations…</string>
+    <string name="explore_search_none">Aucun résultat pour « %1$s ». Essayez un autre mot.</string>
+    <string name="explore_search_clear">Effacer la recherche</string>
+    <string name="explore_favorites">Vos favoris</string>
+    <string name="explore_recent">Écoutés récemment</string>
+    <string name="category_coming_soon">Musique bientôt disponible</string>
+    <string name="back">Retour</string>
+    <string name="track_minutes_spoken">%1$d minutes</string>
+    <string name="track_favorite_save">Ajouter aux favoris</string>
+    <string name="track_favorite_saved">Dans vos favoris</string>
+    <string name="track_play">Lecture</string>
+    <string name="track_pause">Pause</string>
+    <string name="track_next">Morceau suivant</string>
+    <string name="track_previous">Morceau précédent, ou retour au début</string>
+    <string name="track_progress_spoken">%1$s sur %2$s</string>
+    <string name="track_meditate_title">Méditer avec ce morceau</string>
+    <string name="track_meditate_body">La musique continue sans interruption aussi longtemps que vous le souhaitez, puis s\'estompe et la cloche sonne.</string>
+    <string name="track_meditate_begin">Méditer %1$d minutes</string>
+    <string name="track_offline_title">Ce morceau ne peut pas être lu pour l\'instant</string>
+    <string name="track_offline_body">La première fois, il est chargé depuis Internet. Vérifiez votre connexion, puis touchez Lecture pour réessayer. Une fois écouté, il fonctionne aussi hors ligne.</string>
+</resources>

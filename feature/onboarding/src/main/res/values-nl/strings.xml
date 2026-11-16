@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_back">Terug</string>
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="onboarding_cancel">Annuleren</string>
+    <string name="onboarding_step">Stap %1$d van %2$d</string>
+    <string name="onboarding_continue">Verder</string>
+    <string name="onboarding_skip_question">Deze vraag overslaan</string>
+    <string name="onboarding_private">Alles wat je ons vertelt blijft op je telefoon. Je kunt het altijd wijzigen in Profiel.</string>
+    <string name="onboarding_welcome_title">Welkom bij New Journey</string>
+    <string name="onboarding_welcome_body">Een rustige plek om te zitten, te ademen en te luisteren. Drie korte vragen helpen ons te bepalen waar je kunt beginnen. Elke vraag is optioneel.</string>
+    <string name="onboarding_welcome_begin">Laten we beginnen</string>
+    <string name="onboarding_name_title">Hoe mogen we je noemen?</string>
+    <string name="onboarding_name_body">We gebruiken het om je te begroeten. Een voornaam of bijnaam is perfect.</string>
+    <string name="onboarding_name_label">Je naam</string>
+    <string name="onboarding_age_title">Hoe oud ben je?</string>
+    <string name="onboarding_age_body">Zo kunnen we een rustige duur voorstellen voor je eerste sessie.</string>
+    <string name="onboarding_age_18_29">18 tot 29</string>
+    <string name="onboarding_age_30_44">30 tot 44</string>
+    <string name="onboarding_age_45_59">45 tot 59</string>
+    <string name="onboarding_age_60_74">60 tot 74</string>
+    <string name="onboarding_age_75_plus">75 of ouder</string>
+    <string name="onboarding_age_none">Zeg ik liever niet</string>
+    <string name="onboarding_goals_title">Wat brengt je hier?</string>
+    <string name="onboarding_goals_body">Kies er zoveel als je wilt.</string>
+    <string name="onboarding_goal_sleep">Beter slapen</string>
+    <string name="onboarding_goal_stress">Minder stress</string>
+    <string name="onboarding_goal_peace">Innerlijke rust</string>
+    <string name="onboarding_goal_focus">Betere focus</string>
+    <string name="onboarding_goal_deeper">Diepere meditatie</string>
+    <string name="onboarding_goal_energy">Balans en energie</string>
+    <string name="onboarding_show_picks">Toon mijn suggesties</string>
+    <string name="onboarding_picks_title">Voor jou gekozen</string>
+    <string name="onboarding_picks_title_named">Voor jou gekozen, %1$s</string>
+    <string name="onboarding_picks_body">Een paar stukken om mee te beginnen. Tik er een aan om te luisteren. Je vindt ze terug op Home.</string>
+    <string name="onboarding_pick_minutes">%1$d min</string>
+    <string name="onboarding_pick_premium">Inbegrepen bij Premium</string>
+    <string name="onboarding_pick_listen">Luisteren</string>
+    <string name="onboarding_first_title">Of probeer een eerste meditatie</string>
+    <string name="onboarding_first_body">Gewoon %1$d rustige minuten met een zachte bel aan het begin en het einde. Je kunt je telefoon vergrendelen.</string>
+    <string name="onboarding_first_begin">Begin %1$d minuten</string>
+    <string name="onboarding_to_home">Naar Home</string>
+    <string name="onboarding_done">Klaar</string>
+</resources>

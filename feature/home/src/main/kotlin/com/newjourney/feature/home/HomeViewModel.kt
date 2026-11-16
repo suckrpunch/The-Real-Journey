@@ -21,7 +21,7 @@ import com.newjourney.core.model.Recommendations
 import com.newjourney.core.model.Goal
 import com.newjourney.core.model.Routine
 import com.newjourney.core.model.Quote
-import com.newjourney.core.model.SampleQuotes
+import com.newjourney.core.model.sampleQuotes
 import com.newjourney.core.model.TimerLimits
 import com.newjourney.core.model.Track
 import com.newjourney.core.model.TrackTier
@@ -39,6 +39,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.util.Locale
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -111,7 +112,7 @@ class HomeViewModel @Inject constructor(
         library.recent(limit = 1),
     ) { minutes, saved, (sessionList, goal), catalog, recent ->
         val today = LocalDate.now()
-        val quote = DailyQuote.pick(SampleQuotes, today)
+        val quote = DailyQuote.pick(sampleQuotes(Locale.getDefault().language), today)
         HomeUiState(
             partOfDay = PartOfDay.fromHour(LocalTime.now().hour),
             date = today,
@@ -201,7 +202,7 @@ class HomeViewModel @Inject constructor(
         return HomeUiState(
             partOfDay = PartOfDay.fromHour(LocalTime.now().hour),
             date = today,
-            quote = DailyQuote.pick(SampleQuotes, today),
+            quote = DailyQuote.pick(sampleQuotes(Locale.getDefault().language), today),
             quoteSaved = false,
             durations = TimerLimits.quickStartMinutes,
             selectedMinutes = TimerLimits.DEFAULT_MINUTES,
