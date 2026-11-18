@@ -1,5 +1,9 @@
 package com.newjourney.feature.home
 
+import com.newjourney.core.model.TrackTier
+import com.newjourney.core.designsystem.component.PremiumTrackSheet
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -131,6 +135,8 @@ internal fun HomeScreen(
     onOpenPick: (String) -> Unit = {},
 ) {
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
+    var premiumTrackSheet by rememberSaveable { mutableStateOf(false) }
+    val trackLocked = { tier: TrackTier -> tier == TrackTier.PREMIUM && !state.entitlement.isPremium }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -179,10 +185,20 @@ internal fun HomeScreen(
             )
         }
         state.continueListening?.let { listening ->
-            item { ContinueListeningCard(listening, onContinue = onContinueListening) }
+            item {
+                ContinueListeningCard(
+                    listening,
+                    onContinue = { if (trackLocked(listening.track.tier)) premiumTrackSheet = true else onContinueListening() },
+                )
+            }
         }
         if (state.picks.isNotEmpty()) {
-            item { PicksSection(picks = state.picks, onOpen = onOpenPick) }
+            item {
+                PicksSection(
+                    picks = state.picks,
+                    onOpen = { id -> if (state.picks.firstOrNull { it.trackId == id }?.locked == true) premiumTrackSheet = true else onOpenPick(id) },
+                )
+            }
         }
         if (state.categories.isNotEmpty()) {
             item {
@@ -197,6 +213,7 @@ internal fun HomeScreen(
         item { MoodCheckIn(onMoodSelected = onMoodSelected) }
     }
 
+    if (premiumTrackSheet) PremiumTrackSheet(onDismiss = { premiumTrackSheet = false })
     premiumSheetMinutes?.let { minutes ->
         PremiumDurationSheet(minutes = minutes, onDismiss = { premiumSheetMinutes = null })
     }
@@ -321,8 +338,8 @@ private fun QuoteCard(text: String, author: String?, saved: Boolean, onToggleSav
     }
 }
 
-/** The four lengths on Home, as in the approved design. */
-private val HomeDurations = listOf(5, 10, 15, 30)
+/** The lengths on Home: four across the screen, and 60 minutes one scroll to the right. */
+private val HomeDurations = listOf(5, 10, 15, 30, 60)
 
 @Composable
 private fun QuickStart(
@@ -333,17 +350,29 @@ private fun QuickStart(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         SectionTitle(stringResource(R.string.home_start_title), Modifier.padding(start = 4.dp))
-        // Four lengths across the width, as in the approved design; every length is on the Meditate tab.
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-            HomeDurations.forEach { minutes ->
-                DurationChip(
-                    minutes = minutes,
-                    selected = minutes == state.selectedMinutes,
-                    premium = TimerLimits.isPremiumDuration(minutes),
-                    onClick = { onChipTapped(minutes) },
-                    showTier = true,
-                    modifier = Modifier.weight(1f),
-                )
+        // Four lengths across the width, as in the approved design. The fifth (60 minutes) peeks in at
+        // the right edge, so it is clear the row scrolls. Premium members see no Free/Premium labels.
+        val premiumMember = state.entitlement.isPremium
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            val gap = 8.dp
+            val chipWidth = (maxWidth - gap * 4) / 4.3f
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(gap),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+            ) {
+                HomeDurations.forEach { minutes ->
+                    DurationChip(
+                        minutes = minutes,
+                        selected = minutes == state.selectedMinutes,
+                        premium = TimerLimits.isPremiumDuration(minutes) && !premiumMember,
+                        onClick = { onChipTapped(minutes) },
+                        showTier = true,
+                        tierLabel = !premiumMember,
+                        modifier = Modifier.width(chipWidth),
+                    )
+                }
             }
         }
         val beginDescription = stringResource(R.string.home_begin_description, state.selectedMinutes)

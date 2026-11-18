@@ -27,7 +27,6 @@ import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.TrackArtwork
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.Track
-import com.newjourney.core.model.TrackTier
 
 /** "3:42" or "1:02:05". */
 internal fun formatDuration(ms: Long): String {
@@ -77,7 +76,7 @@ internal fun TrackRow(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                if (locked || track.tier == TrackTier.PREMIUM) {
+                if (locked) {
                     Text(
                         stringResource(com.newjourney.core.designsystem.R.string.premium_label),
                         style = MaterialTheme.typography.labelMedium,

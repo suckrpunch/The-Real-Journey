@@ -1,5 +1,9 @@
 package com.newjourney.feature.explore
 
+import com.newjourney.core.designsystem.component.PremiumTrackSheet
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -149,6 +153,11 @@ internal fun ExploreScreen(
     onOpenTrack: (String) -> Unit,
     onQueryChange: (String) -> Unit = {},
 ) {
+    // Songs that are locked for you explain Premium instead of opening.
+    var showPremium by rememberSaveable { mutableStateOf(false) }
+    val openTrack: (TrackItem) -> Unit = { item -> if (item.locked) showPremium = true else onOpenTrack(item.track.id) }
+    if (showPremium) PremiumTrackSheet(onDismiss = { showPremium = false })
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding, top = 12.dp, bottom = 32.dp),
@@ -178,7 +187,7 @@ internal fun ExploreScreen(
                 }
             }
             items(state.results, key = { "result-" + it.track.id }) { item ->
-                TrackRow(item.track, item.colorHex, locked = item.locked, onClick = { onOpenTrack(item.track.id) })
+                TrackRow(item.track, item.colorHex, locked = item.locked, onClick = { openTrack(item) })
             }
             return@LazyColumn
         }
@@ -190,14 +199,14 @@ internal fun ExploreScreen(
         if (state.favorites.isNotEmpty()) {
             item { SubTitle(stringResource(R.string.explore_favorites)) }
             items(state.favorites, key = { "fav-" + it.track.id }) { item ->
-                TrackRow(item.track, item.colorHex, locked = item.locked, onClick = { onOpenTrack(item.track.id) })
+                TrackRow(item.track, item.colorHex, locked = item.locked, onClick = { openTrack(item) })
             }
         }
 
         if (state.recent.isNotEmpty()) {
             item { SubTitle(stringResource(R.string.explore_recent)) }
             items(state.recent, key = { "recent-" + it.track.id }) { item ->
-                TrackRow(item.track, item.colorHex, locked = item.locked, onClick = { onOpenTrack(item.track.id) })
+                TrackRow(item.track, item.colorHex, locked = item.locked, onClick = { openTrack(item) })
             }
         }
     }

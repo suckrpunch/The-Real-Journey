@@ -35,6 +35,9 @@ internal data class TrackUiState(
     val isCurrent: Boolean get() = nowPlaying != null
     val isPlaying: Boolean get() = nowPlaying?.isPlaying == true
     fun isLocked(minutes: Int): Boolean = !entitlement.isPremium && TimerLimits.isPremiumDuration(minutes)
+
+    /** A Premium song for someone without Premium: it explains Premium instead of playing. */
+    val trackLocked: Boolean get() = track?.tier == TrackTier.PREMIUM && !entitlement.isPremium
 }
 
 @HiltViewModel
@@ -83,6 +86,7 @@ internal class TrackViewModel @Inject constructor(
             player.togglePlayPause()
             return
         }
+        if (state.trackLocked) return
         viewModelScope.launch {
             val catalog = catalogRepository.get()
             val track = catalog.track(trackId) ?: return@launch

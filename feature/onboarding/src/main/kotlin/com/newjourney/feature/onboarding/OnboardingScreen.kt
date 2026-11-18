@@ -1,5 +1,9 @@
 package com.newjourney.feature.onboarding
 
+import com.newjourney.core.designsystem.component.PremiumTrackSheet
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -256,11 +260,13 @@ private fun PicksStep(
         if (name != null) stringResource(R.string.onboarding_picks_title_named, name) else stringResource(R.string.onboarding_picks_title),
         stringResource(R.string.onboarding_picks_body),
     )
+    var showPremium by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         state.picks.forEach { pick ->
-            PickCard(pick = pick, onClick = { onOpenTrack(pick.track.id) })
+            PickCard(pick = pick, onClick = { if (pick.premium) showPremium = true else onOpenTrack(pick.track.id) })
         }
     }
+    if (showPremium) PremiumTrackSheet(onDismiss = { showPremium = false })
     if (state.editing) {
         PrimaryButton(text = stringResource(R.string.onboarding_done), onClick = onDone)
     } else {

@@ -199,7 +199,8 @@ fun ScreenTitle(title: String, modifier: Modifier = Modifier, subtitle: String? 
 }
 
 /**
- * A duration button. With [showTier] it reads "5 min / Free" or "15 min / Premium" (Home);
+ * A duration button. With [showTier] it reads "5 min / Free" or "15 min / Premium" (Home), or just
+ * "5 min" when [tierLabel] is off (for Premium members, to whom every length is open);
  * otherwise "5 / min" with a small lock on Premium lengths (Meditate). Selection is shown by
  * an outline as well as colour. Premium lengths stay tappable so the app can explain calmly.
  */
@@ -211,6 +212,7 @@ fun DurationChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     showTier: Boolean = false,
+    tierLabel: Boolean = true,
 ) {
     // Home (with tiers) and the night theme mark the choice with an outline on the page colour;
     // by day Meditate also tints it pale sage. Unselected Meditate chips by day are outlined.
@@ -229,7 +231,7 @@ fun DurationChip(
     Surface(
         onClick = onClick,
         modifier = modifier
-            .heightIn(min = if (showTier) 76.dp else 64.dp)
+            .heightIn(min = if (showTier && tierLabel) 76.dp else 64.dp)
             .widthIn(min = 56.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = label
@@ -266,14 +268,16 @@ fun DurationChip(
                         maxLines = 1,
                         softWrap = false,
                     )
-                    Text(
-                        tier,
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium, fontSize = fit(tier, 13f, 9f)),
-                        color = secondary,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        softWrap = false,
-                    )
+                    if (tierLabel) {
+                        Text(
+                            tier,
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium, fontSize = fit(tier, 13f, 9f)),
+                            color = secondary,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            softWrap = false,
+                        )
+                    }
                 } else {
                     Text(
                         "$minutes",

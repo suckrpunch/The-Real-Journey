@@ -49,6 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.DurationChip
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.PremiumDurationSheet
+import com.newjourney.core.designsystem.component.PremiumTrackSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
@@ -63,6 +64,7 @@ internal fun TrackRouteContent(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val track = state.track
     var premiumMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
+    var premiumTrack by rememberSaveable { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -110,7 +112,7 @@ internal fun TrackRouteContent(
             state = state,
             durationMs = state.nowPlaying?.durationMs?.takeIf { it > 0 } ?: track.durationMs,
             positionMs = { viewModel.positionMs() },
-            onPlayPause = viewModel::playOrToggle,
+            onPlayPause = { if (state.trackLocked && !state.isCurrent) premiumTrack = true else viewModel.playOrToggle() },
             onSeek = viewModel::seekTo,
             onNext = viewModel::next,
             onPrevious = viewModel::previous,
@@ -150,14 +152,19 @@ internal fun TrackRouteContent(
             PrimaryButton(
                 text = stringResource(R.string.track_meditate_begin, state.selectedMinutes),
                 onClick = {
-                    viewModel.prepareForSession()
-                    onMeditateWithTrack(track.id, state.selectedMinutes)
+                    if (state.trackLocked) {
+                        premiumTrack = true
+                    } else {
+                        viewModel.prepareForSession()
+                        onMeditateWithTrack(track.id, state.selectedMinutes)
+                    }
                 },
             )
         }
     }
 
     premiumMinutes?.let { PremiumDurationSheet(minutes = it, onDismiss = { premiumMinutes = null }) }
+    if (premiumTrack) PremiumTrackSheet(onDismiss = { premiumTrack = false })
 }
 
 @Composable
