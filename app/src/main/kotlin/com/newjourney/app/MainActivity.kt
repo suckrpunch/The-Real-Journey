@@ -27,8 +27,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.newjourney.app.navigation.NewJourneyApp
+import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.datastore.AppLanguage
 import com.newjourney.core.datastore.UserSettingsRepository
@@ -38,6 +40,7 @@ import com.newjourney.core.model.ThemePreference
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -69,6 +72,16 @@ class MainActivity : ComponentActivity() {
     }
 
     @Inject lateinit var catalog: CatalogRepository
+    @Inject lateinit var entitlements: EntitlementRepository
+
+    /**
+     * Each time the app comes back to the front, ask Google Play again whether Premium is active, so
+     * a subscription bought, renewed, paused or cancelled elsewhere shows up straight away.
+     */
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch { entitlements.refresh() }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
