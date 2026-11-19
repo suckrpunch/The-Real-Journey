@@ -89,7 +89,8 @@ fun PrimaryButton(
             leading()
             Spacer(Modifier.size(12.dp))
         }
-        Text(text, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
+        // Never breaks inside a word: shrinks a little first, then wraps between words.
+        FitText(text, MaterialTheme.typography.labelLarge, Modifier.weight(1f, fill = false))
     }
 }
 
@@ -113,7 +114,7 @@ fun SecondaryButton(
             leading()
             Spacer(Modifier.size(10.dp))
         }
-        Text(text, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
+        FitText(text, MaterialTheme.typography.labelLarge, Modifier.weight(1f, fill = false))
     }
 }
 

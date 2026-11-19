@@ -1,5 +1,6 @@
 package com.newjourney.feature.journal
 
+import com.newjourney.core.designsystem.component.FitText
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -199,7 +200,13 @@ private fun ViewOption(
         ) {
             val tint = if (selected) colors.onSecondaryContainer else colors.onBackground
             Icon(icon, contentDescription = null, tint = tint)
-            Text(label, style = MaterialTheme.typography.labelLarge, color = tint, modifier = Modifier.padding(start = 10.dp))
+            FitText(
+                label,
+                MaterialTheme.typography.labelLarge,
+                Modifier.weight(1f, fill = false).padding(start = 10.dp),
+                color = tint,
+                wrapLines = 1,
+            )
         }
     }
 }

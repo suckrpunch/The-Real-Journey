@@ -1,5 +1,7 @@
 package com.newjourney.app.navigation
 
+import androidx.compose.ui.unit.sp
+import com.newjourney.core.designsystem.component.FitText
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -12,7 +14,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -134,11 +135,13 @@ fun NewJourneyApp(
                                     )
                                 },
                                 label = {
-                                    Text(
+                                    // The selected tab reads bolder; no pill, as in the approved design. Longer
+                                    // words (Ontdekken, Meditieren) shrink a touch instead of being cut off.
+                                    FitText(
                                         stringResource(destination.label),
-                                        // The selected tab reads bolder; no pill, as in the approved design.
                                         style = if (selected) NavigationLabelStyle.copy(fontWeight = FontWeight.ExtraBold) else NavigationLabelStyle,
-                                        maxLines = 1,
+                                        minFontSize = 10.sp,
+                                        wrapLines = 1,
                                     )
                                 },
                                 alwaysShowLabel = true,
