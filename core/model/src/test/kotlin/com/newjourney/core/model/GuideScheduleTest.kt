@@ -7,8 +7,8 @@ import org.junit.Test
 
 class GuideScheduleTest {
 
-    private val intro = 83_340L
-    private val outro = 48_480L
+    private val intro = 111_060L
+    private val outro = 55_180L
 
     @Test
     fun closingWordsEndJustBeforeTheEnd() {

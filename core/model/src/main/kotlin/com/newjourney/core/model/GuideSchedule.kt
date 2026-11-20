@@ -13,8 +13,8 @@ data class GuideSchedule(val introStartMs: Long, val outroStartMs: Long) {
         const val AFTER_BELL_MS = 4_500L
         const val WITHOUT_BELL_MS = 1_500L
 
-        /** A short breath between the last words and the end bell. */
-        const val END_GAP_MS = 2_500L
+        /** A quiet moment after the last words ("Namaste") before the end bell rings. */
+        const val END_GAP_MS = 8_000L
 
         /** The least quiet time between the two parts; shorter sessions are not guided. */
         const val MIN_QUIET_MS = 30_000L
