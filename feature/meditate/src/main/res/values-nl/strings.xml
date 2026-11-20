@@ -5,6 +5,9 @@
     <string name="setup_in_progress_title">Je sessie loopt nog</string>
     <string name="setup_return_to_session">Terug naar je sessie</string>
     <string name="setup_length">Duur</string>
+    <string name="setup_settings_title">Meditatie-instellingen</string>
+    <string name="setup_settings_open">Open</string>
+    <string name="setup_settings_closed">Dicht, tik om te wijzigen</string>
     <string name="setup_bells">Bellen</string>
     <string name="setup_start_bell">Bel aan het begin</string>
     <string name="setup_end_bell">Bel aan het einde</string>

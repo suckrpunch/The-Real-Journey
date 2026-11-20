@@ -6,6 +6,9 @@
     <string name="setup_in_progress_title">Your session is still going</string>
     <string name="setup_return_to_session">Return to your session</string>
     <string name="setup_length">Length</string>
+    <string name="setup_settings_title">Meditation settings</string>
+    <string name="setup_settings_open">Open</string>
+    <string name="setup_settings_closed">Closed, tap to change</string>
     <string name="setup_bells">Bells</string>
     <string name="setup_start_bell">Bell at the start</string>
     <string name="setup_end_bell">Bell at the end</string>

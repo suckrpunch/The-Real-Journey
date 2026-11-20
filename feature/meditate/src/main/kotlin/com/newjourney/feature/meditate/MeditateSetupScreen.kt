@@ -1,5 +1,20 @@
 package com.newjourney.feature.meditate
 
+import com.newjourney.core.model.TimerSettings
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.clip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.clickable
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -91,6 +106,7 @@ internal fun MeditateSetupScreen(
 ) {
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
     var showSaveRoutine by rememberSaveable { mutableStateOf(false) }
+    var settingsOpen by rememberSaveable { mutableStateOf(false) }
     var routineToRemove by rememberSaveable { mutableStateOf<Long?>(null) }
 
     LazyColumn(
@@ -149,16 +165,18 @@ internal fun MeditateSetupScreen(
         }
 
         item {
-            SoftCard(padding = 16.dp, spacing = 0.dp) {
+            // Bells, background sound and the guiding voice, folded into one tidy panel.
+            MeditationSettingsCard(
+                settings = state.settings,
+                expanded = settingsOpen,
+                onToggle = { settingsOpen = !settingsOpen },
+            ) {
                 CardHeading(NavIcons.Bell, stringResource(R.string.setup_bells))
                 SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange, compact = true)
                 SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange, compact = true)
                 BellChoice(state.settings.bell, onBellSelected, Modifier.padding(top = 8.dp))
-            }
-        }
 
-        item {
-            SoftCard(padding = 16.dp, spacing = 4.dp) {
+                SettingsDivider()
                 CardHeading(NavIcons.Music, stringResource(R.string.setup_sound))
                 Box {
                     Pines(
@@ -187,11 +205,8 @@ internal fun MeditateSetupScreen(
                         }
                     }
                 }
-            }
-        }
 
-        item {
-            SoftCard(padding = 16.dp, spacing = 4.dp) {
+                SettingsDivider()
                 CardHeading(NavIcons.Meditator, stringResource(R.string.setup_guide))
                 GuideChoice(state.settings.guide, onGuideSelected)
             }
@@ -265,4 +280,75 @@ internal fun soundLabel(sound: BackgroundSound): Int = when (sound) {
     BackgroundSound.RAIN -> R.string.sound_rain
     BackgroundSound.FOREST -> R.string.sound_forest
     BackgroundSound.BEACH -> R.string.sound_beach
+}
+
+/**
+ * "Meditation settings": closed, it shows a one-line summary of the choices (bells, sound, voice);
+ * a tap opens it to change them. Keeps the Meditate page calm and short.
+ */
+@Composable
+private fun MeditationSettingsCard(
+    settings: TimerSettings,
+    expanded: Boolean,
+    onToggle: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val colors = MaterialTheme.colorScheme
+    val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "chevron")
+    val bells = stringResource(
+        when {
+            settings.startBell && settings.endBell -> R.string.routine_bells_both
+            settings.startBell -> R.string.routine_bells_start
+            settings.endBell -> R.string.routine_bells_end
+            else -> R.string.routine_bells_none
+        },
+    )
+    val voice = when (settings.guide) {
+        VoiceGuide.NONE -> null
+        VoiceGuide.FEMALE -> "Gabriëlle"
+        VoiceGuide.MALE -> "Amos"
+    }
+    val summary = listOfNotNull(bells, stringResource(soundLabel(settings.sound)), voice).joinToString(" · ")
+    val stateText = stringResource(if (expanded) R.string.setup_settings_open else R.string.setup_settings_closed)
+
+    SoftCard(padding = 16.dp, spacing = 0.dp) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(role = Role.Button, onClick = onToggle)
+                .semantics { stateDescription = stateText },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(Icons.Outlined.Tune, contentDescription = null, tint = colors.primary, modifier = Modifier.size(28.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.setup_settings_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.semantics { heading() },
+                )
+                if (!expanded) {
+                    Text(summary, style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+                }
+            }
+            Icon(
+                Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = colors.onSurface,
+                modifier = Modifier
+                    .size(28.dp)
+                    .rotate(rotation),
+            )
+        }
+        AnimatedVisibility(visible = expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            Column(Modifier.padding(top = 12.dp), verticalArrangement = Arrangement.spacedBy(4.dp), content = content)
+        }
+    }
+}
+
+@Composable
+private fun SettingsDivider() {
+    HorizontalDivider(Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.outlineVariant)
 }
