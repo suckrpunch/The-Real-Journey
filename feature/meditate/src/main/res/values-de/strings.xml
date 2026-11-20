@@ -19,8 +19,8 @@
     <string name="bell_tibetan">Tibetische Glocke</string>
     <string name="setup_guide">Geführte Meditation</string>
     <string name="guide_none">Keine Stimme</string>
-    <string name="guide_female">Isla, Frauenstimme</string>
-    <string name="guide_male">Aiden, Männerstimme</string>
+    <string name="guide_female">Gabriëlle, Frauenstimme</string>
+    <string name="guide_male">Amos, Männerstimme</string>
     <string name="guide_hint">Die Stimme führt dich nach der Startglocke hinein und holt dich am Ende sanft zurück. Dazwischen ist Stille.</string>
     <string name="guide_english">Die Anleitung ist auf Englisch.</string>
     <string name="routine_section_title">Deine Routinen</string>

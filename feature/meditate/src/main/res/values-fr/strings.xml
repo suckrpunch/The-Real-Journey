@@ -19,8 +19,8 @@
     <string name="bell_tibetan">Cloche tibétaine</string>
     <string name="setup_guide">Méditation guidée</string>
     <string name="guide_none">Sans voix</string>
-    <string name="guide_female">Isla, voix féminine</string>
-    <string name="guide_male">Aiden, voix masculine</string>
+    <string name="guide_female">Gabriëlle, voix féminine</string>
+    <string name="guide_male">Amos, voix masculine</string>
     <string name="guide_hint">La voix vous accompagne après la cloche du début et vous ramène en douceur à la fin. Entre les deux, place au silence.</string>
     <string name="guide_english">Le guidage est en anglais.</string>
     <string name="routine_section_title">Vos routines</string>

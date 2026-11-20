@@ -7,7 +7,7 @@ import org.junit.Test
 
 class GuideScheduleTest {
 
-    private val intro = 111_060L
+    private val intro = 121_720L
     private val outro = 56_900L
 
     @Test

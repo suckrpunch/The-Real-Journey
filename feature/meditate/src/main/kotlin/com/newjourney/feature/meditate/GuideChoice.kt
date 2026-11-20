@@ -21,7 +21,7 @@ import com.newjourney.core.model.VoiceGuide
 import java.util.Locale
 
 /**
- * "Guided meditation": no voice, Isla or Aiden. Choosing a voice plays its first words, so people
+ * "Guided meditation": no voice, Gabriëlle or Amos. Choosing a voice plays its first words, so people
  * can hear who will guide them. The voice leads in after the start bell and back out before the end.
  */
 @Composable

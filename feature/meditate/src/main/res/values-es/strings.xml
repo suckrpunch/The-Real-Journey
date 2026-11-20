@@ -19,8 +19,8 @@
     <string name="bell_tibetan">Campana tibetana</string>
     <string name="setup_guide">Meditación guiada</string>
     <string name="guide_none">Sin voz</string>
-    <string name="guide_female">Isla, voz femenina</string>
-    <string name="guide_male">Aiden, voz masculina</string>
+    <string name="guide_female">Gabriëlle, voz femenina</string>
+    <string name="guide_male">Amos, voz masculina</string>
     <string name="guide_hint">La voz te guía tras la campana de inicio y te trae de vuelta con suavidad al final. Entre medias, hay silencio.</string>
     <string name="guide_english">La guía está en inglés.</string>
     <string name="routine_section_title">Tus rutinas</string>
