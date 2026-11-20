@@ -1,5 +1,7 @@
 package com.newjourney.feature.meditate.timer
 
+import com.newjourney.core.datastore.MIN_VOICE_VOLUME
+import com.newjourney.core.datastore.DEFAULT_VOICE_VOLUME
 import android.content.Context
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
@@ -69,6 +71,14 @@ class MeditationTimer @Inject constructor(
 ) {
     private val _state = MutableStateFlow<TimerState>(TimerState.Idle)
     val state: StateFlow<TimerState> = _state.asStateFlow()
+
+    /** The guiding voice's volume (0.1 to 1); the session screen's slider sets it, the service plays it. */
+    private val _voiceVolume = MutableStateFlow(DEFAULT_VOICE_VOLUME)
+    val voiceVolume: StateFlow<Float> = _voiceVolume.asStateFlow()
+
+    fun setVoiceVolume(volume: Float) {
+        _voiceVolume.value = volume.coerceIn(MIN_VOICE_VOLUME, 1f)
+    }
 
     private val saveScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 

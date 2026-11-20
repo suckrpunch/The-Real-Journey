@@ -1,5 +1,6 @@
 package com.newjourney.feature.meditate
 
+import com.newjourney.core.model.VoiceGuide
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,7 +36,7 @@ import javax.inject.Inject
 class MeditationSessionViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val timer: MeditationTimer,
-    settings: UserSettingsRepository,
+    private val userSettings: UserSettingsRepository,
     catalog: CatalogRepository,
     sessions: SessionRepository,
     journeyContent: JourneyContentRepository,
@@ -87,6 +88,8 @@ class MeditationSessionViewModel @Inject constructor(
     private val entitlement: Entitlement get() = entitlements.entitlement.value
 
     init {
+        // The voice starts at the volume chosen last time.
+        viewModelScope.launch { timer.setVoiceVolume(userSettings.voiceVolume.first()) }
         val route = savedStateHandle.toRoute<MeditationSessionRoute>()
         val current = timer.state.value
         if (current !is TimerState.Idle) {
@@ -99,7 +102,7 @@ class MeditationSessionViewModel @Inject constructor(
                 val allowed = entitlement.isPremium || !TimerLimits.isPremiumDuration(requested)
                 val minutes = if (allowed) requested else TimerLimits.FREE_MAX_MINUTES
                 // The bell and the voice are personal choices, so routines use the ones chosen now.
-                val saved = settings.timerSettings.first()
+                val saved = userSettings.timerSettings.first()
                 val timerSettings = routine?.settings?.copy(bell = saved.bell, guide = saved.guide) ?: saved
                 timer.start(minutes, timerSettings, if (routine != null) null else route.trackId)
                 savedStateHandle[KEY_HAD_SESSION] = true
@@ -108,6 +111,25 @@ class MeditationSessionViewModel @Inject constructor(
             // Nothing to show (for example the session ended while the app was closed).
             savedStateHandle[KEY_HAD_SESSION] = true
         }
+    }
+
+    /** The guiding voice's volume, or null when this session has no voice. */
+    val voiceVolume: StateFlow<Float?> = combine(timer.state, timer.voiceVolume) { timerState, volume ->
+        val guide = when (timerState) {
+            is TimerState.Running -> timerState.session.settings.guide
+            is TimerState.Paused -> timerState.session.settings.guide
+            else -> VoiceGuide.NONE
+        }
+        volume.takeIf { guide != VoiceGuide.NONE }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** Moves the voice's volume while the slider is dragged. */
+    fun setVoiceVolume(volume: Float) = timer.setVoiceVolume(volume)
+
+    /** Remembers the volume for next time, once the slider is let go. */
+    fun saveVoiceVolume() {
+        val volume = timer.voiceVolume.value
+        viewModelScope.launch { userSettings.setVoiceVolume(volume) }
     }
 
     fun pause() = timer.pause()

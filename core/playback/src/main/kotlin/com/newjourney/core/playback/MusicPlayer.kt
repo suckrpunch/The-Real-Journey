@@ -73,6 +73,12 @@ class MusicPlayer @Inject constructor(
         }
     }
     fun pause() = withController { it.pause() }
+
+    /** Stops the music and clears it, so the mini player goes away. */
+    fun stop() = withController {
+        it.stop()
+        it.clearMediaItems()
+    }
     fun seekTo(positionMs: Long) = withController { it.seekTo(positionMs) }
     fun next() = withController { it.seekToNextMediaItem() }
 

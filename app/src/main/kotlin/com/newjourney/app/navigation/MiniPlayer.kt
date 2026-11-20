@@ -68,6 +68,7 @@ class MiniPlayerViewModel @Inject constructor(
     }
 
     fun togglePlayPause() = player.togglePlayPause()
+    fun stop() = player.stop()
 }
 
 /** Category name and length in minutes; either may be unknown. */
@@ -87,6 +88,7 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
     val detailLine = listOfNotNull(details?.category, minutesText).joinToString(" · ").ifEmpty { current.subtitle.orEmpty() }
     val openLabel = stringResource(R.string.mini_player_open, current.title)
     val toggleLabel = stringResource(if (current.isPlaying) R.string.mini_player_pause else R.string.mini_player_play)
+    val stopLabel = stringResource(R.string.mini_player_stop)
     val colors = MaterialTheme.colorScheme
 
     Surface(
@@ -104,7 +106,7 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
                 .heightIn(min = 72.dp)
                 .padding(start = 12.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // By day a soft green square with a white note; by night a navy square with a cream note.
             Surface(
@@ -141,6 +143,13 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
+            }
+            // Stop ends the music and closes this player.
+            IconButton(
+                onClick = viewModel::stop,
+                modifier = Modifier.size(48.dp).semantics { contentDescription = stopLabel },
+            ) {
+                Icon(NavIcons.Stop, contentDescription = null, tint = colors.onPrimary, modifier = Modifier.size(26.dp))
             }
             IconButton(
                 onClick = viewModel::togglePlayPause,

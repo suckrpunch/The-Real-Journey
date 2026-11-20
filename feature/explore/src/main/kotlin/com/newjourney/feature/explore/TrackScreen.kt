@@ -1,5 +1,6 @@
 package com.newjourney.feature.explore
 
+import com.newjourney.core.designsystem.icon.NavIcons
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -115,6 +116,7 @@ internal fun TrackRouteContent(
             onPlayPause = { if (state.trackLocked && !state.isCurrent) premiumTrack = true else viewModel.playOrToggle() },
             onSeek = viewModel::seekTo,
             onNext = viewModel::next,
+            onStop = viewModel::stop,
             onPrevious = viewModel::previous,
         )
 
@@ -175,6 +177,7 @@ private fun PlayerControls(
     onPlayPause: () -> Unit,
     onSeek: (Long) -> Unit,
     onNext: () -> Unit,
+    onStop: () -> Unit = {},
     onPrevious: () -> Unit,
 ) {
     // Follows the player while this screen is visible; zero when this track is not loaded.
@@ -242,6 +245,15 @@ private fun PlayerControls(
                 enabled = state.isCurrent && state.nowPlaying?.hasNext == true,
                 modifier = Modifier.size(MinTouchTarget + 8.dp).semantics { contentDescription = nextLabel },
             ) { Icon(Icons.Filled.SkipNext, contentDescription = null) }
+        }
+        // Stop ends the music altogether, and the mini player with it.
+        if (state.isCurrent) {
+            SecondaryButton(
+                text = stringResource(R.string.track_stop),
+                onClick = onStop,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                leading = { Icon(NavIcons.Stop, contentDescription = null) },
+            )
         }
     }
 }

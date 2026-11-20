@@ -9,5 +9,6 @@
     <string name="mini_player_open">Läuft gerade: %1$s. Player öffnen</string>
     <string name="mini_player_play">Abspielen</string>
     <string name="mini_player_pause">Pausieren</string>
+    <string name="mini_player_stop">Musik stoppen</string>
     <string name="mini_player_minutes">%1$d min</string>
 </resources>

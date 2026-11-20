@@ -1,5 +1,11 @@
 package com.newjourney.feature.meditate
 
+import kotlin.math.roundToInt
+import com.newjourney.core.datastore.MIN_VOICE_VOLUME
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.material3.Slider
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.VolumeDown
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
@@ -85,6 +91,7 @@ internal fun MeditationSessionRouteContent(
     val newMilestones by viewModel.newMilestones.collectAsStateWithLifecycle()
     val newStages by viewModel.newStages.collectAsStateWithLifecycle()
     val currentRun by viewModel.currentRun.collectAsStateWithLifecycle()
+    val voiceVolume by viewModel.voiceVolume.collectAsStateWithLifecycle()
 
     RequestNotificationPermissionOnce()
 
@@ -116,6 +123,9 @@ internal fun MeditationSessionRouteContent(
             onGoHome()
         },
         currentRun = currentRun,
+        voiceVolume = voiceVolume,
+        onVoiceVolume = viewModel::setVoiceVolume,
+        onVoiceVolumeDone = viewModel::saveVoiceVolume,
         onOpenJournal = {
             val minutes = ((state as? TimerState.Finished)?.completedSeconds ?: 0) / 60
             viewModel.dismissFinished()
@@ -138,6 +148,9 @@ internal fun MeditationSessionScreen(
     onOpenJournal: () -> Unit,
     onBack: () -> Unit = {},
     currentRun: Int = 0,
+    voiceVolume: Float? = null,
+    onVoiceVolume: (Float) -> Unit = {},
+    onVoiceVolumeDone: () -> Unit = {},
 ) {
     Column(
         Modifier
@@ -149,7 +162,12 @@ internal fun MeditationSessionScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         when (state) {
-            is TimerState.Running, is TimerState.Paused -> Countdown(state, trackTitle, onBack, onPause, onResume, onEnd)
+            is TimerState.Running, is TimerState.Paused -> Countdown(
+                state, trackTitle, onBack, onPause, onResume, onEnd,
+                voiceVolume = voiceVolume,
+                onVoiceVolume = onVoiceVolume,
+                onVoiceVolumeDone = onVoiceVolumeDone,
+            )
             is TimerState.Finished -> Finished(state, newMilestones, newStages, currentRun, onOpenStage, onDone, onOpenJournal)
             TimerState.Idle -> Spacer(Modifier.height(1.dp))
         }
@@ -164,6 +182,9 @@ private fun Countdown(
     onPause: () -> Unit,
     onResume: () -> Unit,
     onEnd: () -> Unit,
+    voiceVolume: Float? = null,
+    onVoiceVolume: (Float) -> Unit = {},
+    onVoiceVolumeDone: () -> Unit = {},
 ) {
     val running = state is TimerState.Running
     var confirmEnd by rememberSaveable { mutableStateOf(false) }
@@ -272,6 +293,9 @@ private fun Countdown(
             modifier = Modifier.weight(1f).heightIn(min = 56.dp),
             leading = { Icon(Icons.Outlined.CropSquare, contentDescription = null) },
         )
+    }
+    if (voiceVolume != null) {
+        VoiceVolumeSlider(voiceVolume, onVoiceVolume, onVoiceVolumeDone)
     }
     Text(
         stringResource(R.string.session_screen_off_hint),
@@ -412,6 +436,33 @@ private fun RequestNotificationPermissionOnce() {
         if (!granted && !asked) {
             asked = true
             launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+}
+
+/** "Voice volume": quieter on the left, louder on the right. Only shown in a guided session. */
+@Composable
+private fun VoiceVolumeSlider(volume: Float, onChange: (Float) -> Unit, onDone: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    val label = stringResource(R.string.session_voice_volume)
+    val percent = (volume * 100).roundToInt()
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(label, style = MaterialTheme.typography.titleSmall, color = colors.onSurfaceVariant)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(Icons.AutoMirrored.Filled.VolumeDown, contentDescription = null, tint = colors.primary)
+            Slider(
+                value = volume,
+                onValueChange = onChange,
+                onValueChangeFinished = onDone,
+                valueRange = MIN_VOICE_VOLUME..1f,
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics {
+                        contentDescription = label
+                        stateDescription = "$percent%"
+                    },
+            )
+            Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = null, tint = colors.primary)
         }
     }
 }

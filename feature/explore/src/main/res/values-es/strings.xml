@@ -15,6 +15,7 @@
     <string name="track_play">Reproducir</string>
     <string name="track_pause">Pausar</string>
     <string name="track_next">Pista siguiente</string>
+    <string name="track_stop">Detener</string>
     <string name="track_previous">Pista anterior, o volver al principio</string>
     <string name="track_progress_spoken">%1$s de %2$s</string>
     <string name="track_meditate_title">Medita con esta pista</string>

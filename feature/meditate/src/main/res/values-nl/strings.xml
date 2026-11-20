@@ -48,6 +48,7 @@
     <string name="session_breathe_in">Adem in…</string>
     <string name="session_breathe_out">Adem uit…</string>
     <string name="session_with_track">Met %1$s</string>
+    <string name="session_voice_volume">Volume van de stem</string>
     <string name="timer_pause">Pauzeren</string>
     <string name="timer_resume">Hervatten</string>
     <string name="timer_end">Stoppen</string>

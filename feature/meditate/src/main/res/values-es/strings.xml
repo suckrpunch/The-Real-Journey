@@ -48,6 +48,7 @@
     <string name="session_breathe_in">Inspira…</string>
     <string name="session_breathe_out">Espira…</string>
     <string name="session_with_track">Con %1$s</string>
+    <string name="session_voice_volume">Volumen de la voz</string>
     <string name="timer_pause">Pausar</string>
     <string name="timer_resume">Reanudar</string>
     <string name="timer_end">Terminar</string>

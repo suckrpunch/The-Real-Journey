@@ -114,6 +114,14 @@ object NavIcons {
             strokeLineCap = StrokeCap.Round, strokeLineJoin = StrokeJoin.Round)
     }.build()
 
+    /** A softly rounded square. */
+    val Stop: ImageVector = ImageVector.Builder(
+        name = "Stop", defaultWidth = 24.dp, defaultHeight = 24.dp, viewportWidth = 24f, viewportHeight = 24f,
+    ).apply {
+        addPath(addPathNodes("M8.5 6.5 H15.5 Q17.5 6.5 17.5 8.5 V15.5 Q17.5 17.5 15.5 17.5 H8.5 Q6.5 17.5 6.5 15.5 V8.5 Q6.5 6.5 8.5 6.5 Z"),
+            fill = SolidColor(Color.Black))
+    }.build()
+
     /** Two rounded bars. */
     val Pause: ImageVector = lineIcon("Pause", 2.6f, PAUSE)
 

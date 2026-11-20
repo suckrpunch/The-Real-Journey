@@ -1,5 +1,6 @@
 package com.newjourney.core.datastore
 
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -40,6 +41,10 @@ interface UserSettingsRepository {
     /** Bells and background sound, remembered so Home's Begin uses the user's last choices. */
     val timerSettings: Flow<TimerSettings>
     suspend fun setTimerSettings(settings: TimerSettings)
+
+    /** How loud the guiding voice is, 0.1 to 1, set with the slider during a session. */
+    val voiceVolume: Flow<Float>
+    suspend fun setVoiceVolume(volume: Float)
 
     /** Minutes a day the user aims for. Shown on Home; never used to scold. */
     val dailyGoalMinutes: Flow<Int>
@@ -148,6 +153,12 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
 
     private val safeData = dataStore.data
         .catch { error -> if (error is IOException) emit(emptyPreferences()) else throw error }
+
+    override val voiceVolume: Flow<Float> = safeData.map { it[Keys.VOICE_VOLUME] ?: DEFAULT_VOICE_VOLUME }
+
+    override suspend fun setVoiceVolume(volume: Float) {
+        dataStore.edit { it[Keys.VOICE_VOLUME] = volume.coerceIn(MIN_VOICE_VOLUME, 1f) }
+    }
 
     override val dailyGoalMinutes: Flow<Int> = safeData.map { it[Keys.DAILY_GOAL] ?: DailyGoal.DEFAULT_MINUTES }
 
@@ -259,9 +270,14 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         val BACKGROUND_SOUND = stringPreferencesKey("timer_background_sound")
         val BELL_SOUND = stringPreferencesKey("timer_bell_sound")
         val VOICE_GUIDE = stringPreferencesKey("timer_voice_guide")
+        val VOICE_VOLUME = floatPreferencesKey("timer_voice_volume")
         val FAVORITE_QUOTES = stringSetPreferencesKey("favorite_quote_ids")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val NIGHT_START = intPreferencesKey("night_start_hour")
         val NIGHT_END = intPreferencesKey("night_end_hour")
     }
 }
+
+/** The voice starts a little below full, so it can be turned both up and down. */
+const val DEFAULT_VOICE_VOLUME = 0.8f
+const val MIN_VOICE_VOLUME = 0.1f

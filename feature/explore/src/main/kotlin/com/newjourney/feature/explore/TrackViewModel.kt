@@ -112,6 +112,7 @@ internal class TrackViewModel @Inject constructor(
 
     /** Stops the music player before a session takes over, so the two never play together. */
     fun prepareForSession() = player.pause()
+    fun stop() = player.stop()
 
     private companion object {
         const val KEY_MINUTES = "track_session_minutes"

@@ -53,6 +53,7 @@
     <string name="session_breathe_in">Breathe in…</string>
     <string name="session_breathe_out">Breathe out…</string>
     <string name="session_with_track">With %1$s</string>
+    <string name="session_voice_volume">Voice volume</string>
     <string name="timer_pause">Pause</string>
     <string name="timer_resume">Resume</string>
     <string name="timer_end">End</string>

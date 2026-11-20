@@ -15,6 +15,7 @@
     <string name="track_play">Afspelen</string>
     <string name="track_pause">Pauzeren</string>
     <string name="track_next">Volgend nummer</string>
+    <string name="track_stop">Stoppen</string>
     <string name="track_previous">Vorig nummer, of terug naar het begin</string>
     <string name="track_progress_spoken">%1$s van %2$s</string>
     <string name="track_meditate_title">Mediteer met dit nummer</string>

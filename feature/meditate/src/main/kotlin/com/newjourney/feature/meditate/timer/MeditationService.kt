@@ -92,6 +92,8 @@ class MeditationService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
+        // The voice follows the slider on the session screen straight away.
+        scope.launch { timer.voiceVolume.collect { guidePlayer?.volume = it } }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -300,6 +302,7 @@ class MeditationService : Service() {
             .setWakeMode(C.WAKE_MODE_LOCAL)
             .build()
             .apply {
+                volume = timer.voiceVolume.value
                 addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         if (playbackState == Player.STATE_ENDED && guideSpeaking) {

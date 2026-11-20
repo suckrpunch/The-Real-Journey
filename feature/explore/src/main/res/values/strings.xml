@@ -17,6 +17,7 @@
     <string name="track_play">Play</string>
     <string name="track_pause">Pause</string>
     <string name="track_next">Next track</string>
+    <string name="track_stop">Stop</string>
     <string name="track_previous">Previous track, or back to the start</string>
     <string name="track_progress_spoken">%1$s of %2$s</string>
     <string name="track_meditate_title">Meditate with this track</string>
