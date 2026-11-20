@@ -16,8 +16,8 @@ android {
         applicationId = "nl.FrequenC.NewJourney"
         minSdk = 26
         targetSdk = 36
-        versionCode = 57
-        versionName = "0.19.5"
+        versionCode = 56
+        versionName = "0.19.4"
     }
 
     buildTypes {
