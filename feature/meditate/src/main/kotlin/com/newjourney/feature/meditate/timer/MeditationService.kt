@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
@@ -24,7 +25,9 @@ import com.newjourney.core.catalog.CatalogRepository
 import com.newjourney.core.datastore.AppLanguage
 import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.BellSound
+import com.newjourney.core.model.GuideSchedule
 import com.newjourney.core.model.TimerSettings
+import com.newjourney.core.model.VoiceGuide
 import com.newjourney.core.playback.LoopingTrackPlayer
 import com.newjourney.feature.meditate.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,12 +38,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Keeps a meditation running while the screen is off or the app is in the background.
- * It follows [MeditationTimer.state]: plays the bells and the looping background sound,
- * shows a notification with Pause and End on the lock screen, and rings the end bell on time.
+ * It follows [MeditationTimer.state]: plays the bells, the looping background sound and the spoken
+ * guide, shows a notification with Pause and End on the lock screen, and rings the end bell on time.
  */
 @AndroidEntryPoint
 class MeditationService : Service() {
@@ -62,6 +66,21 @@ class MeditationService : Service() {
     private var musicPlayer: LoopingTrackPlayer? = null
     private var musicJob: Job? = null
     private var bellPlayer: ExoPlayer? = null
+
+    // The spoken guide: an opening part after the start bell and a closing part before the end.
+    private var guidePlayer: ExoPlayer? = null
+    private var guideJob: Job? = null
+    private var guidePlan: GuideSchedule? = null
+    @RawRes private var guideIntro = 0
+    @RawRes private var guideOutro = 0
+    private var introStarted = false
+    private var outroStarted = false
+    /** True while a part of the guide is being spoken (also while paused mid-sentence). */
+    private var guideSpeaking = false
+
+    /** The level of the background sound or music: lowered while the voice speaks. */
+    private var bedLevel = 1f
+
     private var wakeLock: PowerManager.WakeLock? = null
 
     private var currentSessionId: Long? = null
@@ -104,8 +123,10 @@ class MeditationService : Service() {
                 if (currentSessionId != state.session.id) {
                     currentSessionId = state.session.id
                     beginAudio(state.session.settings, state.session.trackId)
+                    beginGuide(state.session)
                 } else {
                     resumeAudio()
+                    runGuide()
                 }
                 val remaining = state.remainingMs()
                 acquireWakeLock(remaining + WAKE_LOCK_MARGIN_MS)
@@ -119,6 +140,7 @@ class MeditationService : Service() {
 
             is TimerState.Paused -> {
                 endJob?.cancel()
+                pauseGuide()
                 pauseAudio()
                 releaseWakeLock()
                 showNotification(state)
@@ -128,6 +150,7 @@ class MeditationService : Service() {
                 endJob?.cancel()
                 if (!finishing) {
                     finishing = true
+                    stopGuide()
                     showNotification(state)
                     scope.launch {
                         finishAudio(
@@ -152,6 +175,7 @@ class MeditationService : Service() {
     // ---- Sound ----
 
     private fun beginAudio(settings: TimerSettings, trackId: String?) {
+        bedLevel = 1f
         if (settings.startBell) playBell(settings.bell)
         if (trackId != null) {
             beginMusic(trackId)
@@ -164,7 +188,7 @@ class MeditationService : Service() {
         player.volume = 0f
         player.prepare()
         player.play()
-        fadeTo(player, 1f, FADE_IN_MS)
+        fadeTo(player, bedLevel, FADE_IN_MS)
     }
 
     /** The track loops seamlessly for the whole session (see LoopingTrackPlayer). */
@@ -174,6 +198,8 @@ class MeditationService : Service() {
             val track = catalog.get().track(trackId) ?: return@launch
             val player = musicPlayer ?: LoopingTrackPlayer(this@MeditationService, scope).also { musicPlayer = it }
             player.start(track)
+            // The voice may already be speaking; the music then starts underneath it.
+            if (bedLevel < 1f) player.fadeTo(bedLevel, 1L)
             // The session may have been paused while the catalog loaded.
             if (timer.state.value is TimerState.Paused) player.pause()
         }
@@ -189,8 +215,119 @@ class MeditationService : Service() {
         musicPlayer?.resume()
         val player = backgroundPlayer ?: return
         player.play()
-        fadeTo(player, 1f, RESUME_FADE_MS)
+        fadeTo(player, bedLevel, RESUME_FADE_MS)
     }
+
+    // ---- Spoken guide ----
+
+    /** Prepares the guide for a new session: which voice, and when each part plays. */
+    private fun beginGuide(session: ActiveSession) {
+        stopGuide()
+        introStarted = false
+        outroStarted = false
+        guidePlan = null
+        val (intro, outro) = when (session.settings.guide) {
+            VoiceGuide.NONE -> return
+            VoiceGuide.FEMALE -> R.raw.guide_female_intro to R.raw.guide_female_outro
+            VoiceGuide.MALE -> R.raw.guide_male_intro to R.raw.guide_male_outro
+        }
+        guideIntro = intro
+        guideOutro = outro
+        // Reading the two lengths takes a moment; then runGuide takes over (and replaces this job).
+        guideJob = scope.launch {
+            val (introMs, outroMs) = withContext(Dispatchers.IO) { durationMs(intro) to durationMs(outro) }
+            guidePlan = GuideSchedule.plan(session.totalMs, introMs, outroMs, session.settings.startBell)
+            if (timer.state.value is TimerState.Running) runGuide()
+        }
+    }
+
+    /**
+     * Plays whatever part of the guide is due, from where the session is now. Called when a session
+     * starts and each time it resumes: a sentence that was paused carries on where it stopped.
+     */
+    private fun runGuide() {
+        val plan = guidePlan ?: return
+        val state = timer.state.value as? TimerState.Running ?: return
+        guideJob?.cancel()
+        val player = guidePlayer
+        if (guideSpeaking && player != null) {
+            player.play()
+            setBedLevel(DUCK_LEVEL, DUCK_MS)
+        }
+        guideJob = scope.launch {
+            fun elapsed() = state.session.totalMs - state.remainingMs()
+            if (!introStarted) {
+                delay(plan.introStartMs - elapsed())
+                introStarted = true
+                speak(guideIntro)
+            }
+            if (!outroStarted) {
+                delay(plan.outroStartMs - elapsed())
+                outroStarted = true
+                speak(guideOutro)
+            }
+        }
+    }
+
+    private fun speak(@RawRes part: Int) {
+        val player = guidePlayer ?: createGuidePlayer().also { guidePlayer = it }
+        player.setMediaItem(MediaItem.fromUri(rawUri(part)))
+        player.prepare()
+        player.play()
+        guideSpeaking = true
+        setBedLevel(DUCK_LEVEL, DUCK_MS)
+    }
+
+    private fun pauseGuide() {
+        guideJob?.cancel()
+        guidePlayer?.pause()
+    }
+
+    /** Ends the guide at once, for example when the session is ended early. */
+    private fun stopGuide() {
+        guideJob?.cancel()
+        guidePlayer?.stop()
+        guideSpeaking = false
+    }
+
+    private fun createGuidePlayer(): ExoPlayer =
+        ExoPlayer.Builder(this)
+            // Like the bell, the voice does not take audio focus, so the background sound continues.
+            .setAudioAttributes(
+                AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_SPEECH).build(),
+                false,
+            )
+            .setWakeMode(C.WAKE_MODE_LOCAL)
+            .build()
+            .apply {
+                addListener(object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_ENDED && guideSpeaking) {
+                            guideSpeaking = false
+                            setBedLevel(1f, UNDUCK_MS)
+                        }
+                    }
+                })
+            }
+
+    /** Softens the background sound or music while the voice speaks, and brings it back after. */
+    private fun setBedLevel(level: Float, durationMs: Long) {
+        bedLevel = level
+        backgroundPlayer?.let { fadeTo(it, level, durationMs) }
+        musicPlayer?.fadeTo(level, durationMs)
+    }
+
+    private fun durationMs(@RawRes res: Int): Long = runCatching {
+        resources.openRawResourceFd(res).use { fd ->
+            val retriever = MediaMetadataRetriever()
+            try {
+                retriever.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+                retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
+            } finally {
+                retriever.release()
+            }
+        }
+    }.getOrDefault(0L)
 
     private suspend fun finishAudio(ringEndBell: Boolean, bell: BellSound) {
         musicJob?.cancel()
@@ -366,6 +503,11 @@ class MeditationService : Service() {
         bellPlayer?.release()
         bellPlayer = null
         loadedBell = null
+        guideJob?.cancel()
+        guidePlayer?.release()
+        guidePlayer = null
+        guidePlan = null
+        guideSpeaking = false
         releaseWakeLock()
         currentSessionId = null
         finishing = false
@@ -379,6 +521,7 @@ class MeditationService : Service() {
         musicPlayer?.release()
         backgroundPlayer?.release()
         bellPlayer?.release()
+        guidePlayer?.release()
         releaseWakeLock()
         super.onDestroy()
     }
@@ -400,6 +543,10 @@ class MeditationService : Service() {
         /** The bells are about 7.3 and 8.1 seconds long; this lets either ring out fully. */
         private const val BELL_RING_OUT_MS = 9_000L
         private const val WAKE_LOCK_MARGIN_MS = 60_000L
+        /** The background sound or music while the voice speaks: softer, but still there. */
+        private const val DUCK_LEVEL = 0.35f
+        private const val DUCK_MS = 1_500L
+        private const val UNDUCK_MS = 3_000L
 
         internal fun startIntent(context: Context): Intent =
             Intent(context, MeditationService::class.java).setAction(ACTION_START)

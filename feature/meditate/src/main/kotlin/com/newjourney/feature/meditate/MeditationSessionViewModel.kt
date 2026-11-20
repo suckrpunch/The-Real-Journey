@@ -98,9 +98,9 @@ class MeditationSessionViewModel @Inject constructor(
                 val requested = routine?.minutes ?: route.minutes
                 val allowed = entitlement.isPremium || !TimerLimits.isPremiumDuration(requested)
                 val minutes = if (allowed) requested else TimerLimits.FREE_MAX_MINUTES
-                // The bell is a personal choice, so routines ring the bell chosen now.
+                // The bell and the voice are personal choices, so routines use the ones chosen now.
                 val saved = settings.timerSettings.first()
-                val timerSettings = routine?.settings?.copy(bell = saved.bell) ?: saved
+                val timerSettings = routine?.settings?.copy(bell = saved.bell, guide = saved.guide) ?: saved
                 timer.start(minutes, timerSettings, if (routine != null) null else route.trackId)
                 savedStateHandle[KEY_HAD_SESSION] = true
             }

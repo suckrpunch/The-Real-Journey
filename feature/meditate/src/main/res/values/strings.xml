@@ -18,6 +18,12 @@
     <string name="setup_bell_sound">Bell sound</string>
     <string name="bell_classic">Classic bell</string>
     <string name="bell_tibetan">Tibetan bell</string>
+    <string name="setup_guide">Guided meditation</string>
+    <string name="guide_none">No voice</string>
+    <string name="guide_female">Isla, female voice</string>
+    <string name="guide_male">Aiden, male voice</string>
+    <string name="guide_hint">The voice guides you in after the start bell and gently brings you back at the end. In between, there is quiet.</string>
+    <string name="guide_english">The guidance is spoken in English.</string>
 
     <!-- Routines -->
     <string name="routine_section_title">Your routines</string>

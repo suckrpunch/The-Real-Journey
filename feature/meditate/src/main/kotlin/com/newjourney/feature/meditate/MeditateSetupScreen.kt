@@ -48,6 +48,7 @@ import com.newjourney.core.designsystem.component.SwitchRow
 import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.BellSound
+import com.newjourney.core.model.VoiceGuide
 
 @Composable
 internal fun MeditateSetupRoute(
@@ -64,6 +65,7 @@ internal fun MeditateSetupRoute(
         onEndBellChange = viewModel::setEndBell,
         onSoundSelected = viewModel::setSound,
         onBellSelected = viewModel::setBell,
+        onGuideSelected = viewModel::setGuide,
         onBegin = { onStartSession(state.selectedMinutes) },
         onReturnToSession = onReturnToSession,
         onStartRoutine = onStartRoutine,
@@ -80,6 +82,7 @@ internal fun MeditateSetupScreen(
     onEndBellChange: (Boolean) -> Unit,
     onSoundSelected: (BackgroundSound) -> Unit,
     onBellSelected: (BellSound) -> Unit = {},
+    onGuideSelected: (VoiceGuide) -> Unit = {},
     onBegin: () -> Unit,
     onReturnToSession: () -> Unit,
     onStartRoutine: (Long) -> Unit = {},
@@ -184,6 +187,13 @@ internal fun MeditateSetupScreen(
                         }
                     }
                 }
+            }
+        }
+
+        item {
+            SoftCard(padding = 16.dp, spacing = 4.dp) {
+                CardHeading(NavIcons.Meditator, stringResource(R.string.setup_guide))
+                GuideChoice(state.settings.guide, onGuideSelected)
             }
         }
 

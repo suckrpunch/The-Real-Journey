@@ -35,7 +35,7 @@ import com.newjourney.core.model.BellSound
  */
 @Composable
 internal fun BellChoice(selected: BellSound, onSelect: (BellSound) -> Unit, modifier: Modifier = Modifier) {
-    val preview = rememberBellPreview()
+    val preview = rememberSoundPreview()
     val colors = MaterialTheme.colorScheme
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(stringResource(R.string.setup_bell_sound), style = MaterialTheme.typography.bodyLarge)
@@ -83,29 +83,36 @@ private fun bellResource(bell: BellSound): Int = when (bell) {
     BellSound.TIBETAN -> R.raw.bell_tibetan
 }
 
-/** Plays one bell at a time; a new choice stops the previous one. Released when the screen goes. */
-private class BellPreview(private val context: android.content.Context) {
+/**
+ * Plays one short sample at a time (a bell, the first words of a voice); a new choice stops the
+ * previous one. With [play]'s limit it stops after that long. Released when the screen goes.
+ */
+internal class SoundPreview(private val context: android.content.Context) {
     private var player: MediaPlayer? = null
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val stopper = Runnable { stop() }
 
-    fun play(@RawRes res: Int) {
+    fun play(@RawRes res: Int, limitMs: Long? = null) {
         stop()
         // create() prepares the player, so it plays on the media volume straight away.
         player = MediaPlayer.create(context, res)?.apply {
             setOnCompletionListener { stop() }
             start()
         }
+        if (limitMs != null) handler.postDelayed(stopper, limitMs)
     }
 
     fun stop() {
+        handler.removeCallbacks(stopper)
         player?.release()
         player = null
     }
 }
 
 @Composable
-private fun rememberBellPreview(): BellPreview {
+internal fun rememberSoundPreview(): SoundPreview {
     val context = LocalContext.current.applicationContext
-    val preview = remember { BellPreview(context) }
+    val preview = remember { SoundPreview(context) }
     DisposableEffect(preview) { onDispose { preview.stop() } }
     return preview
 }

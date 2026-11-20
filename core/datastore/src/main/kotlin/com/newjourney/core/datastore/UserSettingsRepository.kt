@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.newjourney.core.model.AgeRange
 import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.BellSound
+import com.newjourney.core.model.VoiceGuide
 import com.newjourney.core.model.DailyGoal
 import com.newjourney.core.model.Goal
 import com.newjourney.core.model.ReminderSettings
@@ -129,6 +130,9 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
                 bell = prefs[Keys.BELL_SOUND]
                     ?.let { stored -> BellSound.entries.firstOrNull { it.name == stored } }
                     ?: defaults.bell,
+                guide = prefs[Keys.VOICE_GUIDE]
+                    ?.let { stored -> VoiceGuide.entries.firstOrNull { it.name == stored } }
+                    ?: defaults.guide,
             )
         }
 
@@ -138,6 +142,7 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
             it[Keys.END_BELL] = settings.endBell
             it[Keys.BACKGROUND_SOUND] = settings.sound.name
             it[Keys.BELL_SOUND] = settings.bell.name
+            it[Keys.VOICE_GUIDE] = settings.guide.name
         }
     }
 
@@ -253,6 +258,7 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         val END_BELL = booleanPreferencesKey("timer_end_bell")
         val BACKGROUND_SOUND = stringPreferencesKey("timer_background_sound")
         val BELL_SOUND = stringPreferencesKey("timer_bell_sound")
+        val VOICE_GUIDE = stringPreferencesKey("timer_voice_guide")
         val FAVORITE_QUOTES = stringSetPreferencesKey("favorite_quote_ids")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val NIGHT_START = intPreferencesKey("night_start_hour")

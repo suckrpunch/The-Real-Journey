@@ -96,6 +96,20 @@ class LoopingTrackPlayer(
         if (crossfading) standby?.play()
     }
 
+    /** Moves the overall level to [level] over [durationMs], for example to make room for a voice. */
+    fun fadeTo(level: Float, durationMs: Long): Job {
+        masterFade?.cancel()
+        val from = master
+        return scope.launch {
+            val steps = (durationMs / STEP_MS).toInt().coerceAtLeast(1)
+            for (i in 1..steps) {
+                master = from + (level - from) * i / steps
+                applyVolumes()
+                delay(STEP_MS)
+            }
+        }.also { masterFade = it }
+    }
+
     /** Fades everything out over [durationMs], then stops. Returns the fade's job to wait on. */
     fun fadeOut(durationMs: Long): Job {
         masterFade?.cancel()

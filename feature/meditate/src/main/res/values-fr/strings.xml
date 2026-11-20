@@ -17,6 +17,12 @@
     <string name="setup_bell_sound">Son de la cloche</string>
     <string name="bell_classic">Cloche classique</string>
     <string name="bell_tibetan">Cloche tibétaine</string>
+    <string name="setup_guide">Méditation guidée</string>
+    <string name="guide_none">Sans voix</string>
+    <string name="guide_female">Isla, voix féminine</string>
+    <string name="guide_male">Aiden, voix masculine</string>
+    <string name="guide_hint">La voix vous accompagne après la cloche du début et vous ramène en douceur à la fin. Entre les deux, place au silence.</string>
+    <string name="guide_english">Le guidage est en anglais.</string>
     <string name="routine_section_title">Vos routines</string>
     <string name="routine_summary">%1$d minutes · %2$s · %3$s</string>
     <string name="routine_bells_both">Cloche au début et à la fin</string>

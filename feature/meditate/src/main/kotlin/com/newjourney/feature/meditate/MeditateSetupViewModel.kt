@@ -8,6 +8,7 @@ import com.newjourney.core.database.RoutineRepository
 import com.newjourney.core.datastore.UserSettingsRepository
 import com.newjourney.core.model.BackgroundSound
 import com.newjourney.core.model.BellSound
+import com.newjourney.core.model.VoiceGuide
 import com.newjourney.core.billing.EntitlementRepository
 import com.newjourney.core.model.Entitlement
 import com.newjourney.core.model.Routine
@@ -78,6 +79,7 @@ class MeditateSetupViewModel @Inject constructor(
     fun setEndBell(on: Boolean) = updateSettings { it.copy(endBell = on) }
     fun setSound(sound: BackgroundSound) = updateSettings { it.copy(sound = sound) }
     fun setBell(bell: BellSound) = updateSettings { it.copy(bell = bell) }
+    fun setGuide(guide: VoiceGuide) = updateSettings { it.copy(guide = guide) }
 
     /** Saves the current length, bells and sound as a routine called [name]. */
     fun saveRoutine(name: String) {

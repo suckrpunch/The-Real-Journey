@@ -11,12 +11,16 @@ enum class BackgroundSound { SILENCE, RAIN, FOREST, BEACH }
 /** Which bell rings at the start and end of a session. */
 enum class BellSound { SINGING_BOWL, TIBETAN }
 
+/** A spoken guide: a voice leads in at the start and back out at the end. */
+enum class VoiceGuide { NONE, FEMALE, MALE }
+
 /** The user's timer choices, remembered between sessions. */
 data class TimerSettings(
     val startBell: Boolean = true,
     val endBell: Boolean = true,
     val sound: BackgroundSound = BackgroundSound.SILENCE,
     val bell: BellSound = BellSound.SINGING_BOWL,
+    val guide: VoiceGuide = VoiceGuide.NONE,
 )
 
 enum class SessionKind(val storedName: String) {
