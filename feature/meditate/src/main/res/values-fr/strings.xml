@@ -49,6 +49,10 @@
     <string name="session_breathe_out">Expirez…</string>
     <string name="session_with_track">Avec %1$s</string>
     <string name="session_voice_volume">Volume de la voix</string>
+    <string name="session_bar_title">Méditation en cours</string>
+    <string name="session_bar_left">Encore %1$s · touchez pour revenir</string>
+    <string name="session_bar_paused">En pause · encore %1$s</string>
+    <string name="session_bar_open">Retour à votre méditation</string>
     <string name="timer_pause">Pause</string>
     <string name="timer_resume">Reprendre</string>
     <string name="timer_end">Terminer</string>

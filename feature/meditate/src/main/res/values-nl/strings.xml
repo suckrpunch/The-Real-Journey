@@ -49,6 +49,10 @@
     <string name="session_breathe_out">Adem uit…</string>
     <string name="session_with_track">Met %1$s</string>
     <string name="session_voice_volume">Volume van de stem</string>
+    <string name="session_bar_title">Meditatie bezig</string>
+    <string name="session_bar_left">Nog %1$s · tik om terug te gaan</string>
+    <string name="session_bar_paused">Gepauzeerd · nog %1$s</string>
+    <string name="session_bar_open">Terug naar je meditatie</string>
     <string name="timer_pause">Pauzeren</string>
     <string name="timer_resume">Hervatten</string>
     <string name="timer_end">Stoppen</string>

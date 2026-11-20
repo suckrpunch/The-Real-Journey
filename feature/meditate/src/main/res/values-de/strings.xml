@@ -49,6 +49,10 @@
     <string name="session_breathe_out">Ausatmen…</string>
     <string name="session_with_track">Mit %1$s</string>
     <string name="session_voice_volume">Lautstärke der Stimme</string>
+    <string name="session_bar_title">Meditation läuft</string>
+    <string name="session_bar_left">Noch %1$s · tippen zum Zurückkehren</string>
+    <string name="session_bar_paused">Pausiert · noch %1$s</string>
+    <string name="session_bar_open">Zurück zu deiner Meditation</string>
     <string name="timer_pause">Pausieren</string>
     <string name="timer_resume">Fortsetzen</string>
     <string name="timer_end">Beenden</string>

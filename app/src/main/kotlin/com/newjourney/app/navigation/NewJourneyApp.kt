@@ -1,5 +1,6 @@
 package com.newjourney.app.navigation
 
+import com.newjourney.feature.meditate.ActiveSessionBar
 import androidx.compose.ui.unit.sp
 import com.newjourney.core.designsystem.component.FitText
 import androidx.annotation.StringRes
@@ -117,8 +118,12 @@ fun NewJourneyApp(
         bottomBar = {
             if (showTabs) {
                 Column {
-                    // The player screen has its own controls, so the mini player steps aside there.
-                    if (!onTrackScreen) MiniPlayer(onOpen = openTrack)
+                    // A meditation in progress comes first: one tap back to the session. Otherwise the
+                    // music mini player, except on the player screen, which has its own controls.
+                    val sessionShown = ActiveSessionBar(
+                        onOpen = { navController.navigate(MeditationSessionRoute(autoStart = false)) { launchSingleTop = true } },
+                    )
+                    if (!sessionShown && !onTrackScreen) MiniPlayer(onOpen = openTrack)
                     NavigationBar(containerColor = MaterialTheme.colorScheme.background, tonalElevation = 0.dp) {
                         TopLevelDestination.entries.forEach { destination ->
                             val selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.routeClass) } == true ||
