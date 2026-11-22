@@ -32,9 +32,16 @@ import com.newjourney.core.model.BellSound
 
 /**
  * "Bell sound": one pill per bell. Choosing a bell plays it once, so people can hear the difference.
+ * Without Premium, the Tibetan bell shows a lock and explains Premium instead.
  */
 @Composable
-internal fun BellChoice(selected: BellSound, onSelect: (BellSound) -> Unit, modifier: Modifier = Modifier) {
+internal fun BellChoice(
+    selected: BellSound,
+    onSelect: (BellSound) -> Unit,
+    modifier: Modifier = Modifier,
+    isPremium: Boolean = true,
+    onLocked: () -> Unit = {},
+) {
     val preview = rememberSoundPreview()
     val colors = MaterialTheme.colorScheme
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -42,6 +49,7 @@ internal fun BellChoice(selected: BellSound, onSelect: (BellSound) -> Unit, modi
         Row(Modifier.fillMaxWidth().selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BellSound.entries.forEach { bell ->
                 val isSelected = bell == selected
+                val locked = bell.isPremium && !isPremium
                 Surface(
                     shape = PillShape,
                     color = if (isSelected) colors.primaryContainer else Color.Transparent,
@@ -54,17 +62,26 @@ internal fun BellChoice(selected: BellSound, onSelect: (BellSound) -> Unit, modi
                             selected = isSelected,
                             role = Role.RadioButton,
                             onClick = {
-                                onSelect(bell)
-                                preview.play(bellResource(bell))
+                                if (locked) {
+                                    onLocked()
+                                } else {
+                                    onSelect(bell)
+                                    preview.play(bellResource(bell))
+                                }
                             },
                         ),
                 ) {
-                    Box(Modifier.heightIn(min = 48.dp).padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {
+                    Column(
+                        Modifier.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
                         Text(
                             stringResource(bellLabel(bell)),
                             style = MaterialTheme.typography.titleSmall,
                             textAlign = TextAlign.Center,
                         )
+                        if (locked) PremiumTag()
                     }
                 }
             }

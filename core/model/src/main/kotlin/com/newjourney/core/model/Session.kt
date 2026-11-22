@@ -5,14 +5,14 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-/** Background sound played during a timer session. All are free. */
-enum class BackgroundSound { SILENCE, RAIN, FOREST, BEACH }
+/** Background sound played during a timer session. Silence and rain are free; forest and beach are Premium. */
+enum class BackgroundSound(val isPremium: Boolean = false) { SILENCE, RAIN, FOREST(true), BEACH(true) }
 
-/** Which bell rings at the start and end of a session. */
-enum class BellSound { SINGING_BOWL, TIBETAN }
+/** Which bell rings at the start and end of a session. The Tibetan bell is Premium. */
+enum class BellSound(val isPremium: Boolean = false) { SINGING_BOWL, TIBETAN(true) }
 
-/** A spoken guide: a voice leads in at the start and back out at the end. */
-enum class VoiceGuide { NONE, FEMALE, MALE }
+/** A spoken guide: a voice leads in at the start and back out at the end. Both voices are Premium. */
+enum class VoiceGuide(val isPremium: Boolean = false) { NONE, FEMALE(true), MALE(true) }
 
 /** The user's timer choices, remembered between sessions. */
 data class TimerSettings(
@@ -95,3 +95,18 @@ data class WeekProgress(
         }
     }
 }
+
+/**
+ * These settings as someone without Premium hears them: Premium choices fall back to their free
+ * counterparts (classic bell, silence, no voice). Choices are kept, so they return with Premium.
+ */
+fun TimerSettings.forPremium(isPremium: Boolean): TimerSettings =
+    if (isPremium) {
+        this
+    } else {
+        copy(
+            bell = if (bell.isPremium) BellSound.SINGING_BOWL else bell,
+            sound = if (sound.isPremium) BackgroundSound.SILENCE else sound,
+            guide = if (guide.isPremium) VoiceGuide.NONE else guide,
+        )
+    }

@@ -72,6 +72,7 @@
     <string name="journey_title">Die Reise nach innen</string>
     <string name="journey_intro">Ein ruhiger Weg in sechs Etappen. Jede Meditation ist ein Schritt; der Weg führt nur vorwärts.</string>
     <string name="journey_open">Deine Reise öffnen</string>
+    <string name="journey_start_first">Beginne deine erste Meditation</string>
     <string name="journey_card_start">Deine Reise beginnt mit deiner ersten Meditation.</string>
     <string name="journey_card_current">Deine Etappe: %1$s.</string>
     <string name="journey_next">Als Nächstes: %1$s</string>
@@ -89,6 +90,7 @@
     <string name="premium_benefit_library">Die ganze Musikbibliothek, jede Sammlung</string>
     <string name="premium_benefit_length">Sitzungen von 15 Minuten bis zu einer Stunde, mit jedem Titel</string>
     <string name="premium_benefit_journey">Jede Etappe der Reise nach innen</string>
+    <string name="premium_benefit_guided">Geführte Meditation, die tibetische Glocke sowie Wald- und Strandklänge</string>
     <string name="premium_benefit_support">Unterstützung für neue Musik und neue Erlebnisse</string>
     <string name="premium_free_stays">Alles Kostenlose bleibt kostenlos: der Timer bis 10 Minuten, die kostenlosen Titel, dein Tagebuch, Fortschritt und Erinnerungen.</string>
     <string name="premium_plan_annual">Jährlich</string>

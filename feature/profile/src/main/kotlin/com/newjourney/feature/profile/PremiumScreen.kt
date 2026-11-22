@@ -114,6 +114,7 @@ internal fun PremiumRouteContent(onBack: () -> Unit, viewModel: PremiumViewModel
         SoftCard {
             Benefit(stringResource(R.string.premium_benefit_library))
             Benefit(stringResource(R.string.premium_benefit_length))
+            Benefit(stringResource(R.string.premium_benefit_guided))
             Benefit(stringResource(R.string.premium_benefit_journey))
             Benefit(stringResource(R.string.premium_benefit_support))
         }

@@ -5,6 +5,8 @@
     <string name="setup_in_progress_title">Votre séance est toujours en cours</string>
     <string name="setup_return_to_session">Revenir à votre séance</string>
     <string name="setup_length">Durée</string>
+    <string name="premium_setting_title">Ceci fait partie de Premium</string>
+    <string name="premium_setting_body">La méditation guidée avec Gabriëlle et Amos, la cloche tibétaine et les sons de la forêt et de la plage font partie de Premium. La cloche classique, la pluie et le silence restent toujours gratuits.</string>
     <string name="setup_settings_title">Réglages de la méditation</string>
     <string name="setup_settings_open">Ouvert</string>
     <string name="setup_settings_closed">Fermé, touchez pour modifier</string>

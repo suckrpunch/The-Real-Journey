@@ -25,12 +25,19 @@ import java.util.Locale
  * can hear who will guide them. The voice leads in after the start bell and back out before the end.
  */
 @Composable
-internal fun GuideChoice(selected: VoiceGuide, onSelect: (VoiceGuide) -> Unit, modifier: Modifier = Modifier) {
+internal fun GuideChoice(
+    selected: VoiceGuide,
+    onSelect: (VoiceGuide) -> Unit,
+    modifier: Modifier = Modifier,
+    isPremium: Boolean = true,
+    onLocked: () -> Unit = {},
+) {
     val preview = rememberSoundPreview()
     Column(modifier) {
         Column(Modifier.selectableGroup()) {
             VoiceGuide.entries.forEach { guide ->
                 val isSelected = guide == selected
+                val locked = guide.isPremium && !isPremium
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -39,9 +46,13 @@ internal fun GuideChoice(selected: VoiceGuide, onSelect: (VoiceGuide) -> Unit, m
                             selected = isSelected,
                             role = Role.RadioButton,
                             onClick = {
-                                onSelect(guide)
-                                val sample = guideSample(guide)
-                                if (sample != null) preview.play(sample, limitMs = PREVIEW_MS) else preview.stop()
+                                if (locked) {
+                                    onLocked()
+                                } else {
+                                    onSelect(guide)
+                                    val sample = guideSample(guide)
+                                    if (sample != null) preview.play(sample, limitMs = PREVIEW_MS) else preview.stop()
+                                }
                             },
                         ),
                     verticalAlignment = Alignment.CenterVertically,
@@ -50,8 +61,9 @@ internal fun GuideChoice(selected: VoiceGuide, onSelect: (VoiceGuide) -> Unit, m
                     Text(
                         stringResource(guideLabel(guide)),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 16.dp),
+                        modifier = Modifier.padding(start = 16.dp).weight(1f),
                     )
+                    if (locked) PremiumTag(Modifier.padding(start = 8.dp))
                 }
             }
         }

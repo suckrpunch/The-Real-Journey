@@ -72,6 +72,7 @@
     <string name="journey_title">De reis naar binnen</string>
     <string name="journey_intro">Een rustig pad van zes fasen. Elke meditatie is een stap; het pad gaat alleen vooruit.</string>
     <string name="journey_open">Open je reis</string>
+    <string name="journey_start_first">Begin je eerste meditatie</string>
     <string name="journey_card_start">Je reis begint met je eerste meditatie.</string>
     <string name="journey_card_current">Jouw fase: %1$s.</string>
     <string name="journey_next">Volgende: %1$s</string>
@@ -89,6 +90,7 @@
     <string name="premium_benefit_library">De hele muziekbibliotheek, elke collectie</string>
     <string name="premium_benefit_length">Sessies van 15 minuten tot een uur, met elk nummer</string>
     <string name="premium_benefit_journey">Elke fase van De reis naar binnen</string>
+    <string name="premium_benefit_guided">Begeleide meditatie, de Tibetaanse bel en de geluiden van bos en strand</string>
     <string name="premium_benefit_support">Steun voor nieuwe muziek en nieuwe ervaringen</string>
     <string name="premium_free_stays">Alles wat gratis is, blijft gratis: de timer tot 10 minuten, de gratis nummers, je dagboek, voortgang en herinneringen.</string>
     <string name="premium_plan_annual">Jaarlijks</string>

@@ -246,6 +246,7 @@ fun NewJourneyApp(
                 onOpenPremium = openPremium,
                 onEditAboutYou = { navController.navigate(OnboardingRoute(editing = true)) { launchSingleTop = true } },
                 onBack = { navController.popBackStack() },
+                onStartMeditation = { navController.navigateToTab(MeditateRoute()) },
             )
         }
     }

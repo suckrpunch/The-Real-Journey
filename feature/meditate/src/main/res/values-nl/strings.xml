@@ -5,6 +5,8 @@
     <string name="setup_in_progress_title">Je sessie loopt nog</string>
     <string name="setup_return_to_session">Terug naar je sessie</string>
     <string name="setup_length">Duur</string>
+    <string name="premium_setting_title">Dit hoort bij Premium</string>
+    <string name="premium_setting_body">Begeleide meditatie met Gabriëlle en Amos, de Tibetaanse bel en de geluiden van bos en strand horen bij Premium. De klassieke bel, regen en stilte zijn altijd gratis.</string>
     <string name="setup_settings_title">Meditatie-instellingen</string>
     <string name="setup_settings_open">Open</string>
     <string name="setup_settings_closed">Dicht, tik om te wijzigen</string>

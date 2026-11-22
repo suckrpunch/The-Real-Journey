@@ -75,6 +75,7 @@
     <string name="journey_title">El viaje interior</string>
     <string name="journey_intro">Un camino tranquilo de seis etapas. Cada meditación es un paso; el camino solo avanza.</string>
     <string name="journey_open">Abre tu viaje</string>
+    <string name="journey_start_first">Empieza tu primera meditación</string>
     <string name="journey_card_start">Tu viaje empieza con tu primera meditación.</string>
     <string name="journey_card_current">Tu etapa: %1$s.</string>
     <string name="journey_next">Siguiente: %1$s</string>
@@ -92,6 +93,7 @@
     <string name="premium_benefit_library">Toda la biblioteca musical, cada colección</string>
     <string name="premium_benefit_length">Sesiones de 15 minutos a una hora, con cualquier pista</string>
     <string name="premium_benefit_journey">Cada etapa de El viaje interior</string>
+    <string name="premium_benefit_guided">La meditación guiada, la campana tibetana y los sonidos del bosque y la playa</string>
     <string name="premium_benefit_support">Apoyo a nueva música y nuevas experiencias</string>
     <string name="premium_free_stays">Todo lo gratuito sigue siendo gratis: el temporizador hasta 10 minutos, las pistas gratuitas, tu diario, tu progreso y los recordatorios.</string>
     <string name="premium_plan_annual">Anual</string>

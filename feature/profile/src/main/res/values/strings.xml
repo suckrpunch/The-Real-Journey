@@ -85,6 +85,7 @@
     <string name="journey_title">The Journey Within</string>
     <string name="journey_intro">A quiet path of six stages. Every meditation is a step; the path only moves forward.</string>
     <string name="journey_open">Open your journey</string>
+    <string name="journey_start_first">Start your first meditation</string>
     <string name="journey_card_start">Your journey begins with your first meditation.</string>
     <string name="journey_card_current">You are at %1$s.</string>
     <string name="journey_next">Next: %1$s</string>
@@ -104,6 +105,7 @@
     <string name="premium_benefit_library">The full music library, every collection</string>
     <string name="premium_benefit_length">Sessions of 15 minutes up to an hour, with any track</string>
     <string name="premium_benefit_journey">Every stage of The Journey Within</string>
+    <string name="premium_benefit_guided">Guided meditation, the Tibetan bell and the forest and beach sounds</string>
     <string name="premium_benefit_support">Support for new music and new experiences</string>
     <string name="premium_free_stays">Everything free stays free: the timer up to 10 minutes, the free tracks, your journal, progress and reminders.</string>
     <string name="premium_plan_annual">Yearly</string>

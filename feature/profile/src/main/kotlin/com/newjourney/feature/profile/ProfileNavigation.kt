@@ -38,6 +38,7 @@ fun NavGraphBuilder.profileScreens(
     onOpenPremium: () -> Unit,
     onEditAboutYou: () -> Unit,
     onBack: () -> Unit,
+    onStartMeditation: () -> Unit = {},
 ) {
     composable<ProfileRoute> {
         ProfileRouteContent(
@@ -49,7 +50,7 @@ fun NavGraphBuilder.profileScreens(
         )
     }
     composable<JourneyRoute> {
-        JourneyRouteContent(onOpenStage = { onOpenStage(it.name) }, onBack = onBack)
+        JourneyRouteContent(onOpenStage = { onOpenStage(it.name) }, onBack = onBack, onStartMeditation = onStartMeditation)
     }
     composable<StageRoute> { entry ->
         val name = entry.toRoute<StageRoute>().stage

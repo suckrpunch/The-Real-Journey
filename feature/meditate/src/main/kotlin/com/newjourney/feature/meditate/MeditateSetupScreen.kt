@@ -107,6 +107,7 @@ internal fun MeditateSetupScreen(
     var premiumSheetMinutes by rememberSaveable { mutableStateOf<Int?>(null) }
     var showSaveRoutine by rememberSaveable { mutableStateOf(false) }
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
+    var premiumSetting by rememberSaveable { mutableStateOf(false) }
     var routineToRemove by rememberSaveable { mutableStateOf<Long?>(null) }
 
     LazyColumn(
@@ -167,14 +168,20 @@ internal fun MeditateSetupScreen(
         item {
             // Bells, background sound and the guiding voice, folded into one tidy panel.
             MeditationSettingsCard(
-                settings = state.settings,
+                settings = state.effectiveSettings,
                 expanded = settingsOpen,
                 onToggle = { settingsOpen = !settingsOpen },
             ) {
                 CardHeading(NavIcons.Bell, stringResource(R.string.setup_bells))
                 SwitchRow(stringResource(R.string.setup_start_bell), state.settings.startBell, onStartBellChange, compact = true)
                 SwitchRow(stringResource(R.string.setup_end_bell), state.settings.endBell, onEndBellChange, compact = true)
-                BellChoice(state.settings.bell, onBellSelected, Modifier.padding(top = 8.dp))
+                BellChoice(
+                    state.effectiveSettings.bell,
+                    onBellSelected,
+                    Modifier.padding(top = 8.dp),
+                    isPremium = state.isPremium,
+                    onLocked = { premiumSetting = true },
+                )
 
                 SettingsDivider()
                 CardHeading(NavIcons.Music, stringResource(R.string.setup_sound))
@@ -187,12 +194,17 @@ internal fun MeditateSetupScreen(
                     )
                     Column(Modifier.selectableGroup()) {
                         BackgroundSound.entries.forEach { sound ->
-                            val selected = sound == state.settings.sound
+                            val selected = sound == state.effectiveSettings.sound
+                            val locked = sound.isPremium && !state.isPremium
                             Row(
                                 Modifier
                                     .fillMaxWidth()
                                     .heightIn(min = 38.dp)
-                                    .selectable(selected = selected, onClick = { onSoundSelected(sound) }, role = Role.RadioButton),
+                                    .selectable(
+                                        selected = selected,
+                                        onClick = { if (locked) premiumSetting = true else onSoundSelected(sound) },
+                                        role = Role.RadioButton,
+                                    ),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 RadioButton(selected = selected, onClick = null)
@@ -201,6 +213,8 @@ internal fun MeditateSetupScreen(
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(start = 16.dp),
                                 )
+                                // Beside the name, clear of the trees in the corner.
+                                if (locked) PremiumTag(Modifier.padding(start = 12.dp))
                             }
                         }
                     }
@@ -208,7 +222,12 @@ internal fun MeditateSetupScreen(
 
                 SettingsDivider()
                 CardHeading(NavIcons.Meditator, stringResource(R.string.setup_guide))
-                GuideChoice(state.settings.guide, onGuideSelected)
+                GuideChoice(
+                    state.effectiveSettings.guide,
+                    onGuideSelected,
+                    isPremium = state.isPremium,
+                    onLocked = { premiumSetting = true },
+                )
             }
         }
 
@@ -246,8 +265,8 @@ internal fun MeditateSetupScreen(
 
     if (showSaveRoutine) {
         SaveRoutineDialog(
-            summary = routineSummary(state.selectedMinutes, state.settings),
-            suggestion = suggestedRoutineName(state.selectedMinutes, state.settings),
+            summary = routineSummary(state.selectedMinutes, state.effectiveSettings),
+            suggestion = suggestedRoutineName(state.selectedMinutes, state.effectiveSettings),
             onSave = onSaveRoutine,
             onDismiss = { showSaveRoutine = false },
         )
@@ -264,6 +283,7 @@ internal fun MeditateSetupScreen(
     premiumSheetMinutes?.let { minutes ->
         PremiumDurationSheet(minutes = minutes, onDismiss = { premiumSheetMinutes = null })
     }
+    if (premiumSetting) PremiumSettingSheet(onDismiss = { premiumSetting = false })
 }
 
 /** A card heading with a small icon in front, like "Bells" and "Background sound". */

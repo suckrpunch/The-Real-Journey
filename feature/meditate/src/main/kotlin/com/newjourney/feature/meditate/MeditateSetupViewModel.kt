@@ -1,5 +1,6 @@
 package com.newjourney.feature.meditate
 
+import com.newjourney.core.model.forPremium
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,6 +35,10 @@ data class MeditateSetupUiState(
     val routines: List<Routine> = emptyList(),
 ) {
     fun isLocked(minutes: Int): Boolean = !entitlement.isPremium && TimerLimits.isPremiumDuration(minutes)
+    val isPremium: Boolean get() = entitlement.isPremium
+
+    /** What will actually play: Premium choices fall back to free ones without Premium. */
+    val effectiveSettings: TimerSettings get() = settings.forPremium(entitlement.isPremium)
     val canSaveRoutine: Boolean get() = routines.size < Routine.MAX_ROUTINES
 }
 

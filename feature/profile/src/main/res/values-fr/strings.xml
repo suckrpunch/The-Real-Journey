@@ -75,6 +75,7 @@
     <string name="journey_title">Le voyage intérieur</string>
     <string name="journey_intro">Un chemin paisible en six étapes. Chaque méditation est un pas ; le chemin ne fait qu\'avancer.</string>
     <string name="journey_open">Ouvrir votre voyage</string>
+    <string name="journey_start_first">Commencer votre première méditation</string>
     <string name="journey_card_start">Votre voyage commence avec votre première méditation.</string>
     <string name="journey_card_current">Votre étape : %1$s.</string>
     <string name="journey_next">Ensuite : %1$s</string>
@@ -92,6 +93,7 @@
     <string name="premium_benefit_library">Toute la bibliothèque musicale, chaque collection</string>
     <string name="premium_benefit_length">Des séances de 15 minutes à une heure, avec n\'importe quel morceau</string>
     <string name="premium_benefit_journey">Chaque étape du Voyage intérieur</string>
+    <string name="premium_benefit_guided">La méditation guidée, la cloche tibétaine et les sons de la forêt et de la plage</string>
     <string name="premium_benefit_support">Un soutien à de nouvelles musiques et expériences</string>
     <string name="premium_free_stays">Tout ce qui est gratuit le reste : le minuteur jusqu\'à 10 minutes, les morceaux gratuits, votre journal, votre progression et vos rappels.</string>
     <string name="premium_plan_annual">Annuel</string>

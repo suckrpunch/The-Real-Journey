@@ -1,5 +1,7 @@
 package com.newjourney.feature.profile
 
+import androidx.compose.foundation.layout.size
+import com.newjourney.core.designsystem.icon.NavIcons
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -103,6 +105,7 @@ internal class JourneyViewModel @Inject constructor(
 internal fun JourneyRouteContent(
     onOpenStage: (JourneyStage) -> Unit,
     onBack: () -> Unit,
+    onStartMeditation: () -> Unit = {},
     viewModel: JourneyViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -121,6 +124,14 @@ internal fun JourneyRouteContent(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         val current = state ?: return@Column
+        // Before the very first meditation, the path starts with one clear step.
+        if (current.journey.sessions == 0) {
+            PrimaryButton(
+                text = stringResource(R.string.journey_start_first),
+                onClick = onStartMeditation,
+                leading = { Icon(NavIcons.Play, contentDescription = null, modifier = Modifier.size(22.dp)) },
+            )
+        }
         NextStageCard(current)
         Column {
             JourneyStage.entries.forEachIndexed { index, stage ->

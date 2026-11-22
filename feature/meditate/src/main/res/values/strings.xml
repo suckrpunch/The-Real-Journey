@@ -6,6 +6,8 @@
     <string name="setup_in_progress_title">Your session is still going</string>
     <string name="setup_return_to_session">Return to your session</string>
     <string name="setup_length">Length</string>
+    <string name="premium_setting_title">This is part of Premium</string>
+    <string name="premium_setting_body">Guided meditation with Gabriëlle and Amos, the Tibetan bell and the forest and beach sounds come with Premium. The classic bell, rain and silence are always free.</string>
     <string name="setup_settings_title">Meditation settings</string>
     <string name="setup_settings_open">Open</string>
     <string name="setup_settings_closed">Closed, tap to change</string>

@@ -1,5 +1,6 @@
 package com.newjourney.feature.meditate
 
+import com.newjourney.core.model.forPremium
 import com.newjourney.core.model.VoiceGuide
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -103,7 +104,9 @@ class MeditationSessionViewModel @Inject constructor(
                 val minutes = if (allowed) requested else TimerLimits.FREE_MAX_MINUTES
                 // The bell and the voice are personal choices, so routines use the ones chosen now.
                 val saved = userSettings.timerSettings.first()
-                val timerSettings = routine?.settings?.copy(bell = saved.bell, guide = saved.guide) ?: saved
+                val chosen = routine?.settings?.copy(bell = saved.bell, guide = saved.guide) ?: saved
+                // Premium sounds, the Tibetan bell and the voices only play with Premium.
+                val timerSettings = chosen.forPremium(entitlement.isPremium)
                 timer.start(minutes, timerSettings, if (routine != null) null else route.trackId)
                 savedStateHandle[KEY_HAD_SESSION] = true
             }

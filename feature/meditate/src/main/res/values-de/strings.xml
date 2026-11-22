@@ -5,6 +5,8 @@
     <string name="setup_in_progress_title">Deine Sitzung läuft noch</string>
     <string name="setup_return_to_session">Zurück zu deiner Sitzung</string>
     <string name="setup_length">Dauer</string>
+    <string name="premium_setting_title">Das gehört zu Premium</string>
+    <string name="premium_setting_body">Geführte Meditation mit Gabriëlle und Amos, die tibetische Glocke sowie die Wald- und Strandklänge gehören zu Premium. Die klassische Glocke, Regen und Stille sind immer kostenlos.</string>
     <string name="setup_settings_title">Meditationseinstellungen</string>
     <string name="setup_settings_open">Geöffnet</string>
     <string name="setup_settings_closed">Geschlossen, zum Ändern tippen</string>
