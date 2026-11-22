@@ -327,12 +327,7 @@ private fun MilestonesCard(stats: ProgressStats) {
 @Composable
 private fun MilestoneRow(item: MilestoneProgress, done: Boolean, detail: String?) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-        Icon(
-            if (done) Icons.Filled.CheckCircle else Icons.Outlined.Circle,
-            contentDescription = null,
-            tint = if (done) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-            modifier = Modifier.size(28.dp),
-        )
+        MilestoneBadge(item.milestone, earned = done, size = 52.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(milestoneTitle(item.milestone)), style = MaterialTheme.typography.bodyLarge)
             if (detail != null) {

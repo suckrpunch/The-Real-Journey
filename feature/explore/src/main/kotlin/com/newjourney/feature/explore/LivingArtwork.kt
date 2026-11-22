@@ -1,5 +1,6 @@
 package com.newjourney.feature.explore
 
+import com.newjourney.core.designsystem.living.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

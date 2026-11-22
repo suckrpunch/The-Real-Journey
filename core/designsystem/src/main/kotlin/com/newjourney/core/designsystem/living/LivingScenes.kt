@@ -1,6 +1,13 @@
-package com.newjourney.feature.explore
+package com.newjourney.core.designsystem.living
 
+import android.provider.Settings
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -28,21 +35,41 @@ import kotlin.math.sqrt
  * cover (0..1 from the top left); `at` turns it into a point on screen. Everything is soft and slow.
  */
 
+/** True when the phone's animations are turned off: everything then stays still. */
+@Composable
+fun rememberReduceMotion(): Boolean {
+    val context = LocalContext.current
+    return remember {
+        Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    }
+}
+
+/** Seconds since this appeared, updated every frame while [running]. */
+@Composable
+fun rememberSeconds(running: Boolean): State<Float> = produceState(0f, running) {
+    if (!running) return@produceState
+    val start = withFrameNanos { it }
+    while (true) withFrameNanos { value = (it - start) / 1_000_000_000f }
+}
+
+val MOONLIGHT = Color(0xFFFFF1C9)
+val SUNLIGHT = Color(0xFFFFF4D6)
+
 /** Turns a position on the cover (fractions) into a point on screen. */
-internal typealias At = (Float, Float) -> Offset
+typealias At = (Float, Float) -> Offset
 
 /**
  * A part of the picture that moves a little on its own (leaves, a cloud, a boat, a sleeping panda).
  * It is drawn again on top with a feathered edge, shifted, turned or scaled very slightly.
  */
-internal class Patch(
+class Patch(
     val x: Float,
     val y: Float,
     val radius: Float,
     val motion: (t: Float) -> Motion,
 )
 
-internal data class Motion(
+data class Motion(
     val dx: Float = 0f,
     val dy: Float = 0f,
     val degrees: Float = 0f,
@@ -52,14 +79,14 @@ internal data class Motion(
 )
 
 /** One cover's life: where to look, which parts move, and what is drawn on top. */
-internal class Scene(
+class Scene(
     val focusY: Float = 0.5f,
     val patches: List<Patch> = emptyList(),
     val draw: DrawScope.(t: Float, side: Float, at: At) -> Unit = { _, _, _ -> },
 )
 
 /** Draws [cover] filling the canvas (cropped to the scene's focus), its moving parts, then its light. */
-internal fun DrawScope.drawLivingCover(cover: ImageBitmap, scene: Scene, t: Float, animate: Boolean) {
+fun DrawScope.drawLivingCover(cover: ImageBitmap, scene: Scene, t: Float, animate: Boolean) {
     val side = maxOf(size.width, size.height)
     val offX = (size.width - side) / 2f
     val offY = (size.height / 2f - scene.focusY * side).coerceIn(size.height - side, 0f)
@@ -101,21 +128,21 @@ internal fun DrawScope.drawLivingCover(cover: ImageBitmap, scene: Scene, t: Floa
 // ---- Timing ----
 
 /** 0..1, repeating every [period] seconds; [offset] shifts it along (0..1). */
-internal fun phase(t: Float, period: Float, offset: Float = 0f): Float = ((t / period - offset) % 1f + 1f) % 1f
+fun phase(t: Float, period: Float, offset: Float = 0f): Float = ((t / period - offset) % 1f + 1f) % 1f
 
 /** A soft bump at the start of each phase, quiet the rest of the time. */
-internal fun bump(p: Float, width: Float = 0.006f): Float = exp(-((p - 0.08f) * (p - 0.08f)) / width)
+fun bump(p: Float, width: Float = 0.006f): Float = exp(-((p - 0.08f) * (p - 0.08f)) / width)
 
 /** 0..1, breathing in and out over [period] seconds. */
-internal fun breathe(t: Float, period: Float, offset: Float = 0f): Float =
+fun breathe(t: Float, period: Float, offset: Float = 0f): Float =
     (1f - cos((t / period + offset) * 2f * PI.toFloat())) / 2f
 
 /** A slow sway between -1 and 1. */
-internal fun sway(t: Float, period: Float, offset: Float = 0f): Float = sin((t / period + offset) * 2f * PI.toFloat())
+fun sway(t: Float, period: Float, offset: Float = 0f): Float = sin((t / period + offset) * 2f * PI.toFloat())
 
 // ---- Light ----
 
-internal fun DrawScope.glow(center: Offset, radius: Float, color: Color, alpha: Float) {
+fun DrawScope.glow(center: Offset, radius: Float, color: Color, alpha: Float) {
     if (alpha <= 0.005f || radius <= 0f) return
     drawCircle(
         Brush.radialGradient(listOf(color.copy(alpha = alpha.coerceAtMost(1f)), color.copy(alpha = alpha * 0.4f), Color.Transparent), center, radius),
@@ -125,20 +152,20 @@ internal fun DrawScope.glow(center: Offset, radius: Float, color: Color, alpha: 
 }
 
 /** A light that breathes in place. */
-internal fun DrawScope.breathingGlow(at: At, side: Float, t: Float, x: Float, y: Float, r: Float, color: Color, low: Float, high: Float, period: Float = 6f, offset: Float = 0f) =
+fun DrawScope.breathingGlow(at: At, side: Float, t: Float, x: Float, y: Float, r: Float, color: Color, low: Float, high: Float, period: Float = 6f, offset: Float = 0f) =
     glow(at(x, y), side * r, color, low + (high - low) * breathe(t, period, offset))
 
 /** A star or glint that brightens and fades at its own rhythm. */
-internal fun DrawScope.twinkle(center: Offset, radius: Float, t: Float, seed: Int, color: Color = Color.White) {
+fun DrawScope.twinkle(center: Offset, radius: Float, t: Float, seed: Int, color: Color = Color.White) {
     val p = breathe(t + seed * 1.37f, 3.2f + (seed % 3) * 0.9f)
     glow(center, radius * (2f + 2f * p), color, 0.15f + 0.55f * p * p)
 }
 
-internal fun DrawScope.stars(at: At, side: Float, t: Float, points: List<Pair<Float, Float>>, r: Float = 0.01f, color: Color = Color.White) =
+fun DrawScope.stars(at: At, side: Float, t: Float, points: List<Pair<Float, Float>>, r: Float = 0.01f, color: Color = Color.White) =
     points.forEachIndexed { i, (x, y) -> twinkle(at(x, y), side * r, t, i, color) }
 
 /** Glints on water along a short band, coming and going. */
-internal fun DrawScope.glints(at: At, side: Float, t: Float, x: Float, y: Float, width: Float, depth: Float, color: Color = Color(0xFFFFF4D6), count: Int = 6) =
+fun DrawScope.glints(at: At, side: Float, t: Float, x: Float, y: Float, width: Float, depth: Float, color: Color = Color(0xFFFFF4D6), count: Int = 6) =
     repeat(count) { i ->
         val p = bump(phase(t, period = 4.5f, offset = i / count.toFloat()))
         val gx = x + width * (((i * 7) % count) / (count - 1f) - 0.5f)
@@ -147,7 +174,7 @@ internal fun DrawScope.glints(at: At, side: Float, t: Float, x: Float, y: Float,
     }
 
 /** A few specks of light rising slowly and fading, like dust in warm light. */
-internal fun DrawScope.risingMotes(at: At, side: Float, t: Float, centerX: Float, fromY: Float, toY: Float, color: Color, spread: Float = 0.18f, count: Int = 7) =
+fun DrawScope.risingMotes(at: At, side: Float, t: Float, centerX: Float, fromY: Float, toY: Float, color: Color, spread: Float = 0.18f, count: Int = 7) =
     repeat(count) { i ->
         val p = phase(t, period = 9f + i % 3, offset = i / count.toFloat())
         val x = centerX + spread * ((((i * 37) % 11) - 5) / 5f) + 0.012f * sin(t * 0.6f + i)
@@ -156,7 +183,7 @@ internal fun DrawScope.risingMotes(at: At, side: Float, t: Float, centerX: Float
     }
 
 /** Soft steam curling up from a cup: puffs that rise, widen and fade. */
-internal fun DrawScope.steam(at: At, side: Float, t: Float, x: Float, y: Float, height: Float) =
+fun DrawScope.steam(at: At, side: Float, t: Float, x: Float, y: Float, height: Float) =
     repeat(3) { wisp ->
         repeat(6) { j ->
             val p = phase(t, period = 4f, offset = j / 6f + wisp * 0.11f)
@@ -167,7 +194,7 @@ internal fun DrawScope.steam(at: At, side: Float, t: Float, x: Float, y: Float, 
     }
 
 /** Beams of light from [x],[y] fanning around [angle] (degrees; 0 = right, 90 = down), slowly shifting. */
-internal fun DrawScope.rays(at: At, side: Float, t: Float, x: Float, y: Float, angle: Float, spread: Float, length: Float, count: Int, color: Color, strength: Float = 0.16f) {
+fun DrawScope.rays(at: At, side: Float, t: Float, x: Float, y: Float, angle: Float, spread: Float, length: Float, count: Int, color: Color, strength: Float = 0.16f) {
     val origin = at(x, y)
     repeat(count) { i ->
         val a = Math.toRadians((angle + spread * (i / (count - 1f).coerceAtLeast(1f) - 0.5f) + 1.5f * sway(t, 11f, i * 0.23f)).toDouble())
@@ -190,11 +217,11 @@ internal fun DrawScope.rays(at: At, side: Float, t: Float, x: Float, y: Float, a
 }
 
 /** A soft patch of light (sun through a window or leaves) drifting slowly. */
-internal fun DrawScope.dapple(at: At, side: Float, t: Float, x: Float, y: Float, r: Float, color: Color, alpha: Float, drift: Float = 0.03f, period: Float = 14f) =
+fun DrawScope.dapple(at: At, side: Float, t: Float, x: Float, y: Float, r: Float, color: Color, alpha: Float, drift: Float = 0.03f, period: Float = 14f) =
     glow(at(x + drift * sway(t, period), y + drift * 0.5f * sway(t, period * 1.3f, 0.25f)), side * r, color, alpha * (0.7f + 0.3f * breathe(t, period * 0.6f)))
 
 /** Rings spreading out from a point and fading. [flat] < 1 makes them lie down, like on water. */
-internal fun DrawScope.ripples(at: At, side: Float, t: Float, x: Float, y: Float, from: Float, to: Float, color: Color, flat: Float = 1f, period: Float = 7.5f, count: Int = 3, strength: Float = 0.32f) {
+fun DrawScope.ripples(at: At, side: Float, t: Float, x: Float, y: Float, from: Float, to: Float, color: Color, flat: Float = 1f, period: Float = 7.5f, count: Int = 3, strength: Float = 0.32f) {
     val c = at(x, y)
     repeat(count) { i ->
         val p = phase(t, period, i / count.toFloat())
@@ -209,7 +236,7 @@ internal fun DrawScope.ripples(at: At, side: Float, t: Float, x: Float, y: Float
 }
 
 /** A light travelling along a line (a path, a wave, a comet trail), with a short soft tail. */
-internal fun DrawScope.travel(at: At, side: Float, t: Float, points: List<Pair<Float, Float>>, color: Color, period: Float = 6f, size: Float = 0.02f, strength: Float = 0.6f, offset: Float = 0f) {
+fun DrawScope.travel(at: At, side: Float, t: Float, points: List<Pair<Float, Float>>, color: Color, period: Float = 6f, size: Float = 0.02f, strength: Float = 0.6f, offset: Float = 0f) {
     val p = phase(t, period, offset)
     // Travel for the first 70 % of the period, then rest.
     val q = (p / 0.7f).coerceAtMost(1f)
@@ -236,7 +263,7 @@ private fun pointAlong(points: List<Pair<Float, Float>>, f: Float): Pair<Float, 
 }
 
 /** A slow diagonal sheen sweeping across now and then, like light over paper. */
-internal fun DrawScope.sheen(t: Float, period: Float = 10f, strength: Float = 0.12f) {
+fun DrawScope.sheen(t: Float, period: Float = 10f, strength: Float = 0.12f) {
     val p = phase(t, period)
     if (p > 0.6f) return
     val q = p / 0.6f
@@ -252,7 +279,7 @@ internal fun DrawScope.sheen(t: Float, period: Float = 10f, strength: Float = 0.
 }
 
 /** Soft rain: thin streaks falling through an area. */
-internal fun DrawScope.rain(at: At, side: Float, t: Float, x0: Float, x1: Float, y0: Float, y1: Float, count: Int = 9) =
+fun DrawScope.rain(at: At, side: Float, t: Float, x0: Float, x1: Float, y0: Float, y1: Float, count: Int = 9) =
     repeat(count) { i ->
         val p = phase(t, period = 1.6f + (i % 3) * 0.3f, offset = i / count.toFloat())
         val x = x0 + (x1 - x0) * (((i * 5) % count) / (count - 1f))

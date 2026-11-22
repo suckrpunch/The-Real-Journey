@@ -1,5 +1,6 @@
 package com.newjourney.feature.explore
 
+import com.newjourney.core.designsystem.living.*
 import androidx.compose.ui.graphics.Color
 import kotlin.math.PI
 import kotlin.math.cos

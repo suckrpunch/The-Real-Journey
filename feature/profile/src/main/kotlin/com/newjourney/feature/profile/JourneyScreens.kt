@@ -1,5 +1,6 @@
 package com.newjourney.feature.profile
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import com.newjourney.core.designsystem.icon.NavIcons
 import androidx.compose.foundation.Canvas
@@ -196,24 +197,22 @@ private fun StageRow(
 
     Surface(onClick = onClick, color = Color.Transparent, modifier = Modifier.fillMaxWidth()) {
         Row(Modifier.heightIn(min = 96.dp), verticalAlignment = Alignment.CenterVertically) {
-            Canvas(
+            // The path: a line joining each stage's picture, ringed in the stage's colour.
+            Box(
                 Modifier
-                    .width(48.dp)
+                    .width(64.dp)
                     .fillMaxHeight()
                     .heightIn(min = 96.dp),
+                contentAlignment = Alignment.Center,
             ) {
-                val cx = size.width / 2
-                val cy = size.height / 2
-                val stroke = 2.dp.toPx()
-                if (!isFirst) drawLine(line, start = Offset(cx, 0f), end = Offset(cx, cy), strokeWidth = stroke)
-                if (!isLast) drawLine(line, start = Offset(cx, cy), end = Offset(cx, size.height), strokeWidth = stroke)
-                val r = 14.dp.toPx()
-                if (arrived) {
-                    drawCircle(color, radius = r, center = Offset(cx, cy))
-                } else {
-                    drawCircle(color.copy(alpha = 0.15f), radius = r, center = Offset(cx, cy))
-                    drawCircle(color, radius = r, center = Offset(cx, cy), style = Stroke(width = stroke))
+                Canvas(Modifier.matchParentSize()) {
+                    val cx = size.width / 2
+                    val cy = size.height / 2
+                    val stroke = 2.dp.toPx()
+                    if (!isFirst) drawLine(line, start = Offset(cx, 0f), end = Offset(cx, cy), strokeWidth = stroke)
+                    if (!isLast) drawLine(line, start = Offset(cx, cy), end = Offset(cx, size.height), strokeWidth = stroke)
                 }
+                StageThumbnail(stage, arrived, ring = color, size = 56.dp)
             }
             Column(
                 Modifier
@@ -258,12 +257,13 @@ internal fun StageRouteContent(
 
         LaunchedEffect(stage, progress.arrived) { if (progress.arrived) viewModel.markSeen(stage) }
 
-        TrackArtwork(
-            content?.color,
-            Modifier
+        LivingStageArt(
+            stage,
+            arrived = progress.arrived,
+            modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 360.dp)
-                .aspectRatio(1.4f)
+                .widthIn(max = 420.dp)
+                .aspectRatio(1.25f)
                 .clip(MaterialTheme.shapes.extraLarge)
                 .align(Alignment.CenterHorizontally),
         )

@@ -1,19 +1,15 @@
 package com.newjourney.feature.explore
 
-import android.provider.Settings
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.platform.LocalContext
 import com.newjourney.core.designsystem.component.rememberCover
+import com.newjourney.core.designsystem.living.*
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -42,23 +38,6 @@ internal fun LivingCategoryBanner(categoryId: String, modifier: Modifier = Modif
             drawLivingCover(cover, scene, t, animate = !reduceMotion)
         }
     }
-}
-
-/** True when the phone's animations are turned off: everything then stays still. */
-@Composable
-internal fun rememberReduceMotion(): Boolean {
-    val context = LocalContext.current
-    return remember {
-        Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
-    }
-}
-
-/** Seconds since this appeared, updated every frame while [running]. */
-@Composable
-internal fun rememberSeconds(running: Boolean): State<Float> = produceState(0f, running) {
-    if (!running) return@produceState
-    val start = withFrameNanos { it }
-    while (true) withFrameNanos { value = (it - start) / 1_000_000_000f }
 }
 
 private fun categoryScene(categoryId: String): Scene = when (categoryId) {
@@ -94,9 +73,6 @@ private fun categoryScene(categoryId: String): Scene = when (categoryId) {
     }
     else -> Scene()
 }
-
-internal val MOONLIGHT = Color(0xFFFFF1C9)
-internal val SUNLIGHT = Color(0xFFFFF4D6)
 
 // The chakra circles, bottom (root) to top (crown), with their own colours.
 private val CHAKRAS = listOf(
