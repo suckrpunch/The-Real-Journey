@@ -544,6 +544,104 @@
         "outMs": 119028,
         "crossfadeMs": 6000
       }
+    },
+    {
+      "id": "all-is-well",
+      "title": "All Is Well",
+      "category": "healing",
+      "subcategory": "balance",
+      "durationMs": 237029,
+      "audio": "audio/healing/all-is-well.m4a",
+      "tier": "free",
+      "loop": {
+        "inMs": 24500,
+        "outMs": 223492,
+        "crossfadeMs": 8000
+      }
+    },
+    {
+      "id": "soften-your-gaze",
+      "title": "Soften Your Gaze",
+      "category": "healing",
+      "subcategory": "balance",
+      "durationMs": 230667,
+      "audio": "audio/healing/soften-your-gaze.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 16500,
+        "outMs": 194487,
+        "crossfadeMs": 8000
+      }
+    },
+    {
+      "id": "closer-to-self",
+      "title": "Closer To Self",
+      "category": "healing",
+      "subcategory": "self-love",
+      "durationMs": 224583,
+      "audio": "audio/healing/closer-to-self.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 56500,
+        "outMs": 184987,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "i-am-safe-here",
+      "title": "I Am Safe Here",
+      "category": "healing",
+      "subcategory": "self-love",
+      "durationMs": 407114,
+      "audio": "audio/healing/i-am-safe-here.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 8500,
+        "outMs": 375007,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "buddas-belly",
+      "title": "Budda's Belly",
+      "category": "healing",
+      "subcategory": "positive-energy",
+      "durationMs": 244111,
+      "audio": "audio/healing/buddas-belly.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 23500,
+        "outMs": 214530,
+        "crossfadeMs": 6000
+      }
+    },
+    {
+      "id": "nature-is-calling",
+      "title": "Nature Is Calling",
+      "category": "healing",
+      "subcategory": "positive-energy",
+      "durationMs": 230920,
+      "audio": "audio/healing/nature-is-calling.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 30000,
+        "outMs": 173014,
+        "crossfadeMs": 10000
+      }
+    },
+    {
+      "id": "remember-to-heal",
+      "title": "Remember To Heal",
+      "category": "healing",
+      "subcategory": "inner-healing",
+      "durationMs": 250496,
+      "audio": "audio/healing/remember-to-heal.m4a",
+      "tier": "premium",
+      "loop": {
+        "inMs": 32500,
+        "outMs": 205475,
+        "crossfadeMs": 6000
+      }
     }
   ]
 }

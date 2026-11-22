@@ -16,7 +16,7 @@ class CatalogParserTest {
         val catalog = CatalogParser.parse(text)
         assertEquals(6, catalog.categories.size)
         assertEquals(7, catalog.tracksInCategory("chakras").size)
-        assertEquals(27, catalog.tracks.size)
+        assertEquals(34, catalog.tracks.size)
 
         val subcategoryIds = catalog.categories.flatMap { c -> c.subcategories.map { it.id } }.toSet()
         catalog.tracks.forEach { track ->
@@ -36,7 +36,7 @@ class CatalogParserTest {
     fun onlineCatalogIsValid() {
         val text = File("../../content/catalog/catalog.json").readText()
         val catalog = CatalogParser.parse(text, CatalogParser.onlineResolver("example-bucket"))
-        assertEquals(27, catalog.tracks.size)
+        assertEquals(34, catalog.tracks.size)
         val subcategoryIds = catalog.categories.flatMap { c -> c.subcategories.map { it.id } }.toSet()
         catalog.tracks.forEach { track ->
             assertTrue("${track.id}: unknown subcategory", track.subcategoryId in subcategoryIds)
