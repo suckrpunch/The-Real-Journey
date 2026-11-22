@@ -208,6 +208,63 @@ internal fun trackScene(trackId: String): Scene = when (trackId) {
         ripples(at, side, t, 0.5f, 0.73f, 0.08f, 0.45f, Color.White, flat = 0.2f)
         glints(at, side, t, 0.5f, 0.8f, 0.1f, 0.1f)
     }
+
+    // ---- Healing & Energy ----
+    "all-is-well" -> Scene(
+        patches = listOf(
+            swaying(0.36f, 0.75f, 0.1f, 0.3f, 0.82f, 2f, 6f),
+            swaying(0.06f, 0.76f, 0.09f, 0.06f, 0.86f, 2.5f, 5f, 0.3f),
+        ),
+    ) { t, side, at ->
+        breathingGlow(at, side, t, 0.5f, 0.37f, 0.16f, SUNLIGHT, 0.14f, 0.3f)
+        glints(at, side, t, 0.5f, 0.54f, 0.16f, 0.1f)
+    }
+    "buddas-belly" -> Scene(
+        patches = listOf(
+            breathing(0.5f, 0.56f, 0.08f, 0.5f, 0.61f, 0.015f, 5f),
+            swaying(0.12f, 0.73f, 0.1f, 0.12f, 0.84f, 2.5f, 5f),
+        ),
+    ) { t, side, at ->
+        breathingGlow(at, side, t, 0.5f, 0.35f, 0.14f, SUNLIGHT, 0.1f, 0.24f, period = 7f)
+        // A warm glow round the middle, breathing with the figure.
+        breathingGlow(at, side, t, 0.5f, 0.57f, 0.09f, Color(0xFFFFD98A), 0.12f, 0.32f, period = 5f)
+        stars(at, side, t, listOf(0.42f to 0.47f, 0.6f to 0.5f, 0.38f to 0.55f, 0.66f to 0.45f, 0.56f to 0.43f), r = 0.008f, color = Color(0xFFFFEBB0))
+    }
+    "closer-to-self" -> Scene(patches = listOf(swaying(0.5f, 0.42f, 0.22f, 0.5f, 0.82f, 1f, 7f))) { t, side, at ->
+        breathingGlow(at, side, t, 0.5f, 0.33f, 0.16f, Color(0xFFFFD6DA), 0.12f, 0.3f, period = 6f)
+        ripples(at, side, t, 0.5f, 0.31f, 0.1f, 0.4f, Color.White, strength = 0.2f, period = 9f)
+        risingMotes(at, side, t, centerX = 0.5f, fromY = 0.7f, toY = 0.2f, color = Color(0xFFFFF0F0), spread = 0.15f, count = 5)
+    }
+    "i-am-safe-here" -> Scene(
+        patches = listOf(
+            swaying(0.2f, 0.63f, 0.09f, 0.2f, 0.7f, 2f, 6f),
+            swaying(0.82f, 0.62f, 0.09f, 0.82f, 0.7f, 2f, 7f, 0.4f),
+        ),
+    ) { t, side, at ->
+        breathingGlow(at, side, t, 0.6f, 0.35f, 0.16f, Color(0xFFFFE2C0), 0.08f, 0.2f, period = 8f)
+        // The warm light inside the shelter breathes; fireflies drift around it.
+        breathingGlow(at, side, t, 0.5f, 0.6f, 0.12f, Color(0xFFFFD9A0), 0.16f, 0.36f, period = 5f)
+        risingMotes(at, side, t, centerX = 0.5f, fromY = 0.68f, toY = 0.5f, color = Color(0xFFFFF0B0), spread = 0.2f, count = 6)
+    }
+    "nature-is-calling" -> Scene(patches = listOf(swaying(0.07f, 0.66f, 0.1f, 0.05f, 0.8f, 2.5f, 5f))) { t, side, at ->
+        breathingGlow(at, side, t, 0.5f, 0.38f, 0.14f, SUNLIGHT, 0.16f, 0.32f)
+        rays(at, side, t, 0.5f, 0.4f, angle = -90f, spread = 110f, length = 0.4f, count = 5, color = SUNLIGHT, strength = 0.12f)
+        // A light walking the path towards the sun.
+        travel(at, side, t, listOf(0.6f to 1.0f, 0.66f to 0.82f, 0.42f to 0.73f, 0.48f to 0.63f, 0.56f to 0.56f, 0.52f to 0.48f), Color(0xFFFFF6DC), period = 9f, size = 0.022f, strength = 0.5f)
+    }
+    "remember-to-heal" -> Scene { t, side, at ->
+        breathingGlow(at, side, t, 0.63f, 0.17f, 0.12f, SUNLIGHT, 0.1f, 0.22f, period = 7f)
+        breathingGlow(at, side, t, 0.5f, 0.53f, 0.15f, Color(0xFFFFF0C8), 0.14f, 0.34f, period = 5f)
+        ripples(at, side, t, 0.5f, 0.6f, 0.08f, 0.45f, Color.White, flat = 0.2f, period = 7f)
+        glints(at, side, t, 0.5f, 0.68f, 0.12f, 0.12f)
+    }
+    "soften-your-gaze" -> Scene { t, side, at ->
+        breathingGlow(at, side, t, 0.5f, 0.32f, 0.16f, SUNLIGHT, 0.1f, 0.22f, period = 8f)
+        // Soft mist drifting slowly over the lake.
+        dapple(at, side, t, 0.3f, 0.52f, 0.22f, Color.White, 0.16f, drift = 0.08f, period = 20f)
+        dapple(at, side, t, 0.72f, 0.72f, 0.24f, Color.White, 0.14f, drift = 0.08f, period = 24f)
+        glints(at, side, t, 0.5f, 0.66f, 0.06f, 0.16f)
+    }
     else -> Scene { t, side, at -> breathingGlow(at, side, t, 0.5f, 0.45f, 0.3f, Color.White, 0.0f, 0.1f, period = 8f) }
 }
 
