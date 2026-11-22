@@ -42,7 +42,6 @@ import javax.inject.Inject
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.draw.clip
-import com.newjourney.core.designsystem.component.CategoryCover
 
 internal data class SubcategorySection(val subcategory: Subcategory, val tracks: List<TrackItem>)
 
@@ -97,11 +96,11 @@ internal fun CategoryRouteContent(
         item { BackButton(onBack) }
         if (state.id.isNotEmpty()) {
             item(key = "cover") {
-                CategoryCover(
+                LivingCategoryBanner(
                     state.id,
                     Modifier
                         .fillMaxWidth()
-                        .aspectRatio(2f)
+                        .aspectRatio(1.6f)
                         .clip(MaterialTheme.shapes.extraLarge),
                 )
             }
