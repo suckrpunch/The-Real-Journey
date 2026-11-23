@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -98,7 +97,7 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
             .semantics { contentDescription = appName },
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Box(
                 Modifier
                     .size(140.dp)
@@ -133,8 +132,8 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
                 fontFamily = NunitoSans,
                 fontWeight = FontWeight.Medium,
                 fontSize = 30.sp,
-                // Trimmed line height, so the tagline sits close under the name.
-                style = TextStyle(lineHeight = 34.sp, lineHeightStyle = TrimBelow),
+                // Trimmed line height, so the name sits close to the logo and the tagline close under it.
+                style = TextStyle(lineHeight = 32.sp, lineHeightStyle = TrimBoth),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.graphicsLayer {
                     alpha = name.value
@@ -150,7 +149,6 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
                 style = TextStyle(lineHeight = 16.sp, lineHeightStyle = TrimAbove),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .padding(top = 2.dp)
                     .graphicsLayer {
                         alpha = tagline.value
                         translationY = (1f - tagline.value) * rise * 0.6f
@@ -182,8 +180,8 @@ private fun BoxScope.Star(drawable: Int, progress: Float, tint: ColorFilter) {
 /** The tagline under the name: kept in English in every language, like the name itself. */
 private const val TAGLINE = "Calm meditation"
 
-// Only the space between the name and the tagline is trimmed; the gap under the logo stays as it was.
-private val TrimBelow = LineHeightStyle(alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.LastLineBottom)
+// The name's empty line space is trimmed above and below: close under the logo, close above the tagline.
+private val TrimBoth = LineHeightStyle(alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.Both)
 private val TrimAbove = LineHeightStyle(alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.FirstLineTop)
 
 // Where the stars sit within the logo square, measured from the artwork.
