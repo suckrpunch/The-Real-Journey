@@ -37,6 +37,10 @@
     <string name="milestones_title">Meilensteine</string>
     <string name="milestones_none">Dein erster Meilenstein kommt mit deiner ersten Meditation.</string>
     <string name="milestones_ahead">Noch vor dir</string>
+    <string name="milestone_popup_label">Ein neuer Meilenstein</string>
+    <string name="milestone_popup_body">Etwas, worauf du still stolz sein kannst. Jede Minute, die du dir schenkst, zählt.</string>
+    <string name="milestone_popup_close">Schön</string>
+    <string name="milestone_popup_view">Alle Meilensteine ansehen</string>
     <string name="reminders_title">Erinnerungen</string>
     <string name="reminders_open">Erinnerungen einstellen</string>
     <string name="reminders_intro">Sanft und freiwillig. Schalte ein, was dir hilft, und lass aus, was nicht hilft.</string>

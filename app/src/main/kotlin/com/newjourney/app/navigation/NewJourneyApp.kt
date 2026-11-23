@@ -53,6 +53,7 @@ import com.newjourney.feature.meditate.meditationSessionScreen
 import com.newjourney.feature.onboarding.OnboardingRoute
 import com.newjourney.feature.onboarding.onboardingScreen
 import com.newjourney.feature.profile.JourneyRoute
+import com.newjourney.feature.profile.MilestoneCelebration
 import com.newjourney.feature.profile.PremiumRoute
 import com.newjourney.feature.profile.ProfileRoute
 import com.newjourney.feature.profile.ProgressRoute
@@ -250,6 +251,11 @@ fun NewJourneyApp(
             )
         }
     }
+    // A milestone reached anywhere (timer or music) shows as a popup, so it is not missed.
+    MilestoneCelebration(
+        onOpenMilestones = { navController.navigate(ProgressRoute) { launchSingleTop = true } },
+        enabled = currentDestination?.hasRoute(OnboardingRoute::class) != true,
+    )
     }
 }
 

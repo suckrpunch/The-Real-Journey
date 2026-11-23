@@ -80,6 +80,13 @@ interface UserSettingsRepository {
     /** Journey stages whose arrival the user has already seen, by stage name. */
     val seenJourneyStages: Flow<Set<String>>
     suspend fun markJourneyStagesSeen(stages: Set<String>)
+
+    /**
+     * Milestones whose celebration the user has already seen, by milestone name.
+     * null until the app first records them, so earlier milestones are never celebrated late.
+     */
+    val seenMilestones: Flow<Set<String>?>
+    suspend fun markMilestonesSeen(milestones: Set<String>)
 }
 
 @Singleton
@@ -247,6 +254,12 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         dataStore.edit { it[Keys.SEEN_STAGES] = (it[Keys.SEEN_STAGES] ?: emptySet()) + stages }
     }
 
+    override val seenMilestones: Flow<Set<String>?> = safeData.map { it[Keys.SEEN_MILESTONES] }
+
+    override suspend fun markMilestonesSeen(milestones: Set<String>) {
+        dataStore.edit { it[Keys.SEEN_MILESTONES] = (it[Keys.SEEN_MILESTONES] ?: emptySet()) + milestones }
+    }
+
     private object Keys {
         val CACHED_PREMIUM = booleanPreferencesKey("premium_cached")
         val DEBUG_PREMIUM = booleanPreferencesKey("premium_debug_preview")
@@ -256,6 +269,7 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
         val PROFILE_GOALS = stringSetPreferencesKey("profile_goals")
         val INTRO_DONE = booleanPreferencesKey("introduction_done")
         val SEEN_STAGES = stringSetPreferencesKey("journey_seen_stages")
+        val SEEN_MILESTONES = stringSetPreferencesKey("milestones_seen")
         val DAILY_GOAL = intPreferencesKey("daily_goal_minutes")
         val R_DAILY_ON = booleanPreferencesKey("reminder_daily_on")
         val R_DAILY_TIME = intPreferencesKey("reminder_daily_minute_of_day")

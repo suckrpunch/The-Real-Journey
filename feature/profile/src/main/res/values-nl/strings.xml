@@ -37,6 +37,10 @@
     <string name="milestones_title">Mijlpalen</string>
     <string name="milestones_none">Je eerste mijlpaal komt met je eerste meditatie.</string>
     <string name="milestones_ahead">Nog te gaan</string>
+    <string name="milestone_popup_label">Een nieuwe mijlpaal</string>
+    <string name="milestone_popup_body">Iets om stilletjes trots op te zijn. Elke minuut die je jezelf geeft, telt.</string>
+    <string name="milestone_popup_close">Mooi</string>
+    <string name="milestone_popup_view">Alle mijlpalen bekijken</string>
     <string name="reminders_title">Herinneringen</string>
     <string name="reminders_open">Herinneringen instellen</string>
     <string name="reminders_intro">Zacht en vrijblijvend. Zet aan wat helpt, en laat uit wat niet helpt.</string>

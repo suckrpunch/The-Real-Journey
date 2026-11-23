@@ -43,6 +43,10 @@
     <string name="milestones_title">Milestones</string>
     <string name="milestones_none">Your first milestone arrives with your first meditation.</string>
     <string name="milestones_ahead">Still ahead</string>
+    <string name="milestone_popup_label">A new milestone</string>
+    <string name="milestone_popup_body">Something to be quietly proud of. Every minute you give yourself counts.</string>
+    <string name="milestone_popup_close">Lovely</string>
+    <string name="milestone_popup_view">See all milestones</string>
 
     <!-- Reminders -->
     <string name="reminders_title">Reminders</string>

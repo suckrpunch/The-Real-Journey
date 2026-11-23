@@ -40,6 +40,10 @@
     <string name="milestones_title">Étapes franchies</string>
     <string name="milestones_none">Votre première étape arrive avec votre première méditation.</string>
     <string name="milestones_ahead">À venir</string>
+    <string name="milestone_popup_label">Une nouvelle étape</string>
+    <string name="milestone_popup_body">De quoi être discrètement fier. Chaque minute que vous vous accordez compte.</string>
+    <string name="milestone_popup_close">Merci</string>
+    <string name="milestone_popup_view">Voir toutes les étapes</string>
     <string name="reminders_title">Rappels</string>
     <string name="reminders_open">Régler les rappels</string>
     <string name="reminders_intro">Doux et facultatifs. Activez ce qui vous aide, laissez de côté le reste.</string>

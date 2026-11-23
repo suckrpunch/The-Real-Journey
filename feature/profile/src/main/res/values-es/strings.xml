@@ -40,6 +40,10 @@
     <string name="milestones_title">Logros</string>
     <string name="milestones_none">Tu primer logro llega con tu primera meditación.</string>
     <string name="milestones_ahead">Por delante</string>
+    <string name="milestone_popup_label">Un nuevo hito</string>
+    <string name="milestone_popup_body">Algo de lo que sentirte orgulloso en silencio. Cada minuto que te regalas cuenta.</string>
+    <string name="milestone_popup_close">Genial</string>
+    <string name="milestone_popup_view">Ver todos los hitos</string>
     <string name="reminders_title">Recordatorios</string>
     <string name="reminders_open">Configurar recordatorios</string>
     <string name="reminders_intro">Suaves y opcionales. Activa lo que te ayude y deja apagado lo que no.</string>
