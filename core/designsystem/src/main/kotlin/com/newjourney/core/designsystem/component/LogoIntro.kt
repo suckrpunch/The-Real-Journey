@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,8 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.newjourney.core.designsystem.R
 import com.newjourney.core.designsystem.theme.NunitoSans
@@ -63,6 +67,7 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
     val bigStar = remember { Animatable(start) }
     val smallStar = remember { Animatable(start) }
     val name = remember { Animatable(start) }
+    val tagline = remember { Animatable(start) }
 
     LaunchedEffect(Unit) {
         if (!reduceMotion) {
@@ -72,6 +77,7 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
                 async { delay(1200); bigStar.animateTo(1f, tween(500, easing = Calm)) },
                 async { delay(1380); smallStar.animateTo(1f, tween(500, easing = Calm)) },
                 async { delay(1450); name.animateTo(1f, tween(650, easing = Calm)) },
+                async { delay(1650); tagline.animateTo(1f, tween(650, easing = Calm)) },
             ).awaitAll()
             delay(500)
         } else {
@@ -127,11 +133,28 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
                 fontFamily = NunitoSans,
                 fontWeight = FontWeight.Medium,
                 fontSize = 30.sp,
+                // Trimmed line height, so the tagline sits close under the name.
+                style = TextStyle(lineHeight = 34.sp, lineHeightStyle = TrimBelow),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.graphicsLayer {
                     alpha = name.value
                     translationY = (1f - name.value) * rise
                 },
+            )
+            Text(
+                TAGLINE.uppercase(),
+                fontFamily = NunitoSans,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 13.sp,
+                letterSpacing = 0.22.em,
+                style = TextStyle(lineHeight = 16.sp, lineHeightStyle = TrimAbove),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(top = 2.dp)
+                    .graphicsLayer {
+                        alpha = tagline.value
+                        translationY = (1f - tagline.value) * rise * 0.6f
+                    },
             )
         }
     }
@@ -155,6 +178,13 @@ private fun BoxScope.Star(drawable: Int, progress: Float, tint: ColorFilter) {
         colorFilter = tint,
     )
 }
+
+/** The tagline under the name: kept in English in every language, like the name itself. */
+private const val TAGLINE = "Calm meditation"
+
+// Only the space between the name and the tagline is trimmed; the gap under the logo stays as it was.
+private val TrimBelow = LineHeightStyle(alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.LastLineBottom)
+private val TrimAbove = LineHeightStyle(alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.FirstLineTop)
 
 // Where the stars sit within the logo square, measured from the artwork.
 private val BigStarCentre = TransformOrigin(0.62f, 0.25f)
