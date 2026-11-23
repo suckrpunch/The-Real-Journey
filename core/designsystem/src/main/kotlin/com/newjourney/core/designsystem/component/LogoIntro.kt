@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -149,6 +150,8 @@ fun LogoIntro(onFinished: () -> Unit, modifier: Modifier = Modifier) {
                 style = TextStyle(lineHeight = 16.sp, lineHeightStyle = TrimAbove),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
+                    // Pulled up a little, tucked right under the name.
+                    .offset(y = (-4).dp)
                     .graphicsLayer {
                         alpha = tagline.value
                         translationY = (1f - tagline.value) * rise * 0.6f
