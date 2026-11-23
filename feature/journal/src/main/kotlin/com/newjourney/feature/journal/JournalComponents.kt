@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.newjourney.core.designsystem.component.MinTouchTarget
+import com.newjourney.core.designsystem.component.asMetaLine
 import com.newjourney.core.designsystem.component.isNightTheme
 import com.newjourney.core.designsystem.component.moodColor
 import com.newjourney.core.designsystem.component.moodLabel
@@ -147,7 +148,7 @@ internal fun EntryCard(entry: JournalEntry, onClick: () -> Unit) {
     val meta = buildList {
         add(timeLabel(entry))
         entry.sessionMinutes?.let { add(stringResource(R.string.journal_after_session_short, it)) }
-    }.joinToString(" · ")
+    }.joinToString(" · ").asMetaLine()
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,

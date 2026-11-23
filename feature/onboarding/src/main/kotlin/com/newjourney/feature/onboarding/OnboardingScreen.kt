@@ -1,9 +1,5 @@
 package com.newjourney.feature.onboarding
 
-import com.newjourney.core.designsystem.component.PremiumTrackSheet
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.mutableStateOf
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +34,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,14 +44,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.newjourney.core.designsystem.component.MinTouchTarget
+import com.newjourney.core.designsystem.component.PremiumTrackSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.TrackArtwork
+import com.newjourney.core.designsystem.component.asMetaLine
 import com.newjourney.core.model.AgeRange
 import com.newjourney.core.model.Goal
 
@@ -112,24 +115,36 @@ private fun TopRow(state: OnboardingUiState, onBack: () -> Unit, onSkip: () -> U
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 Text(
                     stringResource(R.string.onboarding_back),
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    softWrap = false,
                     modifier = Modifier.padding(start = 8.dp),
                 )
             }
         }
-        Spacer(Modifier.weight(1f))
-        state.questionNumber?.let { number ->
+        // The step count takes the room left between the buttons, so "Overslaan" never breaks.
+        val number = state.questionNumber
+        if (number != null) {
             Text(
                 stringResource(R.string.onboarding_step, number, 3),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
             )
+        } else {
+            Spacer(Modifier.weight(1f))
         }
         if (state.step != OnboardingStep.PICKS) {
             TextButton(onClick = onSkip, modifier = Modifier.heightIn(min = MinTouchTarget)) {
                 Text(
                     stringResource(if (state.editing) R.string.onboarding_cancel else R.string.onboarding_skip),
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    softWrap = false,
                 )
             }
         }
@@ -309,7 +324,7 @@ private fun PickCard(pick: Pick, onClick: () -> Unit) {
                 Text(
                     listOf(pick.place, stringResource(R.string.onboarding_pick_minutes, minutes))
                         .filter { it.isNotEmpty() }
-                        .joinToString(" · "),
+                        .joinToString(" · ").asMetaLine(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

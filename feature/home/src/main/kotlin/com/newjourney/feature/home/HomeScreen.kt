@@ -1,12 +1,9 @@
 package com.newjourney.feature.home
 
-import com.newjourney.core.model.TrackTier
-import com.newjourney.core.designsystem.component.PremiumTrackSheet
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -24,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -65,12 +63,14 @@ import com.newjourney.core.designsystem.component.AppHeader
 import com.newjourney.core.designsystem.component.DurationChip
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.PremiumDurationSheet
+import com.newjourney.core.designsystem.component.PremiumTrackSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.ScreenPadding
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SectionTitle
 import com.newjourney.core.designsystem.component.SoftCard
 import com.newjourney.core.designsystem.component.TrackArtwork
+import com.newjourney.core.designsystem.component.asMetaLine
 import com.newjourney.core.designsystem.component.categoryIcon
 import com.newjourney.core.designsystem.component.moodColor
 import com.newjourney.core.designsystem.component.moodLabel
@@ -82,6 +82,7 @@ import com.newjourney.core.model.Mood
 import com.newjourney.core.model.PartOfDay
 import com.newjourney.core.model.Routine
 import com.newjourney.core.model.TimerLimits
+import com.newjourney.core.model.TrackTier
 import com.newjourney.core.model.WeekProgress
 import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
@@ -279,7 +280,7 @@ private fun PicksSection(picks: List<HomePick>, onOpen: (String) -> Unit) {
                         Text(
                             listOf(pick.place, stringResource(R.string.home_picks_minutes, pick.minutes))
                                 .filter { it.isNotEmpty() }
-                                .joinToString(" · "),
+                                .joinToString(" · ").asMetaLine(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -442,7 +443,7 @@ private fun ContinueListeningCard(item: ContinueListening, onContinue: () -> Uni
     val subtitle = listOfNotNull(
         item.place.ifEmpty { null },
         pluralStringResource(R.plurals.home_continue_minutes_left, left.toInt(), left.toInt()),
-    ).joinToString(" · ")
+    ).joinToString(" · ").asMetaLine()
     SoftCard {
         Text(
             stringResource(R.string.home_continue_title),

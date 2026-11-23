@@ -1,6 +1,5 @@
 package com.newjourney.feature.explore
 
-import com.newjourney.core.designsystem.icon.NavIcons
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,6 +53,8 @@ import com.newjourney.core.designsystem.component.PremiumTrackSheet
 import com.newjourney.core.designsystem.component.PrimaryButton
 import com.newjourney.core.designsystem.component.SecondaryButton
 import com.newjourney.core.designsystem.component.SoftCard
+import com.newjourney.core.designsystem.component.asMetaLine
+import com.newjourney.core.designsystem.icon.NavIcons
 import kotlinx.coroutines.delay
 
 @Composable
@@ -92,7 +93,7 @@ internal fun TrackRouteContent(
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(track.title, style = MaterialTheme.typography.displaySmall)
             Text(
-                listOfNotNull(track.subtitle, state.place.ifEmpty { null }).joinToString(" · "),
+                listOfNotNull(track.subtitle, state.place.ifEmpty { null }).joinToString(" · ").asMetaLine(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

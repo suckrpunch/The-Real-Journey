@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.newjourney.core.designsystem.component.MinTouchTarget
 import com.newjourney.core.designsystem.component.TrackArtwork
+import com.newjourney.core.designsystem.component.asMetaLine
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.model.Track
 
@@ -72,7 +73,7 @@ internal fun TrackRow(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(track.title, style = MaterialTheme.typography.titleMedium)
                 Text(
-                    listOfNotNull(track.subtitle, formatDuration(track.durationMs)).joinToString(" · "),
+                    listOfNotNull(track.subtitle, formatDuration(track.durationMs)).joinToString(" · ").asMetaLine(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

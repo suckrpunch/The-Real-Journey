@@ -1,13 +1,11 @@
 package com.newjourney.app.navigation
 
-import com.newjourney.core.designsystem.component.rememberCover
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -22,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -33,16 +32,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.newjourney.app.R
 import com.newjourney.core.catalog.CatalogRepository
+import com.newjourney.core.designsystem.component.asMetaLine
+import com.newjourney.core.designsystem.component.rememberCover
 import com.newjourney.core.designsystem.icon.NavIcons
 import com.newjourney.core.designsystem.theme.NewJourneyTheme
 import com.newjourney.core.playback.MusicPlayer
 import com.newjourney.core.playback.NowPlaying
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 @HiltViewModel
 class MiniPlayerViewModel @Inject constructor(
@@ -85,7 +86,7 @@ fun MiniPlayer(onOpen: (trackId: String) -> Unit, viewModel: MiniPlayerViewModel
     val details by viewModel.details.collectAsStateWithLifecycle()
     val current = nowPlaying ?: return
     val minutesText = details?.minutes?.let { stringResource(R.string.mini_player_minutes, it) }
-    val detailLine = listOfNotNull(details?.category, minutesText).joinToString(" · ").ifEmpty { current.subtitle.orEmpty() }
+    val detailLine = listOfNotNull(details?.category, minutesText).joinToString(" · ").asMetaLine().ifEmpty { current.subtitle.orEmpty() }
     val openLabel = stringResource(R.string.mini_player_open, current.title)
     val toggleLabel = stringResource(if (current.isPlaying) R.string.mini_player_pause else R.string.mini_player_play)
     val stopLabel = stringResource(R.string.mini_player_stop)
