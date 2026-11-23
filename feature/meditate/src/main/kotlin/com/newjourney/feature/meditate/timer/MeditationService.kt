@@ -93,7 +93,13 @@ class MeditationService : Service() {
         super.onCreate()
         createChannel()
         // The voice follows the slider on the session screen straight away.
-        scope.launch { timer.voiceVolume.collect { guidePlayer?.volume = it } }
+        // All the way down is silent, and then the music no longer dips for a voice nobody hears.
+        scope.launch {
+            timer.voiceVolume.collect { volume ->
+                guidePlayer?.volume = voiceGain(volume)
+                if (guideSpeaking) setBedLevel(duckLevel(), DUCK_MS)
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -254,7 +260,7 @@ class MeditationService : Service() {
         val player = guidePlayer
         if (guideSpeaking && player != null) {
             player.play()
-            setBedLevel(DUCK_LEVEL, DUCK_MS)
+            setBedLevel(duckLevel(), DUCK_MS)
         }
         guideJob = scope.launch {
             fun elapsed() = state.session.totalMs - state.remainingMs()
@@ -277,7 +283,7 @@ class MeditationService : Service() {
         player.prepare()
         player.play()
         guideSpeaking = true
-        setBedLevel(DUCK_LEVEL, DUCK_MS)
+        setBedLevel(duckLevel(), DUCK_MS)
     }
 
     private fun pauseGuide() {
@@ -302,7 +308,7 @@ class MeditationService : Service() {
             .setWakeMode(C.WAKE_MODE_LOCAL)
             .build()
             .apply {
-                volume = timer.voiceVolume.value
+                volume = voiceGain(timer.voiceVolume.value)
                 addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         if (playbackState == Player.STATE_ENDED && guideSpeaking) {
@@ -312,6 +318,15 @@ class MeditationService : Service() {
                     }
                 })
             }
+
+    /** How far the background dips under the voice: not at all when the voice is turned off. */
+    private fun duckLevel(): Float = if (timer.voiceVolume.value <= 0f) 1f else DUCK_LEVEL
+
+    /**
+     * The slider is linear, hearing is not: squaring makes each step sound like an even step,
+     * and 0 is truly silent.
+     */
+    private fun voiceGain(slider: Float): Float = slider.coerceIn(0f, 1f).let { it * it }
 
     /** Softens the background sound or music while the voice speaks, and brings it back after. */
     private fun setBedLevel(level: Float, durationMs: Long) {

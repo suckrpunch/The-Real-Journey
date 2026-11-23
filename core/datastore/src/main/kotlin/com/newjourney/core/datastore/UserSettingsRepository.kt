@@ -293,5 +293,5 @@ internal class DataStoreUserSettingsRepository @Inject constructor(
 }
 
 /** The voice starts a little below full, so it can be turned both up and down. */
-const val DEFAULT_VOICE_VOLUME = 0.8f
-const val MIN_VOICE_VOLUME = 0.1f
+const val DEFAULT_VOICE_VOLUME = 0.9f
+const val MIN_VOICE_VOLUME = 0f

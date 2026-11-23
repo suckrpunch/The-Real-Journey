@@ -116,39 +116,71 @@ internal fun trackScene(trackId: String): Scene = when (trackId) {
     }
 
     // ---- Relaxation ----
-    "relaxed-calm-mind" -> Scene(patches = listOf(swaying(0.08f, 0.87f, 0.17f, 0.08f, 1.0f, 1.6f, 5f))) { t, side, at ->
-        breathingGlow(at, side, t, 0.52f, 0.33f, 0.13f, SUNLIGHT, 0.14f, 0.3f)
-        glints(at, side, t, 0.52f, 0.64f, 0.1f, 0.16f)
+    "relaxed-calm-mind" -> Scene(
+        patches = listOf(
+            // The reeds sway, and the sun's reflection shimmers on the lake.
+            swaying(0.08f, 0.87f, 0.17f, 0.08f, 1.0f, 2.4f, 5f),
+            Patch(0.54f, 0.78f, 0.11f) { t -> Motion(dx = 0.006f * sway(t, 5f), scale = 1f + 0.02f * breathe(t, 7f), pivotX = 0.54f, pivotY = 0.78f) },
+        ),
+    ) { t, side, at ->
+        breathingGlow(at, side, t, 0.54f, 0.32f, 0.15f, SUNLIGHT, 0.16f, 0.36f)
+        ripples(at, side, t, 0.54f, 0.78f, 0.04f, 0.3f, Color.White, flat = 0.3f, strength = 0.22f, period = 9f)
+        glints(at, side, t, 0.54f, 0.8f, 0.14f, 0.12f, count = 7)
     }
     "lay-back-and-chill" -> Scene(
         patches = listOf(
-            swaying(0.3f, 0.1f, 0.25f, 0.35f, 0.35f, 0.8f, 7f),
-            swaying(0.82f, 0.12f, 0.2f, 0.8f, 0.35f, 0.8f, 8f, 0.3f),
-            swaying(0.5f, 0.62f, 0.3f, 0.5f, 0.45f, 0.9f, 5f),
+            // The leaves move in the breeze and the hammock rocks slowly between the trees.
+            swaying(0.3f, 0.1f, 0.25f, 0.35f, 0.35f, 1.6f, 7f),
+            swaying(0.82f, 0.12f, 0.2f, 0.8f, 0.35f, 1.6f, 8f, 0.3f),
+            swaying(0.5f, 0.62f, 0.3f, 0.5f, 0.4f, 2.2f, 6f),
         ),
     ) { t, side, at ->
-        breathingGlow(at, side, t, 0.5f, 0.3f, 0.2f, SUNLIGHT, 0.08f, 0.18f, period = 8f)
-        dapple(at, side, t, 0.45f, 0.86f, 0.1f, Color(0xFFFFF6D0), 0.25f)
-        dapple(at, side, t, 0.7f, 0.9f, 0.07f, Color(0xFFFFF6D0), 0.2f, period = 11f)
+        breathingGlow(at, side, t, 0.52f, 0.3f, 0.2f, SUNLIGHT, 0.12f, 0.3f, period = 8f)
+        dapple(at, side, t, 0.45f, 0.86f, 0.1f, Color(0xFFFFF6D0), 0.35f)
+        dapple(at, side, t, 0.7f, 0.9f, 0.07f, Color(0xFFFFF6D0), 0.3f, period = 11f)
+        dapple(at, side, t, 0.25f, 0.88f, 0.06f, Color(0xFFFFF6D0), 0.25f, period = 13f)
     }
-    "sleep-on-the-keys" -> Scene { t, side, at ->
+    "sleep-on-the-keys" -> Scene(
+        patches = listOf(
+            // The soft hills above and below the keys roll very slowly.
+            Patch(0.5f, 0.14f, 0.32f) { t -> Motion(dx = 0.012f * sway(t, 14f), dy = 0.006f * sway(t, 9f), pivotX = 0.5f, pivotY = 0.14f) },
+            Patch(0.5f, 0.92f, 0.3f) { t -> Motion(dx = 0.012f * sway(t, 16f, 0.4f), dy = 0.006f * sway(t, 10f, 0.2f), pivotX = 0.5f, pivotY = 0.92f) },
+        ),
+    ) { t, side, at ->
         // Keys softly lit one after another, like a slow melody.
         listOf(0.14f to 0.63f, 0.31f to 0.62f, 0.47f to 0.62f, 0.62f to 0.64f, 0.77f to 0.66f, 0.9f to 0.69f, 0.55f to 0.63f, 0.24f to 0.62f)
             .forEachIndexed { i, (x, y) ->
-                val p = bump(phase(t, period = 6f, offset = i * 0.13f), width = 0.004f)
-                glow(at(x, y), side * 0.05f, Color(0xFFFFF8E6), 0.45f * p)
+                val p = bump(phase(t, period = 7f, offset = i * 0.13f), width = 0.02f)
+                glow(at(x, y), side * 0.06f, Color(0xFFFFF8E6), 0.55f * p)
             }
-        sheen(t, period = 12f, strength = 0.08f)
+        sheen(t, period = 11f, strength = 0.12f)
     }
-    "will-be-right-with-you" -> Scene { t, side, at ->
-        breathingGlow(at, side, t, 0.32f, 0.4f, 0.24f, Color(0xFFFFC878), 0.06f, 0.18f, period = 7f)
-        breathingGlow(at, side, t, 0.57f, 0.52f, 0.22f, Color(0xFFE6F0DC), 0.06f, 0.18f, period = 7f, offset = 0.5f)
-        breathingGlow(at, side, t, 0.43f, 0.46f, 0.1f, Color.White, 0.04f, 0.14f, period = 3.5f)
+    "will-be-right-with-you" -> Scene(
+        patches = listOf(
+            // The two circles breathe, each in its own time, and lean softly towards each other.
+            Patch(0.365f, 0.43f, 0.3f) { t ->
+                Motion(dx = 0.008f * breathe(t, 9f), scale = 1f + 0.03f * breathe(t, 8f), pivotX = 0.365f, pivotY = 0.43f)
+            },
+            Patch(0.65f, 0.56f, 0.3f) { t ->
+                Motion(dx = -0.008f * breathe(t, 9f), scale = 1f + 0.03f * breathe(t, 8f, 0.5f), pivotX = 0.65f, pivotY = 0.56f)
+            },
+        ),
+    ) { t, side, at ->
+        breathingGlow(at, side, t, 0.365f, 0.43f, 0.26f, Color(0xFFFFC878), 0.08f, 0.24f, period = 8f)
+        breathingGlow(at, side, t, 0.65f, 0.56f, 0.24f, Color(0xFFE6F0DC), 0.08f, 0.24f, period = 8f, offset = 0.5f)
+        // Where they meet, the light grows when both lean in.
+        breathingGlow(at, side, t, 0.48f, 0.47f, 0.1f, Color.White, 0.1f, 0.4f, period = 9f)
     }
-    "vibe-says-it-all" -> Scene { t, side, at ->
-        breathingGlow(at, side, t, 0.85f, 0.25f, 0.2f, Color(0xFFFFD2A0), 0.05f, 0.15f, period = 7f)
-        breathingGlow(at, side, t, 0.2f, 0.78f, 0.2f, Color(0xFFFFD2A0), 0.05f, 0.15f, period = 7f, offset = 0.5f)
-        sheen(t, period = 9f, strength = 0.12f)
+    "vibe-says-it-all" -> Scene(
+        patches = listOf(
+            // The ribbons of colour flow gently up and down, like a slow wave.
+            Patch(0.5f, 0.3f, 0.34f) { t -> Motion(dx = 0.008f * sway(t, 12f), dy = 0.008f * sway(t, 8f), pivotX = 0.5f, pivotY = 0.3f) },
+            Patch(0.5f, 0.72f, 0.36f) { t -> Motion(dx = -0.008f * sway(t, 13f), dy = 0.01f * sway(t, 9f, 0.35f), pivotX = 0.5f, pivotY = 0.72f) },
+        ),
+    ) { t, side, at ->
+        breathingGlow(at, side, t, 0.85f, 0.25f, 0.2f, Color(0xFFFFD2A0), 0.08f, 0.22f, period = 7f)
+        breathingGlow(at, side, t, 0.2f, 0.78f, 0.2f, Color(0xFFFFD2A0), 0.08f, 0.22f, period = 7f, offset = 0.5f)
+        sheen(t, period = 9f, strength = 0.16f)
     }
 
     // ---- Focus ----
