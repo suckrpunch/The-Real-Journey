@@ -16,8 +16,8 @@ android {
         applicationId = "nl.FrequenC.NewJourney"
         minSdk = 26
         targetSdk = 36
-        versionCode = 64
-        versionName = "0.21.4"
+        versionCode = 65
+        versionName = "0.21.5"
     }
 
     buildTypes {
@@ -29,6 +29,8 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Puts the native libraries' symbol tables in the bundle, so Play can read native crashes.
+            ndk { debugSymbolLevel = "SYMBOL_TABLE" }
         }
     }
 
